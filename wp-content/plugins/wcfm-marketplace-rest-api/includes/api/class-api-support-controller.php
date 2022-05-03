@@ -124,6 +124,7 @@ class WCFM_REST_Support_Controller extends WCFM_REST_Controller {
     
     $wcfm_supports_array = array();
     $response = array();
+    $_REQUEST['wcfm_ajax_nonce'] = wp_create_nonce( 'wcfm_ajax_nonce' );
     define('WCFM_REST_API_CALL', TRUE);
     $WCFM->init();
     $wcfm_supports_array = $WCFMu->wcfmu_support->ajax_controller();

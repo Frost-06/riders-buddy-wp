@@ -100,7 +100,7 @@ class WCFM_REST_Store_Vendors_Controller extends WCFM_REST_Controller {
           if( in_array( $query_key, apply_filters( 'wcfmmp_vendor_list_exclude_search_keys', array( 'v', 'search_term', 'wcfmmp_store_search', 'wcfmmp_store_category', 'wcfmmp_radius_addr', 'wcfmmp_radius_lat', 'wcfmmp_radius_lng', 'wcfmmp_radius_range', 'excludes', 'orderby', 'lang' ) ) ) )
           $_POST['search_data'][$query_key] =  $query_value;
         }
-
+        $_REQUEST['wcfm_ajax_nonce'] = wp_create_nonce( 'wcfm_ajax_nonce' );
         define( 'WCFM_REST_API_CALL', TRUE );
         $WCFM->init();
         $wcfm_vendors_array = array();

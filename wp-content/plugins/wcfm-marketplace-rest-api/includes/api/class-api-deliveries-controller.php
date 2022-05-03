@@ -101,7 +101,7 @@ class WCFM_REST_Deliveries_Controller extends WCFM_REST_Controller {
     $wcfm_delivery_orders_array = array();
     $response = array();
     //$wcfm_delivery_orders_json_arr = array();
-
+    $_REQUEST['wcfm_ajax_nonce'] = wp_create_nonce( 'wcfm_ajax_nonce' );
     define('WCFM_REST_API_CALL', TRUE);
     $WCFM->init();
     //$WCFMd->init_wcfmd();
@@ -326,6 +326,7 @@ class WCFM_REST_Deliveries_Controller extends WCFM_REST_Controller {
     // }
 
     $_POST['delivery_id'] = $id;
+    $_REQUEST['wcfm_ajax_nonce'] = wp_create_nonce( 'wcfm_ajax_nonce' );
     define('WCFM_REST_API_CALL', TRUE);
     $WCFM->init();
     $WCFMd->ajax->wcfmd_mark_order_delivered();

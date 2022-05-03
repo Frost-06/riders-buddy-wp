@@ -19,6 +19,7 @@ class WCFMapi_API_Manager {
       }
       $this->class_map = apply_filters( 'wcfmapi_class_map', array(
           'product' => 'WCFM_REST_Product_Controller',
+          'product-attribute' => 'WCFM_REST_Product_Attribute_Controller',
           'product-categories' => 'WCFM_REST_Product_Categories_Controller',
           'order'   => 'WCFM_REST_Order_Controller',
           'settings'   => 'WCFM_REST_Settings_Controller',

@@ -3,11 +3,11 @@ Contributors: wclovers
 Tags: woocommerce marketplace api, rest api, remote api, http api
 Donate link: https://www.paypal.me/wclovers/25usd
 Requires at least: 4.4
-Tested up to: 5.5.1
+Tested up to: 5.9
 WC requires at least: 3.0
-WC tested up to: 4.5.2
+WC tested up to: 6.1.1
 Requires PHP: 5.6
-Stable tag: 1.4.1
+Stable tag: 1.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -164,7 +164,45 @@ NONE.
 
 == Changelog ==
 
-= 1.4.0 =
+= 1.5.1 =
+* Updated - 31/01/2022 *
+* Minor bug fix
+
+= 1.5.0 =
+* Updated - 03/12/2021 *
+
+* Feature - Route for product attribute for variable product added.
+* WooCommerce latest version compatibility.
+* WordPress latest version compatibility.
+* WCFM latest version compatibility.
+
+
+= 1.4.6 =
+* Updated - 29/11/2021 *
+
+* Minor bug fix.
+
+= 1.4.5 =
+*Updated - 27/08/2021 *
+
+* Compatibility with latest WCFM Marketplace added.
+
+= 1.4.4 =
+*Updated - 29/06/2021 *
+
+* Minor bug fix.
+
+= 1.4.3 =
+*Updated - 13/04/2021 *
+
+* Shipment tracking route added to orders.
+
+= 1.4.2 =
+*Updated - 2/12/2020 *
+
+* Minor bug fix
+
+= 1.4.1 =
 *Updated - 12/10/2020 *
 
 * WooCommerce latest version compatibility.
@@ -320,8 +358,6 @@ NONE.
 
 == Upgrade Notice ==
 
-= 1.4.1 =
-* WooCommerce latest version compatibility.
-* WordPress latest version compatibility.
-* Minor bug fix
+= 1.5.1 =
+* Minor Bug Fix
 

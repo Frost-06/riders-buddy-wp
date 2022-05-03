@@ -110,7 +110,7 @@ class WCFM_REST_Review_Controller extends WCFM_REST_Controller {
     $_POST['orderby'] = !empty($request['orderby']) ? $request['orderby'] : '';
     $_POST['order'] = !empty($request['order']) ? $request['order'] : '';
     $_POST['status_type'] = !empty($request['status_type']) ? $request['status_type'] : '';
-    
+    $_REQUEST['wcfm_ajax_nonce'] = wp_create_nonce( 'wcfm_ajax_nonce' );
     define('WCFM_REST_API_CALL', TRUE);
     $WCFM->init();
     $reviews = $WCFMmp->wcfmmp_reviews->wcfm_reviews_ajax_controller();
@@ -142,6 +142,7 @@ class WCFM_REST_Review_Controller extends WCFM_REST_Controller {
     } else {
       return new WP_Error( "wcfmapi_rest_invalid_review_status", sprintf( __( "Status Invalid", 'wcfm-marketplace-rest-api' ), __METHOD__ ), array( 'status' => 404 ) );
     }
+    $_REQUEST['wcfm_ajax_nonce'] = wp_create_nonce( 'wcfm_ajax_nonce' );
     define('WCFM_REST_API_CALL', TRUE);
     $WCFM->init();
     $reply_id = $WCFMmp->wcfmmp_reviews->wcfmmp_reviews_status_update();

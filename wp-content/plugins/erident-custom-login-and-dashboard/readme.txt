@@ -2,134 +2,65 @@
 Contributors: davidvongries, libinvbabu
 Tags: login, customisation, admin, dashboard, customise, erident, custom login, form, logo, customize, branding, login customizer, CSS, admin login, white label, login background, custom login page
 Requires at least: 3.0.0
-Tested up to: 5.7
-Stable tag: 3.5.9
-Requires PHP: 5.2
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Tested up to: 5.9
+Stable tag: 4.0.1
+Requires PHP: 5.6
+License: GPL-3.0 License
+License URI: https://oss.ninja/gpl-3.0?organization=David%20Vongries&project=Erident%20Custom%20Login%20and%20Dashboard
 
-Customize completely your WordPress Login Screen easily. Add your logo, change background image, colors, styles, Dashboard footer etc.
+Fully customize the WordPress Login Screen.
 
 == Description ==
+**Erident Custom Login and Dashboard** is the #1 rated Plugin to customize the WordPress Login Screen. It's a clean & minimalist way for you to fully customize almost all aspects of the WordPress Login Page.
 
-TOP RATED PLUGIN for Login Page Customization!!! Customize completely your WordPress Login Screen and Dashboard easily. Add your company logo to login screen, change background images, colors, styles etc. Customize your Dashboard footer text also for complete branding. Now faster and better db performance!
+Create a custom WordPress login page with just a few clicks! All the settings to customize the WordPress login are located under Settings > Custom Login & Dashboard.
 
-* New*: Options to Hide Links on Login page  (Register, Lost password and Back to website links)
-* New*: Upload logo and background images with WordPress media uploader right from the settings page
-* New*: Persian, Portuguese-Brazil & Turkish Translations available along with German, French and Spanish!
-* New*: Now supports opacity on login form background!
-* New*: Import/Export Settings feature available!
+Are you looking for a way to fully customize your WordPress admin area? Check out our **[Ultimate Dashboard](https://ultimatedashboard.io/?utm_source=erident&utm_medium=repository&utm_campaign=udb)** Plugin.
 
-Fastest support for the plugin. If you have any queries,
-visit the WordPress [support forum](http://wordpress.org/support/plugin/erident-custom-login-and-dashboard).
+=== Features ===
+Here is a list of some of the features available in Erident Custom Login & Dashboard:
 
-https://www.youtube.com/watch?v=Cou5UA2c_z8
+* Add a custom Logo & Logo URL
+* Change the Login Page Background Color
+* Add a Background Image to your Login Screen
+* Completely customize the WordPress Login Form
+* Remove Footer links from the WordPress Login Page
+* Change the WordPress Footer Text
+* Change the WordPress Version Text
+* Import/Export Feature
+* & much more!
 
-**Features:**
+=== What's next? ===
+If you like Erident Custom Login and Dashboard, make sure to check out our other products:
 
-1. Change footer texts on Admin Dashboard or keep it as default
-1. Add Image/Color Backgrounds to Login Screen.
-1. Add Image/Color Background to Login Form with opacity.
-1. Pick color using awesome jQuery color picker
-1. Change Texts/Links Color and size on Login Form
-1. Replace the WordPress Logo on the Login Form with your own
-1. Enable/Disable shadow for the Links on Login Form
-1. Enable/Disable shadow for the Login Form
-1. Change Login button Color
-1. Hide Register | Lost your password link
-1. Hide Back to your website link
-1. Preserve previous settings upon WordPress/plugins update!
-1. Import/Export all plugin settings between websites.
-
-**Erident Custom Login and Dashboard Settings:**
-
-(Plugin Loads default values for all below entries. Please change the values to yours.)
-
-**Dashboard Settings**
-
-(These settings will be reflected when a user/admin logins to the WordPress Dashboard.)
-
-* Change text for dashboard left side footer.
-* Change text for dashboard right side footer (Keep the field empty for default WordPress version).
-
-**Login Screen Settings**
-
-(These settings will be reflected on the "wp-login.php" page. )
-
-* Login Screen Background Color/Image
-* Login Screen Background Repeat
-* Login Screen Background Position
-* Login Screen Background Size
-* Logo Url
-* Logo width
-* Logo height
-* Powered by Text
-* Login form width
-* Login Form Border Style/Radius/Color/Thickness
-* Login Form Background Color/Image
-* Background Opacity
-* Login Form Background Repeat
-* Login Form Background Position
-* Login Form Label/input Text Color
-* Login Form Label/input Text Size
-* Enable Link Shadow
-* Login Form Link Shadow Color
-* Enable form Shadow
-* Login Form Shadow Color
-* Change Login button Color
-* Hide Register | Lost your password link
-* Hide Back to your website link
-
-**Plugin Un-install Settings**
-
-* Delete custom settings upon plugin deactivation or not
-
-**Import/Export all plugin settings between different websites**
-
-Enjoy your completely branded WordPress Version. Don't forget to [rate the plugin](http://wordpress.org/support/view/plugin-reviews/erident-custom-login-and-dashboard) :)
-
+* **[Ultimate Dashboard](https://ultimatedashboard.io/?utm_source=erident&utm_medium=repository&utm_campaign=udb)** - The #1 WordPress plugin to customize your WordPress dashboard and admin area.
+* **[Page Builder Framework](https://wp-pagebuilderframework.com/?utm_source=erident&utm_medium=repository&utm_campaign=wpbf)** - A fast & minimalistic WordPress theme designed for the new WordPress era.
+* **[Better Admin Bar](https://betteradminbar.com/?utm_source=erident&utm_medium=repository&utm_campaign=bab)** - The plugin to make your clients enjoy WordPress. It replaces the default admin bar to provide the best possible user experience when editing & navigating a website.
 
 == Installation ==
-
-This section describes how to install the plugin and get it working.
-
-1. Goto WordPress Dashboard -> Add new plugin and search "erident"
-1. Click Install button on "Erident Custom Login and Dashboard"
-1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Go to the plugins options page in the WordPress admin ('Settings' -> 'Custom Login and Dashboard')
-1. Change the footer texts, images, colors, styles as you desire
-1. Enjoy your completely branded WordPress Version
+1. Download the erident-custom-login-and-dashboard.zip file to your computer.
+1. Unzip the file.
+1. Upload the `erident-custom-login-and-dashboard` folder to your `/wp-content/plugins/` directory.
+1. Activate the plugin through the *Plugins* menu in WordPress.
 
 == Frequently Asked Questions ==
-
-= Is it legal to change WordPress Logo and texts? =
-
-Yes. WordPress gives you the permission to change whole login screen and dashboard to yours by using WordPress hooks.
-
-= How can I add my own image to use as Login screen's background? =
-
-Simply upload your image using WordPress uploader and copy the image link from there and paste it in the Custom Login and Dashboard Settings page.
-
-= On next update will I lose my previous settings? =
-By default you will not lose any of your previous settings. Check the Plugin Un-install Settings.
-
-= I want some custom changes. How can I do that? =
-You can edit the plugin's php file through WordPress plugin editor. But once you made an update the changes you made will disappear. So make sure to backup your changes before updating. Or inform us [Suggestions/requests](http://wordpress.org/support/topic/suggestionsrequests-for-future-version-update?replies=1) for future version
-
-= Can I export settings? =
-Yeah! With version 3.0 Import/Export plugin settings feature added. Your life made easy.
-
-= How will I put opacity on Login Form =
-You can achieve it by either using a transparent png/gif image or you can use the "opacity" feature added in ver:3.3 Add a background color for Login form and set an opacity to it. Default will be 1, means the background color will be opaque. changing it to 0.5 will give you 50% transparency. Just play around it. Make sure that there is no image on Login form background.
+= Are there more options to customize the WordPress Dashboard? =
+Yes! For more options and to fully customize the WordPress dashboard, check out **[Ultimate Dashboard](https://ultimatedashboard.io/?utm_source=erident&utm_medium=repository&utm_campaign=udb)**.
 
 == Screenshots ==
-
-1. The complete options on the settings page.
-2. This is the default Login Page Demo
-3. Example of a custom login page using background opacity feature!
-4. Another example of a custom login page. <a href="https://www.flickr.com/groups/erident-login/" rel="nofollow">Check more designs</a>.
+1. Settings Page
+2. Default Erident Login Screen
+3. Customized WordPress Login Screen (Example 1)
+4. Customized WordPress Login Screen (Example 2)
 
 == Changelog ==
+= 4.0.1 | April 29, 2022 =
+* Tweak: Added sidebar layout
+* Fixed: "Load Default Settings" button appeared on Tools page
+* Fixed: Some settings were not mobile responsive
+
+= 4.0 | April 29, 2022 =
+* Version 4.0 is a complete refactor of Erident Custom Login & Dashboard with a modern look and a much improved user experience. For even more options, check out **[Ultimate Dashboard](https://ultimatedashboard.io/?utm_source=erident&utm_medium=changelog&utm_campaign=udb)**.
 
 = 3.5.9 (01 Apr 2021) =
 * XSS Security Fix

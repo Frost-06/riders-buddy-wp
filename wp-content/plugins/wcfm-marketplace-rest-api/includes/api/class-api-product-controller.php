@@ -123,7 +123,74 @@ class WCFM_REST_Product_Controller extends WCFM_REST_Controller {
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array( $this, 'filter_params' ),
                 'args'                => $this->get_collection_params(),
-                // 'permission_callback' => array( $this, 'update_product_permissions_check' ),
+                'permission_callback' => array( $this, 'get_filter_permissions_check' ),
+            )
+          )
+        );
+        register_rest_route( $this->namespace, '/' . $this->base . '/(?P<productId>[\d]+)/attributes/', array(
+            'args' => array(
+                'productId' => array(
+                    'description' => __( 'Unique identifier for the object.', 'wcfm-marketplace-rest-api' ),
+                    'type'        => 'integer',
+                ),
+            ),
+            array(
+                'methods'             => WP_REST_Server::READABLE,
+                'callback'            => array( $this, 'get_product_attributes' ),
+                'args'                => $this->get_collection_params(),
+                'permission_callback' => array( $this, 'get_attribute_permissions_check' ),
+            ),
+          )
+        );
+        register_rest_route( $this->namespace, '/' . $this->base . '/(?P<productId>[\d]+)/variations/', array(
+            'args' => array(
+                'productId' => array(
+                    'description' => __( 'Unique identifier for the object.', 'wcfm-marketplace-rest-api' ),
+                    'type'        => 'integer',
+                ),
+            ),
+            array(
+                'methods'             => WP_REST_Server::READABLE,
+                'callback'            => array( $this, 'get_product_variations' ),
+                'args'                => $this->get_collection_params(),
+                'permission_callback' => array( $this, 'get_variation_permissions_check' ),
+            ),
+            array(
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => array( $this, 'manage_variation' ),
+                'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::CREATABLE ),
+                'permission_callback' => array( $this, 'create_variation_permissions_check' ),
+            ),
+          )
+        );
+        register_rest_route( $this->namespace, '/' . $this->base . '/(?P<productId>[\d]+)/variations/(?P<variationId>[\d]+)/', array(
+            'args' => array(
+                'productId' => array(
+                    'description' => __( 'Unique identifier for the object.', 'wcfm-marketplace-rest-api' ),
+                    'type'        => 'integer',
+                ),
+                'variationId' => array(
+                    'description' => __( 'Unique identifier for the object.', 'wcfm-marketplace-rest-api' ),
+                    'type'        => 'integer',
+                ),
+            ),
+            array(
+                'methods'             => WP_REST_Server::EDITABLE,
+                'callback'            => array( $this, 'manage_variation' ),
+                'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
+                'permission_callback' => array( $this, 'update_variation_permissions_check' ),
+            ),
+            array(
+                'methods'             => WP_REST_Server::DELETABLE,
+                'callback'            => array( $this, 'delete_variation' ),
+                'permission_callback' => array( $this, 'delete_variation_permissions_check' ),
+                'args'                => array(
+                    'force' => array(
+                        'type'        => 'boolean',
+                        'default'     => false,
+                        'description' => __( 'Whether to bypass trash and force deletion.', 'wcfm-marketplace-rest-api' ),
+                    ),
+                ),
             )
           )
         );
@@ -151,10 +218,14 @@ class WCFM_REST_Product_Controller extends WCFM_REST_Controller {
      * @return void
      */
     public function get_product_permissions_check( $request ) {      
-      if( !is_user_logged_in() )  return false;
+      // if( !is_user_logged_in() )  return false;
       if( apply_filters( 'wcfm_is_allow_manage_products', true ) ) {
         if(isset( $request['id'] )) {
-          return current_user_can( 'edit_post', (int) $request['id'] );
+          //return current_user_can( 'edit_post', (int) $request['id'] );
+          if( apply_filters( 'wcfm_is_allow_edit_products', true ) ) {
+            return true;
+          }
+          return false;
         }
         return true;
       }
@@ -185,9 +256,9 @@ class WCFM_REST_Product_Controller extends WCFM_REST_Controller {
     public function update_product_permissions_check( $request ) {
       if( !is_user_logged_in() )  return false;
       if( apply_filters( 'wcfm_is_allow_edit_products', true ) ) {
-        if(isset( $request['id'] )) {
-          return current_user_can( 'edit_post', (int) $request['id'] );
-        }
+        // if(isset( $request['id'] )) {
+        //   return current_user_can( 'edit_post', (int) $request['id'] );
+        // }
         return true;
       }
 
@@ -212,6 +283,75 @@ class WCFM_REST_Product_Controller extends WCFM_REST_Controller {
       
       return false;
     }
+
+    /**
+     * get_filter_permissions_check
+     *
+     * @since 1.0.0
+     *
+     * @return void
+     */
+    public function get_filter_permissions_check( $request ) {
+      return true;
+    }
+
+    /** 
+     * get_attribute_permissions_check
+     *
+     *
+     */
+    public function get_attribute_permissions_check() {
+      return true;
+    }
+
+    /** 
+     * get_variation_permissions_check
+     *
+     *
+     */
+    public function get_variation_permissions_check() {
+      return true;
+    }
+
+    /**
+     * create_variation_permissions_check
+     *
+     * @since 1.4.5
+     *
+     * @return void
+     */
+    public function create_variation_permissions_check() {
+      if( !is_user_logged_in() )  return false;
+      
+      return true;
+    }
+    /**
+     * update_variation_permissions_check
+     *
+     * @since 1.4.5
+     *
+     * @return void
+     */
+    public function update_variation_permissions_check( $request ) {
+      if( !is_user_logged_in() )  return false;
+      
+      return true;
+    }
+    
+    /**
+     * delete_variation_permissions_check
+     *
+     * @since 1.4.5
+     *
+     * @return void
+     */
+    public function delete_variation_permissions_check( $request ) {
+      if( !is_user_logged_in() )  return false;
+      
+      return true;
+    }
+
+
 
     protected function set_product_images( $product, $images ) {
       $images = is_array( $images ) ? array_filter( $images ) : array();
@@ -278,8 +418,11 @@ class WCFM_REST_Product_Controller extends WCFM_REST_Controller {
     public function quick_edit($request) {
 
       $id = isset( $request['id'] ) ? absint( $request['id'] ) : 0;
+      $product_type = isset( $request['type'] ) ? wc_clean( $request['type'] ) : 'simple';
       if ( isset( $request['id'] ) ) {
-        $product = $this->get_object( $id );
+        $product = wc_get_product_object( $product_type, $id );
+      } else {
+        return new WP_Error( "wcfmapi_rest_invalid_{$this->post_type}_id", sprintf( __( "Invalid ID", 'wcfm-marketplace-rest-api' ), __METHOD__ ), array( 'status' => 404 ) );
       }
 
       if(isset($product) && !is_wp_error($product)) {
@@ -403,6 +546,73 @@ class WCFM_REST_Product_Controller extends WCFM_REST_Controller {
         //Description
         //$product->set_short_description( $request['short_description'] );
         //$product->set_description( $request['description'] );
+
+        // Attributes
+        if( isset($request['attributes']) && !empty($request['attributes']) ) {
+          $data_attributes = $request['attributes'];
+          // print_r($data_attributes);
+
+          $attributes = array();
+          foreach ( $data_attributes as $data_attribute ) {
+
+            $attribute_name         = isset( $data_attribute['name'] ) ? $data_attribute['name'] : '';
+            $attribute_options      = isset( $data_attribute['options'] ) ? $data_attribute['options'] : '';
+            $attribute_visibility   = isset( $data_attribute['visibility'] ) ? $data_attribute['visibility'] : 0;
+            $attribute_variation    = isset( $data_attribute['variation'] ) ? $data_attribute['variation'] : 0;
+            $attribute_position     = isset( $data_attribute['position'] ) ? $data_attribute['position'] : 0;
+
+            if ( empty( $attribute_name ) || empty( $attribute_options ) ) {
+              continue;
+            }
+            $attribute_id   = 0;
+            $attribute_name = wc_clean( esc_html( $attribute_name ) );
+
+            if ( 'pa_' === substr( $attribute_name, 0, 3 ) ) {
+              $attribute_id = wc_attribute_taxonomy_id_by_name( $attribute_name );
+            }
+
+            if ( is_array( $attribute_options ) ) {
+              // Term ids sent as array.
+              $attribute_options = wp_parse_id_list( $attribute_options );
+            } else {
+              // Terms or text sent in textarea.
+              $attribute_options = 0 < $attribute_id ? wc_sanitize_textarea( esc_html( wc_sanitize_term_text_based( $attribute_options ) ) ) : wc_sanitize_textarea( esc_html( $attribute_options ) );
+              $attribute_options = wc_get_text_attributes( $attribute_options );
+            }
+
+            if ( empty( $attribute_options ) ) {
+              continue;
+            }
+
+            $attribute = new WC_Product_Attribute();
+            $attribute->set_id( $attribute_id );
+            $attribute->set_name( $attribute_name );
+            $attribute->set_options( $attribute_options );
+            $attribute->set_position( $attribute_position );
+            $attribute->set_visible( $attribute_visibility );
+            $attribute->set_variation( $attribute_variation );
+            $attributes[] = $attribute;
+          }
+          $product->set_attributes( $attributes );
+        }
+
+        // Set default Attributes
+        if( isset( $request['default_attributes'] ) && !empty( $request['default_attributes'] ) ) {
+          $default_attributes = array();
+          if ( $attributes ) {
+            foreach ( $attributes as $attribute ) {
+              if ( $attribute->get_variation() ) {
+                $attribute_key = sanitize_title( $attribute->get_name() );
+                
+                $value = isset( $request['default_attributes'][ "attribute_" . $attribute_key ] ) ? stripslashes( $request['default_attributes'][ "attribute_" . $attribute_key ] ) : '';
+      
+                $value                        = $attribute->is_taxonomy() ? sanitize_title( $value ) : wc_clean( $value ); // Don't use wc_clean as it destroys sanitized characters in terms.
+                $default_attributes[ $attribute_key ] = $value;
+              }
+            }
+          }
+          $product->set_default_attributes( $default_attributes );
+        }
         
         if ( is_wp_error( $product ) ) {
           return $product;
@@ -496,10 +706,14 @@ class WCFM_REST_Product_Controller extends WCFM_REST_Controller {
             'categories'            => $this->get_taxonomy_terms( $product ),
             'tags'                  => $this->get_taxonomy_terms( $product, 'tag' ),
             'images'                => $this->get_images( $product ),
-            'attributes'            => $this->get_attributes( $product ),
-            'default_attributes'    => $this->get_default_attributes( $product ),
-            'variations'            => array(),
-            'grouped_products'      => array(),
+            // 'attributes_org'        => $product->get_attributes( $context ),
+            'attributes'            => $this->get_attributes( $product, $context ),
+            'default_attributes_org'=> $product->get_default_attributes( $context ),
+            'default_attributes_array'    => $this->get_default_attributes( $product, $context ),
+            'default_attributes'    => $this->get_default_attributes_obj( $product, $context ),
+            'variations'            => $product->is_type( 'variable' ) ? $this->get_variations( $product, $context ) : array(),
+            'variation_attributes'  => $product->is_type( 'variable' ) ? $product->get_variation_attributes( $context ) : array(),
+           'grouped_products'      => array(),
             'menu_order'            => $product->get_menu_order( $context ),
             'meta_data'             => $product->get_meta_data(),
         );
@@ -526,7 +740,6 @@ class WCFM_REST_Product_Controller extends WCFM_REST_Controller {
       $_POST["description"]  = $request['description'];
       
       $map_product_form_data_with_request = array(
-          'status'  => empty( $request['status'] ) ? 'publish' : $request['status'],
           'pro_title'                 =>  $request['name'],               // Product Name
           'sku'                   =>  $request['sku'],                // Product SKU
           'product_type'          =>  $request['type'],       // Product Type
@@ -571,7 +784,7 @@ class WCFM_REST_Product_Controller extends WCFM_REST_Controller {
       $_POST['wcfm_products_manage_form'] = $map_product_form_data_with_request;
       $_POST['wcfm_products_manage_form']['pro_id']  = isset( $request['id'] ) ? absint( $request['id'] ) : 0;
       //print_r($map_product_form_data_with_request);
-   
+      $_REQUEST['wcfm_ajax_nonce'] = wp_create_nonce( 'wcfm_ajax_nonce' );
       define('WCFM_REST_API_CALL', TRUE);
       $WCFM->init();
       $response = $WCFM->ajax->wcfm_ajax_controller();
@@ -694,11 +907,11 @@ class WCFM_REST_Product_Controller extends WCFM_REST_Controller {
      * @param WC_Product $product Product instance.
      * @return array
      */
-    protected function get_default_attributes( $product ) {
+    protected function get_default_attributes( $product, $context = 'view' ) {
         $default = array();
 
         if ( $product->is_type( 'variable' ) ) {
-            foreach ( array_filter( (array) $product->get_default_attributes(), 'strlen' ) as $key => $value ) {
+            foreach ( array_filter( (array) $product->get_default_attributes( $context ), 'strlen' ) as $key => $value ) {
                 if ( 0 === strpos( $key, 'pa_' ) ) {
                     $default[] = array(
                         'id'     => wc_attribute_taxonomy_id_by_name( $key ),
@@ -719,6 +932,52 @@ class WCFM_REST_Product_Controller extends WCFM_REST_Controller {
     }
 
     /**
+     * Get default attributes.
+     *
+     * @param WC_Product $product Product instance.
+     * @return array
+     */
+    protected function get_default_attributes_obj( $product, $context = 'view' ) {
+        $default = array();
+
+        if ( $product->is_type( 'variable' ) ) {
+            foreach ( array_filter( (array) $product->get_default_attributes( $context ), 'strlen' ) as $key => $value ) {
+                $default['attribute_' . $key] = $value;
+            }
+        }
+
+        return $default;
+    }
+
+
+    /**
+     *
+     *
+     *
+     *
+     */
+    protected function get_variations( $product, $context = 'view' ) {
+        $variation_ids = $product->get_children();
+        $available_variations = array();
+
+        if ( is_callable( '_prime_post_caches' ) ) {
+          _prime_post_caches( $variation_ids );
+        }
+
+        foreach ( $variation_ids as $variation_id ) {
+
+          $variation = wc_get_product( $variation_id );
+
+
+          $available_variations[] = $product->get_available_variation( $variation );
+        }
+
+        $available_variations = array_values( array_filter( $available_variations ) );
+        
+        return $available_variations;
+    }
+
+    /**
      * Get attribute options.
      *
      * @param int   $product_id Product ID.
@@ -728,7 +987,7 @@ class WCFM_REST_Product_Controller extends WCFM_REST_Controller {
     protected function get_attribute_options( $product_id, $attribute ) {
         if ( isset( $attribute['is_taxonomy'] ) && $attribute['is_taxonomy'] ) {
             return wc_get_product_terms( $product_id, $attribute['name'], array(
-                'fields' => 'names',
+                'fields' => 'all',
             ) );
         } elseif ( isset( $attribute['value'] ) ) {
             return array_map( 'trim', explode( '|', $attribute['value'] ) );
@@ -743,12 +1002,12 @@ class WCFM_REST_Product_Controller extends WCFM_REST_Controller {
      * @param WC_Product|WC_Product_Variation $product Product instance.
      * @return array
      */
-    protected function get_attributes( $product ) {
+    protected function get_attributes( $product, $context = 'view' ) {
         $attributes = array();
 
         if ( $product->is_type( 'variation' ) ) {
             $_product = wc_get_product( $product->get_parent_id() );
-            foreach ( $product->get_variation_attributes() as $attribute_name => $attribute ) {
+            foreach ( $product->get_variation_attributes( $context ) as $attribute_name => $attribute ) {
                 $name = str_replace( 'attribute_', '', $attribute_name );
 
                 if ( ! $attribute ) {
@@ -772,13 +1031,14 @@ class WCFM_REST_Product_Controller extends WCFM_REST_Controller {
                 }
             }
         } else {
-            foreach ( $product->get_attributes() as $attribute ) {
+            foreach ( $product->get_attributes( $context ) as $key => $attribute ) {
                 $attributes[] = array(
                     'id'        => $attribute['is_taxonomy'] ? wc_attribute_taxonomy_id_by_name( $attribute['name'] ) : 0,
                     'name'      => $this->get_attribute_taxonomy_name( $attribute['name'], $product ),
                     'position'  => (int) $attribute['position'],
                     'visible'   => (bool) $attribute['is_visible'],
                     'variation' => (bool) $attribute['is_variation'],
+                    'slug'      => $key,
                     'options'   => $this->get_attribute_options( $product->get_id(), $attribute ),
                 );
             }
@@ -1029,16 +1289,22 @@ class WCFM_REST_Product_Controller extends WCFM_REST_Controller {
       }
 
       $product_id_in = implode(',', $product_ids);
-
-      $sql = "
-        SELECT min( min_price ) as min_price, MAX( max_price ) as max_price
-        FROM {$wpdb->wc_product_meta_lookup}
-        WHERE product_id IN (" . $product_id_in . ")";
+      if(!empty($product_id_in)) {
+        $sql = "
+          SELECT min( min_price ) as min_price, MAX( max_price ) as max_price
+          FROM {$wpdb->wc_product_meta_lookup}
+          WHERE product_id IN (" . $product_id_in . ")";
+        } else {
+          $sql = "
+            SELECT min( min_price ) as min_price, MAX( max_price ) as max_price
+            FROM {$wpdb->wc_product_meta_lookup}";
+        }
+      
 
       $price_result = $wpdb->get_row( $sql ); // WPCS: unprepared SQL ok.
 
       $prepared_args = array(
-        'search'     => $request['search']
+        // 'search'     => $request['search']
       );
       $category_result = get_terms( 'product_cat', $prepared_args );
 
@@ -1060,6 +1326,266 @@ class WCFM_REST_Product_Controller extends WCFM_REST_Controller {
 
       return $response;
     }
+
+    public function get_product_attributes( $request ) {
+      $product_id = isset( $request['productId'] ) ? $request['productId'] : 0;
+      $product_id = absint( $product_id );
+      if( ! $product_id ) {
+        return rest_ensure_response($request);
+      }
+      $product = $this->get_object( $product_id );
+      
+      $attributes = $this->get_attributes( $product );
+      
+      $response = rest_ensure_response ( $attributes );
+
+      return $response;
+    }
+
+    public function get_product_variations( $request ) {
+      $product_id = isset( $request['productId'] ) ? $request['productId'] : 0;
+      $product_id = absint( $product_id );
+      if( ! $product_id ) {
+        return rest_ensure_response($request);
+      }
+      $product = $this->get_object( $product_id );
+      
+      $available_variations = $this->get_variations( $product );
+
+      $attributes = $this->get_attributes( $product );
+
+
+      
+      $response = rest_ensure_response (
+        array(
+          'variations' => $available_variations,
+          'attributes' => $attributes
+        )
+      );
+
+      return $response;
+    }
+
+
+    /**
+     * create product variation.
+     *
+     * @param WP_REST_Request $request Full details about the request.
+     * @return void
+     *
+     */
+    public function manage_variation( $request ) {
+      global $WCFM;
+      $product_id = isset( $request['productId'] ) ? $request['productId'] : 0;
+      $variation_id = isset( $request['variationId'] ) ? $request['variationId'] : 0;
+      $product_id = absint( $product_id );
+      $variation_id = absint( $variation_id );
+      $variation_status     = isset( $request['status'] ) ? wc_clean( $request['status'] ) : 'publish';
+
+      if( ! $product_id ) {
+        return rest_ensure_response($request);
+      }
+      
+      // Generate a useful post title
+      $variation_post_title = sprintf( __( 'Variation #%s of %s', 'woocommerce' ), absint( $variation_id ), esc_html( get_the_title( $product_id ) ) );
+      
+      if ( ! $variation_id ) { // Adding New Variation
+        $variation = array(
+          'post_title'   => $variation_post_title,
+          'post_content' => '',
+          'post_status'  => $variation_status,
+          'post_author'  => get_current_user_id(),
+          'post_parent'  => $product_id,
+          'post_type'    => 'product_variation'
+        );
+
+        $variation_id = wp_insert_post( $variation );
+      }
+      
+      // Only continue if we have a variation ID
+      if ( ! $variation_id ) {
+        return rest_ensure_response($request);                             
+      }
+      
+      // Set Variation Thumbnail
+      $variation_img_id = 0;
+      if(isset($request['image']['id']) && !empty($request['image']['id'])) {
+        $variation_img_id = $WCFM->wcfm_get_attachment_id($request['image']['id']);
+      }
+      $product = $this->get_object( $product_id );
+      $pro_attributes = $product->get_attributes();
+      // $variation_attribute = $product->get_variation_attributes();
+      // print_r($variation_attribute);die;
+      
+      // Update Attributes
+      $attributes = $request[ 'attributes' ];
+      
+      $var_attributes = array();
+      if ( $pro_attributes ) {
+        foreach ( $pro_attributes as $attribute_key => $p_attribute ) {
+          if ( $p_attribute->get_variation() ) {
+            $attribute_key = sanitize_title( $p_attribute->get_name() );
+            foreach( $attributes as $attribute ) {
+              // print_r($attribute);
+              if( ( $attribute['name'] === $this->get_attribute_taxonomy_name( $p_attribute->get_name(), $product ) ) && ( $attribute['id'] == $p_attribute->get_id() ) ) {
+                $value = $p_attribute->is_taxonomy() ? sanitize_title( $attribute['option'] ) : wc_clean( $attribute['option'] ); // Don't use wc_clean as it destroys sanitized characters in terms.
+                $var_attributes[ $attribute_key ] = $value;
+              }
+            }
+            
+          }
+        }
+      }
+      // return rest_ensure_response( $var_attributes );
+      $variation_props = array(
+        'status'            => $variation_status,
+        // 'virtual'           => isset( $request['is_virtual'] ),
+        // 'menu_order'        => isset( $request['menu_order'] ),
+        'regular_price'     => wc_clean( $request['regular_price'] ),
+        'sale_price'        => wc_clean( $request['sale_price'] ),
+        'manage_stock'      => isset( $request['manage_stock'] ),
+        'stock_quantity'    => wc_clean( $request['stock_quantity'] ),
+        // 'backorders'        => wc_clean( $request['backorders'] ),
+        // 'stock_status'      => wc_clean( $request['stock_status'] ),
+        'image_id'          => wc_clean( $variation_img_id ),
+        'attributes'        => $var_attributes,
+        'sku'               => isset( $request['sku'] ) ? wc_clean( $request['sku'] ) : '',
+      );
+      
+      $wc_variation    = new WC_Product_Variation( $variation_id );
+      $errors       = $wc_variation->set_props( $variation_props );
+
+
+      $wc_variation->save();
+      
+      // do_action( 'after_wcfm_product_variation_meta_save', $product_id, $variation_id, $request );
+      // return rest_ensure_response( );
+      return $this->prepare_variation_object_for_response( $wc_variation, array( $context => 'view') );
+    }
+
+    /**
+     * update product variation.
+     *
+     * @param WP_REST_Request $request Full details about the request.
+     * @return void
+     *
+     */
+    public function update_variation( $request ) {
+      return rest_ensure_response($request);
+    }
+
+    /**
+     * delete product variation.
+     *
+     * @param WP_REST_Request $request Full details about the request.
+     * @return void
+     *
+     */
+    public function delete_variation( $request ) {
+      global $WCFM;
+      $product_id = isset( $request['productId'] ) ? $request['productId'] : 0;
+      $variation_id = isset( $request['variationId'] ) ? $request['variationId'] : 0;
+      $product_id = absint( $product_id );
+      $variation_id = absint( $variation_id );
+
+      $variation = wc_get_product( $variation_id );
+      $variation->delete( true );
+      return rest_ensure_response( array( 'product_id' => $product_id, 'variation_id' => $variation_id ) );
+    }
     
+    /**
+     * Prepare a single variation output for response.
+     *
+     * @param  WC_Data         $object  Object data.
+     * @param  WP_REST_Request $request Request object.
+     * @return WP_REST_Response
+     */
+    public function prepare_variation_object_for_response( $object, $request ) {
+      $data = array(
+        'id'                    => $object->get_id(),
+        'date_created'          => wc_rest_prepare_date_response( $object->get_date_created(), false ),
+        'date_created_gmt'      => wc_rest_prepare_date_response( $object->get_date_created() ),
+        'date_modified'         => wc_rest_prepare_date_response( $object->get_date_modified(), false ),
+        'date_modified_gmt'     => wc_rest_prepare_date_response( $object->get_date_modified() ),
+        'description'           => wc_format_content( $object->get_description() ),
+        'permalink'             => $object->get_permalink(),
+        'sku'                   => $object->get_sku(),
+        'price'                 => $object->get_price(),
+        'regular_price'         => $object->get_regular_price(),
+        'sale_price'            => $object->get_sale_price(),
+        'date_on_sale_from'     => wc_rest_prepare_date_response( $object->get_date_on_sale_from(), false ),
+        'date_on_sale_from_gmt' => wc_rest_prepare_date_response( $object->get_date_on_sale_from() ),
+        'date_on_sale_to'       => wc_rest_prepare_date_response( $object->get_date_on_sale_to(), false ),
+        'date_on_sale_to_gmt'   => wc_rest_prepare_date_response( $object->get_date_on_sale_to() ),
+        'on_sale'               => $object->is_on_sale(),
+        'status'                => $object->get_status(),
+        'purchasable'           => $object->is_purchasable(),
+        'virtual'               => $object->is_virtual(),
+        'downloadable'          => $object->is_downloadable(),
+        'downloads'             => $this->get_downloads( $object ),
+        'download_limit'        => '' !== $object->get_download_limit() ? (int) $object->get_download_limit() : -1,
+        'download_expiry'       => '' !== $object->get_download_expiry() ? (int) $object->get_download_expiry() : -1,
+        'tax_status'            => $object->get_tax_status(),
+        'tax_class'             => $object->get_tax_class(),
+        'manage_stock'          => $object->managing_stock(),
+        'stock_quantity'        => $object->get_stock_quantity(),
+        'stock_status'          => $object->get_stock_status(),
+        'backorders'            => $object->get_backorders(),
+        'backorders_allowed'    => $object->backorders_allowed(),
+        'backordered'           => $object->is_on_backorder(),
+        'weight'                => $object->get_weight(),
+        'dimensions'            => array(
+          'length' => $object->get_length(),
+          'width'  => $object->get_width(),
+          'height' => $object->get_height(),
+        ),
+        'shipping_class'        => $object->get_shipping_class(),
+        'shipping_class_id'     => $object->get_shipping_class_id(),
+        'image'                 => $this->get_image( $object ),
+        'attributes'            => $this->get_attributes( $object ),
+        'menu_order'            => $object->get_menu_order(),
+        'meta_data'             => $object->get_meta_data(),
+      );
+
+      $response = rest_ensure_response( $data );
+      $response->add_links( $this->prepare_links( $object, $request ) );
+      return apply_filters( "wcfmapi_rest_prepare_product_variation_object", $response, $object, $request );
+    }
+
+    /**
+     * Get the image for a product variation.
+     *
+     * @param WC_Product_Variation $variation Variation data.
+     * @return array
+     */
+    protected function get_image( $variation ) {
+      if ( ! $variation->get_image_id() ) {
+        return;
+      }
+
+      $attachment_id   = $variation->get_image_id();
+      $attachment_post = get_post( $attachment_id );
+      if ( is_null( $attachment_post ) ) {
+        return;
+      }
+
+      $attachment = wp_get_attachment_image_src( $attachment_id, 'full' );
+      if ( ! is_array( $attachment ) ) {
+        return;
+      }
+
+      if ( ! isset( $image ) ) {
+        return array(
+          'id'                => (int) $attachment_id,
+          'date_created'      => wc_rest_prepare_date_response( $attachment_post->post_date, false ),
+          'date_created_gmt'  => wc_rest_prepare_date_response( strtotime( $attachment_post->post_date_gmt ) ),
+          'date_modified'     => wc_rest_prepare_date_response( $attachment_post->post_modified, false ),
+          'date_modified_gmt' => wc_rest_prepare_date_response( strtotime( $attachment_post->post_modified_gmt ) ),
+          'src'               => current( $attachment ),
+          'name'              => get_the_title( $attachment_id ),
+          'alt'               => get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ),
+        );
+      }
+    }
     
 }

@@ -80,6 +80,7 @@ class WCFM_REST_Notification_Controller extends WCFM_REST_Controller {
     $_POST['order'] = !empty($request['order']) ? $request['order'] : '';
     $_POST['message_status'] = ( !empty($request['notification_status']) &&( $request['notification_status'] == 'read' || $request['notification_status'] == 'unread' ) ) ? $request['notification_status'] : 'unread';
     $_POST['message_type'] = !empty($request['notification_type']) ? $request['notification_type'] : 'all';
+    $_REQUEST['wcfm_ajax_nonce'] = wp_create_nonce( 'wcfm_ajax_nonce' );
     define('WCFM_REST_API_CALL', TRUE);
     $WCFM->init();
     $notifications = $WCFM->ajax->wcfm_ajax_controller();

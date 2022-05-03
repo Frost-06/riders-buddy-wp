@@ -31,7 +31,7 @@ class WCFM_REST_WC_Cart_Controller extends WCFM_REST_Controller {
      */
     public function __construct() {
         // add_action( 'rest_api_init', array( $this, 'rest_api_includes' ) );
-	if ( empty( WC()->cart ) ) {
+        if ( empty( WC()->cart ) ) {
             WC()->frontend_includes(); 
             wc_load_cart(); 
         }
@@ -181,7 +181,7 @@ class WCFM_REST_WC_Cart_Controller extends WCFM_REST_Controller {
         }
 
         $package_qty = array_sum( wp_list_pluck( $package['contents'], 'quantity' ) );
-        $item->add_meta_data( 'package_qty', $package['vendor_id'], true );
+        $item->add_meta_data( 'package_qty', $package_qty, true );
 
         $slug = strtok($chosen_method, ':');
         $item->add_meta_data( 'method_slug', $slug, true );
@@ -196,7 +196,7 @@ class WCFM_REST_WC_Cart_Controller extends WCFM_REST_Controller {
             $item->add_meta_data( 'processing_time', $package['processing_time'], true );
         }
 
-        do_action( 'wcfmmp_add_shipping_package_meta_data', $slug, $package['vendor_id'], $package, $item );
+        do_action( 'wcfmmp_add_shipping_package_meta_data', $slug, $package, $item );
 
     }
 
@@ -280,16 +280,20 @@ class WCFM_REST_WC_Cart_Controller extends WCFM_REST_Controller {
     public function add_cart_item( $request ) {
         $id = isset( $request['id'] ) ? absint( $request['id'] ) : 0;
         $qty = isset( $request['qty'] ) ? absint( $request['qty'] ) : 1;
-        WC()->cart->add_to_cart( $id, $qty );
+        $variation_id = isset( $request['variation_id'] ) ? absint( $request['variation_id'] ) : 0;
+        $variation = isset( $request['variation'] ) ? $request['variation'] : array();
+        WC()->cart->get_cart();
+        WC()->cart->add_to_cart( $id, $qty, $variation_id, $variation );
         return $this->get_cart_items($request);
     }
     
     public function update_cart_item( $request ) {
-        $id = isset( $request['id'] ) ? absint( $request['id'] ) : 0;
+        $key = isset( $request['key'] ) ? $request['key'] : 0;
         $qty = isset( $request['qty'] ) ? absint( $request['qty'] ) : 1;
-        $cart_item_key = $this->find_cart_key($id);
-        if ( $cart_item_key ) {
-            WC()->cart->set_quantity( $cart_item_key, $qty );
+        // $cart_item_key = $this->find_cart_key($id);
+        if ( $key ) {
+            WC()->cart->get_cart();
+            WC()->cart->set_quantity( $key, $qty );
         }
         return $this->get_cart_items($request);
     }
@@ -300,10 +304,11 @@ class WCFM_REST_WC_Cart_Controller extends WCFM_REST_Controller {
      * @return boolean
      */
     public function remove_cart_item( $request ) {
-        $id = isset( $request['id'] ) ? absint( $request['id'] ) : 0;
-        $cart_item_key = $this->find_cart_key($id);
-        if($cart_item_key) {
-            WC()->cart->remove_cart_item( $cart_item_key );
+        $key = isset( $request['key'] ) ? $request['key'] : 0;
+        // $cart_item_key = $this->find_cart_key($id);
+        if($key) {
+            WC()->cart->get_cart();
+            WC()->cart->remove_cart_item( $key );
         }
         return $this->get_cart_items($request);
     }
@@ -358,5 +363,3 @@ class WCFM_REST_WC_Cart_Controller extends WCFM_REST_Controller {
     }
 
 }
-
-

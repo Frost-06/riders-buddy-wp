@@ -108,6 +108,15 @@ class WCFM_REST_Order_Controller extends WCFM_REST_Controller {
                 'permission_callback' => array( $this, 'add_order_note_permissions_check' ),
             ),
       ));
+
+      register_rest_route( $this->namespace, '/' . $this->base . '/shipment_tracking/', array(            
+            array(
+                'methods'             => WP_REST_Server::EDITABLE,
+                'callback'            => array( $this, 'update_shipment_tracking' ),
+                'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
+                'permission_callback' => array( $this, 'update_shipment_tracking_permissions_check' ),
+            ),
+      ));
   }
   
   /**
@@ -170,6 +179,14 @@ class WCFM_REST_Order_Controller extends WCFM_REST_Controller {
       return true;
     return false;
   }
+
+  public function update_shipment_tracking_permissions_check() {
+    if( !is_user_logged_in() )
+      return false;
+    if( apply_filters( 'wcfm_is_allow_manage_order', true ) )
+      return true;
+    return false;
+  }
     
   
   public function get_post_type_items( $request ) {
@@ -207,7 +224,7 @@ class WCFM_REST_Order_Controller extends WCFM_REST_Controller {
     $_POST['search']['value'] = !empty($request['search']) ? $request['search'] : '';    
     $_POST['orderby'] = !empty($request['orderby']) ? $request['orderby'] : '';
     $_POST['order'] = !empty($request['order']) ? $request['order'] : '';
-    
+    $_REQUEST['wcfm_ajax_nonce'] = wp_create_nonce( 'wcfm_ajax_nonce' );
     define('WCFM_REST_API_CALL', TRUE);
     $WCFM->init();
     $orders = $WCFM->ajax->wcfm_ajax_controller();
@@ -240,6 +257,8 @@ class WCFM_REST_Order_Controller extends WCFM_REST_Controller {
   
   protected function get_formatted_item_data( $object, $each_order_vendor_id ) {
     $data = $object->get_data();
+    $order_id = $data['id'];
+    $order_status = $data['status'];
     //print_r($data);die;
     $format_date       = array( 'date_created', 'date_modified', 'date_completed', 'date_paid' );
     $format_line_items = array( 'line_items', 'tax_lines', 'shipping_lines', 'fee_lines', 'coupon_lines' );
@@ -328,6 +347,14 @@ class WCFM_REST_Order_Controller extends WCFM_REST_Controller {
         $data[ $key ] = array_values( array_map( array( $this, 'get_order_item_data' ),  $data[ $key ] ) );
       }
     }
+
+    // Add Shipment Tracking
+    if( ( ( $object->needs_shipping_address() && $object->get_formatted_shipping_address() ) || apply_filters( 'wcfm_is_force_shipping_address', false ) ) && ( !function_exists( 'wcs_order_contains_subscription' ) || ( !wcs_order_contains_subscription( $order_id, 'renewal' ) && !wcs_order_contains_subscription( $order_id, 'renewal' ) ) ) && apply_filters( 'wcfm_is_pref_shipment_tracking', true ) && apply_filters( 'wcfm_is_allow_shipping_tracking', true ) && !in_array( $order_status, apply_filters( 'wcfm_shipment_disable_order_status', array( 'failed', 'cancelled', 'refunded', 'pending' ) ) ) ) {
+
+      $data['shipment_tracking'] = $this->get_order_shipping_data( $object );
+    }
+
+    $data['status'] = apply_filters( 'wcfm_current_order_status', $data['status'], $data['id'] );
     
     // Format the order status.
     $data['status'] = 'wc-' === substr( $data['status'], 0, 3 ) ? substr( $data['status'], 3 ) : $data['status'];
@@ -386,7 +413,7 @@ class WCFM_REST_Order_Controller extends WCFM_REST_Controller {
           $_product = $item->get_product();
           $data['sku']   = $_product ? $_product->get_sku(): null;
           $data['thumbnail']     = $_product ? apply_filters( 'woocommerce_admin_order_item_thumbnail', $_product->get_image( 'thumbnail', array( 'title' => '' ), false ), $data['id'], $item ) : '';
-          $data['image_url'] = wp_get_attachment_image_url( $_product->get_image_id(), 'thumbnail' );
+          $data['image_url'] = $_product ? wp_get_attachment_image_url( $_product->get_image_id(), 'thumbnail' ) : null;
           $data['price'] = (float)( $item->get_total() / max( 1, $item->get_quantity() ) );
       }
 
@@ -577,6 +604,211 @@ class WCFM_REST_Order_Controller extends WCFM_REST_Controller {
 
   }
 
+  /**
+   *
+   *
+   */
+  protected function get_order_shipping_data( $order ) {
+
+    global $WCFM;
+
+    $needs_shipping_tracking = false; 
+
+    $product_ids = array();
+
+    $order_item_ids = array();
+
+    $line_items = $order->get_items( 'line_item' );
+
+    $line_items = apply_filters( 'wcfm_valid_line_items', $line_items, $order->get_id() );
+
+    $shipment_tracking_data = array();
+
+    foreach ( $line_items as $item_id => $item ) {
+
+      $each_data = array();
+
+      $_product  = $item->get_product();            
+
+      $needs_shipping = $WCFM->frontend->is_wcfm_needs_shipping( $_product );
+
+      $shipped = true;
+
+      $tracking_url  = '';
+
+      $tracking_code = '';
+
+      $delivery_boy  = '';
+
+      $delivery_boy_name = '';
+
+      if( $needs_shipping ) {
+
+        $shipped = false;
+
+        foreach ( $item->get_formatted_meta_data() as $meta_id => $meta ) {
+
+          if( $meta->key == 'wcfm_tracking_url' ) {
+
+            $tracking_url  = $meta->value;
+
+            $shipped = true;
+
+          } elseif( $meta->key == 'wcfm_tracking_code' ) {
+
+            $tracking_code  = $meta->value;
+
+          } elseif( $meta->key == 'wcfm_delivery_boy' ) {
+
+            $delivery_boy  = $meta->value;
+
+          }
+
+        }
+
+      } else {
+
+        continue;
+
+      }      
+
+      $order_item_ids[] = $item->get_id();
+
+      $product_ids[]    = $item->get_product_id();
+
+      $each_data['item_id'] = $item->get_id();
+      $each_data['product_id'] = $item->get_product_id();
+
+      //if( $shipped ) continue;
+
+      $needs_shipping_tracking = true;
+    
+
+      if( ( !empty( $product_ids ) && ( count( $product_ids ) == 1 ) ) || apply_filters( 'wcfm_is_allow_itemwise_notification', true ) ) {
+
+          $each_data['product_name'] = esc_html( $item->get_name() );
+
+          if ( $_product && $_product->get_sku() ) {
+
+            $each_data['sku'] = esc_html( $_product->get_sku() );
+
+          }
+
+          if ( $tracking_code ) {
+            
+            $each_data['tracking_code'] = $tracking_code;
+
+          }          
+
+          if ( $tracking_url ) {
+
+            $each_data['tracking_url'] = $tracking_url;
+
+          }
+
+          if ( $delivery_boy ) {
+
+            $each_data['delivery_boy'] = $delivery_boy;
+            $wcfm_delivery_boy_user = get_userdata( absint( $delivery_boy ) );
+            if ( $wcfm_delivery_boy_user ) {
+              $delivery_boy_name = apply_filters( 'wcfm_delivery_boy_display', $wcfm_delivery_boy_user->first_name . ' ' . $wcfm_delivery_boy_user->last_name, $delivery_boy );
+              $each_data['delivery_boy_name'] = $delivery_boy_name;
+            }
+
+          }
+
+          if ( function_exists( 'wcfm_is_order_delivered' ) ) {
+
+            $is_order_delivered = wcfm_is_order_delivered( $order->get_id(), $item_id );
+
+            if( $is_order_delivered ) {
+
+              $each_data['delivery_status'] = 'completed';
+
+            } else {
+
+              $each_data['delivery_status'] = 'pending';
+
+            }
+          }
+    
+          if( $_product ) {
+
+            $each_data['mark_shipped'] = true;
+
+          }
+      }
+
+      $shipment_tracking_data['each_data'][] = $each_data;
+
+    }
+
+    if( !empty( $product_ids ) && ( count( $product_ids ) > 1 ) ) {
+
+        $shipment_tracking_data['mark_all'] = array(
+
+          'product_ids' => $product_ids,
+          'order_item_ids' => $order_item_ids
+
+        );
+
+    }
+
+    $wcfm_delivery_boys_array = function_exists( 'wcfm_get_delivery_boys' ) ? wcfm_get_delivery_boys() : array();
+
+    if(!empty($wcfm_delivery_boys_array)) {
+
+      $delivery_users = array();
+
+      foreach( $wcfm_delivery_boys_array as $wcfm_delivery_boys_single ) {
+
+        $delivery_users[] = array( 'id' => $wcfm_delivery_boys_single->ID,
+                                   'name' => $wcfm_delivery_boys_single->first_name . ' ' . $wcfm_delivery_boys_single->last_name . ' (' . $wcfm_delivery_boys_single->user_email . ')');
+
+      }
+
+      $shipment_tracking_data['delivery_boys'] = $delivery_users;
+      
+    }    
+
+    return $shipment_tracking_data;
+
+  }
+
+  public function update_shipment_tracking( $request ) {
+    global $WCFM, $WCFMu;
+    
+    $_POST['orderid'] = !empty($request['order_id']) ? $request['order_id'] : '';
+
+    $_POST['tracking_data'] = "";
+
+    $_POST['tracking_data'] .= "wcfm_tracking_order_id=";
+    $_POST['tracking_data'] .= !empty($request['order_id']) ? $request['order_id'] : "";
+    $_POST['tracking_data'] .= "&wcfm_tracking_product_id=";
+    $_POST['tracking_data'] .= !empty($request['product_id']) ? $request['product_id'] : "";
+    $_POST['tracking_data'] .= "&wcfm_tracking_order_item_id=";
+    $_POST['tracking_data'] .= !empty($request['item_id']) ? $request['item_id'] : "";
+    $_POST['tracking_data'] .= "&wcfm_tracking_url=";
+    $_POST['tracking_data'] .= !empty($request['tracking_url']) ? $request['tracking_url'] : "";
+    $_POST['tracking_data'] .= "&wcfm_tracking_code=";
+    $_POST['tracking_data'] .= !empty($request['tracking_code']) ? $request['tracking_code'] : "";
+    $_POST['tracking_data'] .= "&wcfm_delivery_boy=";
+    $_POST['tracking_data'] .= !empty($request['delivery_boy']) ? $request['delivery_boy'] : "";
+    $_REQUEST['wcfm_ajax_nonce'] = wp_create_nonce( 'wcfm_ajax_nonce' );   
+    define('WCFM_REST_API_CALL', TRUE);
+    $WCFMu->init_wcfmu();
+    $wcfm_tracking_data = $WCFMu->wcfmu_shipment_tracking->wcfm_wcfmmarketplace_order_mark_shipped();
+    
+    $order_id = absint( $wcfm_tracking_data['wcfm_tracking_order_id'] );
+    $order    = wc_get_order( $order_id );
+    $response = array('order_id' => $order_id);
+    $response['order_status'] = apply_filters( 'wcfm_current_order_status', $order->get_status(), $order->get_id() );
+    $response['tracking_data'] = $wcfm_tracking_data;
+    
+    return rest_ensure_response( $response );
+
+  }
+
   public function update_order_status( $request ) {
 
     global $WCFM;
@@ -613,6 +845,7 @@ class WCFM_REST_Order_Controller extends WCFM_REST_Controller {
       // $order->save();
       $_POST['order_id'] = $id;
       $_POST['order_status'] = $status;
+      $_REQUEST['wcfm_ajax_nonce'] = wp_create_nonce( 'wcfm_ajax_nonce' );
       define('WCFM_REST_API_CALL', TRUE);
       $WCFM->init();
       $order_status_change = $WCFM->ajax->wcfm_modify_order_status();
@@ -724,7 +957,8 @@ class WCFM_REST_Order_Controller extends WCFM_REST_Controller {
       if( wcfm_is_vendor() ) remove_filter( 'woocommerce_new_order_note_data', array( $WCFMu->wcfmu_marketplace, 'filter_wcfm_vendors_comment' ), 10, 2 );      
 
     }
-    $notes = $this->get_order_note(array('id' => $request['id']));
+
+    $notes = $this->get_order_notes(array('id' => $request['id']));
     $response = rest_ensure_response($notes);
     return $response;
 

@@ -1,12 +1,11 @@
 <?php
-
 /**
  * File responsible for doing migrations.
  *
  * @package  Installation
  */
 
-define('WC_BOOKINGS_DB_VERSION', '1.14.5');
+define( 'WC_BOOKINGS_DB_VERSION', '1.14.5' );
 
 /**
  * Installation/Migration Class.
@@ -15,16 +14,14 @@ define('WC_BOOKINGS_DB_VERSION', '1.14.5');
  *
  * @version  1.13.0
  */
-class WC_Bookings_Install
-{
+class WC_Bookings_Install {
 
 	/**
 	 * Get capabilities for WooCommerce Bookings - these are assigned to admin/shop manager during installation or reset.
 	 *
 	 * @return array
 	 */
-	public static function get_core_capabilities()
-	{
+	public static function get_core_capabilities() {
 		$capabilities = array();
 
 		$capabilities['core'] = array(
@@ -33,11 +30,11 @@ class WC_Bookings_Install
 			'manage_bookings_connection',
 		);
 
-		$capability_types = array('bookable_person', 'bookable_resource', 'wc_booking');
+		$capability_types = array( 'bookable_person', 'bookable_resource', 'wc_booking' );
 
-		foreach ($capability_types as $capability_type) {
+		foreach ( $capability_types as $capability_type ) {
 
-			$capabilities[$capability_type] = array(
+			$capabilities[ $capability_type ] = array(
 				// Post type.
 				"edit_{$capability_type}",
 				"read_{$capability_type}",
@@ -70,8 +67,7 @@ class WC_Bookings_Install
 	 *
 	 * @since 1.13.0
 	 */
-	public static function init()
-	{
+	public static function init() {
 		self::run();
 	}
 
@@ -80,14 +76,13 @@ class WC_Bookings_Install
 	 *
 	 * @since 1.13.0
 	 */
-	private static function run()
-	{
-		$installed_version = get_option('wc_bookings_version');
+	private static function run() {
+		$installed_version = get_option( 'wc_bookings_version' );
 
 		// Check the version before running.
-		if (!defined('IFRAME_REQUEST') && WC_BOOKINGS_VERSION !== $installed_version) {
-			if (!defined('WC_BOOKINGS_INSTALLING')) {
-				define('WC_BOOKINGS_INSTALLING', true);
+		if ( ! defined( 'IFRAME_REQUEST' ) && WC_BOOKINGS_VERSION !== $installed_version ) {
+			if ( ! defined( 'WC_BOOKINGS_INSTALLING' ) ) {
+				define( 'WC_BOOKINGS_INSTALLING', true );
 			}
 
 			self::update_plugin_version();
@@ -99,11 +94,11 @@ class WC_Bookings_Install
 
 			$collate = '';
 
-			if ($wpdb->has_cap('collation')) {
-				if (!empty($wpdb->charset)) {
+			if ( $wpdb->has_cap( 'collation' ) ) {
+				if ( ! empty( $wpdb->charset ) ) {
 					$collate .= "DEFAULT CHARACTER SET $wpdb->charset";
 				}
-				if (!empty($wpdb->collate)) {
+				if ( ! empty( $wpdb->collate ) ) {
 					$collate .= " COLLATE $wpdb->collate";
 				}
 			}
@@ -151,11 +146,11 @@ class WC_Bookings_Install
 			"
 			);
 
-			if (version_compare($installed_version, '1.13.0', '<')) {
+			if ( version_compare( $installed_version, '1.13.0', '<' ) ) {
 				self::migration_1_13_0();
 			}
 
-			if (version_compare($installed_version, '1.13.2', '<')) {
+			if ( version_compare( $installed_version, '1.13.2', '<' ) ) {
 				// Keep old option data but disable autoload since it won't be used anymore.
 				$wpdb->query(
 					"UPDATE $wpdb->options SET autoload = 'no' WHERE option_name IN ('wc_global_booking_availability','woocommerce_bookings_tz_calculation','woocommerce_bookings_timezone_conversion','woocommerce_bookings_client_firstday')"
@@ -163,43 +158,43 @@ class WC_Bookings_Install
 			}
 
 			// Product type.
-			if (!get_term_by('slug', sanitize_title('booking'), 'product_type')) {
-				wp_insert_term('booking', 'product_type');
+			if ( ! get_term_by( 'slug', sanitize_title( 'booking' ), 'product_type' ) ) {
+				wp_insert_term( 'booking', 'product_type' );
 			}
 
 			// Capabilities.
-			if (class_exists('WP_Roles')) {
-				if (!isset($wp_roles)) {
+			if ( class_exists( 'WP_Roles' ) ) {
+				if ( ! isset( $wp_roles ) ) {
 					$wp_roles = new WP_Roles(); // phpcs:disable WordPress.WP.GlobalVariablesOverride.OverrideProhibited
 				}
 			}
 
-			if (is_object($wp_roles)) {
-				foreach (self::get_core_capabilities() as $cap_group) {
-					foreach ($cap_group as $cap) {
-						$wp_roles->add_cap('shop_manager', $cap);
-						$wp_roles->add_cap('administrator', $cap);
+			if ( is_object( $wp_roles ) ) {
+				foreach ( self::get_core_capabilities() as $cap_group ) {
+					foreach ( $cap_group as $cap ) {
+						$wp_roles->add_cap( 'shop_manager', $cap );
+						$wp_roles->add_cap( 'administrator', $cap );
 					}
 				}
 				// Remove deprecated manage_bookings capability.
-				$wp_roles->remove_cap('shop_manager', 'manage_bookings');
-				$wp_roles->remove_cap('administrator', 'manage_bookings');
+				$wp_roles->remove_cap( 'shop_manager', 'manage_bookings' );
+				$wp_roles->remove_cap( 'administrator', 'manage_bookings' );
 			}
 
 			// Data updates.
-			if (version_compare($installed_version, '1.3', '<')) {
-				$bookings = $wpdb->get_results("SELECT post_id, meta_key, meta_value FROM $wpdb->postmeta WHERE meta_key IN ( '_booking_start', '_booking_end' );");
-				foreach ($bookings as $booking) {
-					if (ctype_digit($booking->meta_value) && $booking->meta_value <= 2147483647) {
-						$new_date = date('YmdHis', $booking->meta_value);
-						update_post_meta($booking->post_id, $booking->meta_key, $new_date);
+			if ( version_compare( $installed_version, '1.3', '<' ) ) {
+				$bookings = $wpdb->get_results( "SELECT post_id, meta_key, meta_value FROM $wpdb->postmeta WHERE meta_key IN ( '_booking_start', '_booking_end' );" );
+				foreach ( $bookings as $booking ) {
+					if ( ctype_digit( $booking->meta_value ) && $booking->meta_value <= 2147483647 ) {
+						$new_date = date( 'YmdHis', $booking->meta_value );
+						update_post_meta( $booking->post_id, $booking->meta_key, $new_date );
 					}
 				}
 			}
 
-			if (version_compare($installed_version, '1.4', '<')) {
-				$resources = $wpdb->get_results("SELECT ID, post_parent FROM $wpdb->posts WHERE post_type = 'bookable_resource' AND post_parent > 0;");
-				foreach ($resources as $resource) {
+			if ( version_compare( $installed_version, '1.4', '<' ) ) {
+				$resources = $wpdb->get_results( "SELECT ID, post_parent FROM $wpdb->posts WHERE post_type = 'bookable_resource' AND post_parent > 0;" );
+				foreach ( $resources as $resource ) {
 					$wpdb->insert(
 						$wpdb->prefix . 'wc_booking_relationships',
 						array(
@@ -208,7 +203,7 @@ class WC_Bookings_Install
 							'sort_order'  => 1,
 						)
 					);
-					if ($wpdb->insert_id) {
+					if ( $wpdb->insert_id ) {
 						$wpdb->update(
 							$wpdb->posts,
 							array(
@@ -218,18 +213,18 @@ class WC_Bookings_Install
 								'ID' => $resource->ID,
 							)
 						);
-						$cost         = get_post_meta($resource->ID, 'cost', true);
-						$parent_costs = get_post_meta($resource->post_parent, '_resource_base_costs', true);
-						if (!$parent_costs) {
+						$cost         = get_post_meta( $resource->ID, 'cost', true );
+						$parent_costs = get_post_meta( $resource->post_parent, '_resource_base_costs', true );
+						if ( ! $parent_costs ) {
 							$parent_costs = array();
 						}
-						$parent_costs[$resource->ID] = $cost;
-						update_post_meta($resource->post_parent, '_resource_base_costs', $parent_costs);
+						$parent_costs[ $resource->ID ] = $cost;
+						update_post_meta( $resource->post_parent, '_resource_base_costs', $parent_costs );
 					}
 				}
 			}
 
-			if (version_compare($installed_version, '1.5', '<')) {
+			if ( version_compare( $installed_version, '1.5', '<' ) ) {
 				$wpdb->query(
 					"
 					UPDATE {$wpdb->posts} as posts
@@ -240,43 +235,41 @@ class WC_Bookings_Install
 				);
 			}
 
-			if (version_compare($installed_version, '1.10.3', '<')) {
+			if ( version_compare( $installed_version, '1.10.3', '<' ) ) {
 
 				$booking_products = WC_Product_Booking_Data_Store_CPT::get_bookable_product_ids();
 
 				// Update all bookings to match the proper price.
-				foreach ($booking_products as $product_id) {
-					$price = get_post_meta($product_id, '_price', true);
+				foreach ( $booking_products as $product_id ) {
+					$price = get_post_meta( $product_id, '_price', true );
 
-					if (!empty($price)) {
+					if ( ! empty( $price ) ) {
 						continue;
 					}
 
-					$new_price = WC_Bookings_Cost_Calculation::calculated_base_cost(get_wc_product_booking($product_id));
+					$new_price = WC_Bookings_Cost_Calculation::calculated_base_cost( get_wc_product_booking( $product_id ) );
 
-					update_post_meta($product_id, '_price', $new_price);
+					update_post_meta( $product_id, '_price', $new_price );
 				}
 			}
 
-			if (version_compare($installed_version, '1.10.9', '<')) {
+			if ( version_compare( $installed_version, '1.10.9', '<' ) ) {
 				$booking_products = WC_Product_Booking_Data_Store_CPT::get_bookable_product_ids();
 
 				// Update all bookings to match the proper base cost.
-				foreach ($booking_products as $product_id) {
-					$base_cost = get_post_meta($product_id, '_wc_booking_base_cost', true);
-					$sale_price = get_post_meta($product_id, '_sale_price', true);
+				foreach ( $booking_products as $product_id ) {
+					$base_cost = get_post_meta( $product_id, '_wc_booking_base_cost', true );
 
-					if (empty($base_cost)) {
+					if ( empty( $base_cost ) ) {
 						continue;
 					}
 
-					update_post_meta($product_id, '_wc_booking_block_cost', $base_cost);
-					update_post_meta($product_id, '_sale_price', $sale_price);
-					delete_post_meta($product_id, '_wc_booking_base_cost');
+					update_post_meta( $product_id, '_wc_booking_block_cost', $base_cost );
+					delete_post_meta( $product_id, '_wc_booking_base_cost' );
 				}
 			}
 
-			do_action('wc_bookings_updated');
+			do_action( 'wc_bookings_updated' );
 		}
 	}
 
@@ -285,10 +278,9 @@ class WC_Bookings_Install
 	 *
 	 * @since 1.13.0
 	 */
-	private static function update_plugin_version()
-	{
-		delete_option('wc_bookings_version');
-		add_option('wc_bookings_version', WC_BOOKINGS_VERSION);
+	private static function update_plugin_version() {
+		delete_option( 'wc_bookings_version' );
+		add_option( 'wc_bookings_version', WC_BOOKINGS_VERSION );
 	}
 
 	/**
@@ -296,10 +288,9 @@ class WC_Bookings_Install
 	 *
 	 * @since 1.13.0
 	 */
-	private static function update_db_version()
-	{
-		delete_option('wc_bookings_db_version');
-		add_option('wc_bookings_db_version', WC_BOOKINGS_DB_VERSION);
+	private static function update_db_version() {
+		delete_option( 'wc_bookings_db_version' );
+		add_option( 'wc_bookings_db_version', WC_BOOKINGS_DB_VERSION );
 	}
 
 	/**
@@ -308,24 +299,23 @@ class WC_Bookings_Install
 	 *
 	 * @since 1.13.0
 	 */
-	private static function migration_1_13_0()
-	{
+	private static function migration_1_13_0() {
 		global $wpdb;
 
 		// Get global availability settings and migrate.
-		$global_availability = get_option('wc_global_booking_availability', array());
+		$global_availability = get_option( 'wc_global_booking_availability', array() );
 
-		if (!empty($global_availability)) {
+		if ( ! empty( $global_availability ) ) {
 			$index = 0;
 
-			foreach ($global_availability as $rule) {
-				$type       = !empty($rule['type']) ? $rule['type'] : '';
-				$from_range = !empty($rule['from']) ? $rule['from'] : '';
-				$to_range   = !empty($rule['to']) ? $rule['to'] : '';
-				$from_date  = !empty($rule['from_date']) ? $rule['from_date'] : '';
-				$to_date    = !empty($rule['to_date']) ? $rule['to_date'] : '';
-				$bookable   = !empty($rule['bookable']) ? $rule['bookable'] : '';
-				$priority   = !empty($rule['priority']) ? $rule['priority'] : '';
+			foreach ( $global_availability as $rule ) {
+				$type       = ! empty( $rule['type'] ) ? $rule['type'] : '';
+				$from_range = ! empty( $rule['from'] ) ? $rule['from'] : '';
+				$to_range   = ! empty( $rule['to'] ) ? $rule['to'] : '';
+				$from_date  = ! empty( $rule['from_date'] ) ? $rule['from_date'] : '';
+				$to_date    = ! empty( $rule['to_date'] ) ? $rule['to_date'] : '';
+				$bookable   = ! empty( $rule['bookable'] ) ? $rule['bookable'] : '';
+				$priority   = ! empty( $rule['priority'] ) ? $rule['priority'] : '';
 
 				$wpdb->insert(
 					$wpdb->prefix . 'wc_bookings_availability',
@@ -348,10 +338,10 @@ class WC_Bookings_Install
 		}
 
 		// Migrate timezone settings from separate options to WC_Bookings_Timezone_Settings.
-		if (!WC_Bookings_Timezone_Settings::exists_in_db()) {
-			$use_server_timezone_for_actions = get_option('woocommerce_bookings_tz_calculation', 'no');
-			$use_client_timezone             = get_option('woocommerce_bookings_timezone_conversion', 'no');
-			$use_client_firstday             = get_option('woocommerce_bookings_client_firstday', 'no');
+		if ( ! WC_Bookings_Timezone_Settings::exists_in_db() ) {
+			$use_server_timezone_for_actions = get_option( 'woocommerce_bookings_tz_calculation', 'no' );
+			$use_client_timezone             = get_option( 'woocommerce_bookings_timezone_conversion', 'no' );
+			$use_client_firstday             = get_option( 'woocommerce_bookings_client_firstday', 'no' );
 
 			update_option(
 				'wc_bookings_timezone_settings',
@@ -364,8 +354,8 @@ class WC_Bookings_Install
 		}
 
 		// Migrate Google Access token to new format.
-		$access_token = get_transient('wc_bookings_gcalendar_access_token');
-		if (is_string($access_token)) {
+		$access_token = get_transient( 'wc_bookings_gcalendar_access_token' );
+		if ( is_string( $access_token ) ) {
 			set_transient(
 				'wc_bookings_gcalendar_access_token',
 				array(

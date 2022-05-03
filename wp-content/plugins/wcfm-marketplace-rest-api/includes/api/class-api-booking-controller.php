@@ -198,7 +198,7 @@ class WCFM_REST_Booking_Controller extends WCFM_REST_Controller {
     $_POST['search']['value'] = !empty($request['search']) ? $request['search'] : '';
     $_POST['booking_status'] = !empty($request['booking_status']) ? $request['booking_status'] : '';
     $_POST['booking_filter'] = !empty($request['booking_filter']) ? $request['booking_filter'] : '';
-    
+    $_REQUEST['wcfm_ajax_nonce'] = wp_create_nonce( 'wcfm_ajax_nonce' );
     define('WCFM_REST_API_CALL', TRUE);
     
     $WCFM->init();

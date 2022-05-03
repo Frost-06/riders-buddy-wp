@@ -121,7 +121,7 @@ class WCFM_REST_Enquiry_Controller extends WCFM_REST_Controller {
     $_POST['start'] = !empty($request['page']) ? ( intval($request['page']) - 1 ) * $_POST['length'] : 0;
     $_POST['orderby'] = !empty($request['orderby']) ? $request['orderby'] : '';
     $_POST['order'] = !empty($request['order']) ? $request['order'] : '';
-    
+    $_REQUEST['wcfm_ajax_nonce'] = wp_create_nonce( 'wcfm_ajax_nonce' );
     define('WCFM_REST_API_CALL', TRUE);
     $WCFM->init();
     $enquiries = $WCFM->wcfm_enquiry->ajax_controller();
@@ -231,6 +231,7 @@ class WCFM_REST_Enquiry_Controller extends WCFM_REST_Controller {
       'inquiry_customer_name'   => $enquiry_to_post_reply->customer_name,
       'inquiry_customer_email'  => $enquiry_to_post_reply->customer_email,
     );
+    $_REQUEST['wcfm_ajax_nonce'] = wp_create_nonce( 'wcfm_ajax_nonce' );
     define('WCFM_REST_API_CALL', TRUE);
     $WCFM->init();
     $reply_id = $WCFM->wcfm_enquiry->ajax_controller();
