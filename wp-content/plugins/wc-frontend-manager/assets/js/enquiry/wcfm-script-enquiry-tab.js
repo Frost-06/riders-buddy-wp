@@ -21,7 +21,8 @@ jQuery(document).ready(function($) {
 		var data = {
 			action  : 'wcfm_enquiry_form_content',
 			store   : 0,
-			product : 0
+			product : 0,
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 		}	
 		
 		jQuery.ajax({
@@ -148,6 +149,7 @@ jQuery(document).ready(function($) {
 				action                   : 'wcfm_ajax_controller',
 				controller               : 'wcfm-enquiry-tab',
 				wcfm_enquiry_tab_form    : $enquiry_form.serialize(),
+				wcfm_ajax_nonce          : wcfm_params.wcfm_ajax_nonce,
 				status                   : 'submit'
 			}	
 			jQuery.post(wcfm_params.ajax_url, data, function(response) {

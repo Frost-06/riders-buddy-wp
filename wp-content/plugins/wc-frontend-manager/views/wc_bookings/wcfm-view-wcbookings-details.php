@@ -67,7 +67,7 @@ do_action( 'before_wcfm_bookings_details' );
 		<div id="wcfm_page_load"></div>
 		
 		<div class="wcfm-container wcfm-top-element-container">
-			<h2><?php _e( 'Booking #', 'wc-frontend-manager' ); echo $booking_id; ?></h2>
+			<h2><?php _e( 'Booking #', 'wc-frontend-manager' ); echo esc_attr($booking_id); ?></h2>
 			
 			<?php
 			if( $allow_wp_admin_view = apply_filters( 'wcfm_allow_wp_admin_view', true ) ) {
@@ -142,7 +142,7 @@ do_action( 'before_wcfm_bookings_details' );
 					<?php if( apply_filters( 'wcfm_is_allow_booking_status_update', true ) ) { ?>
 						<div id="wcfm_booking_status_update_wrapper" class="wcfm_booking_status_update_wrapper">
 							<p class="form-field form-field-wide">
-								<span for="booked_product" class="wcfm-title wcfm_title"><strong><?php _e( 'Booking Status:', 'woocommerce-bookings' ); ?></strong></span>
+								<span for="booked_product" class="wcfm-title wcfm_title"><strong><?php _e( 'Booking status:', 'woocommerce-bookings' ); ?></strong></span>
 								<select id="wcfm_booking_status" name="booking_status">
 									<?php
 										foreach ( $statuses as $key => $value ) {
@@ -150,14 +150,14 @@ do_action( 'before_wcfm_bookings_details' );
 										}
 									?>
 								</select>
-								<button class="wcfm_modify_booking_status button" id="wcfm_modify_booking_status" data-bookingid="<?php echo $booking_id; ?>"><?php _e( 'Update', 'wc-frontend-manager' ); ?></button>
+								<button class="wcfm_modify_booking_status button" id="wcfm_modify_booking_status" data-bookingid="<?php echo esc_attr($booking_id); ?>"><?php _e( 'Update', 'wc-frontend-manager' ); ?></button>
 							</p>
 							<div class="wcfm-message" tabindex="-1"></div>
 							<?php if( $post->post_status == 'pending-confirmation' ) { ?>
 								<div class="wcfm_clearfix"></div><br/>
 								<p class="form-field form-field-wide wcfm_booking_confirmed_cancel_wrapper" style="text-align: center;">
-								  <a id="wcfm_booking_confirmed_button" style="float: none;" class="wcfm_submit_button" href="#" data-bookingid="<?php echo $booking_id; ?>"><?php _e( 'Confirm', 'wc-frontend-manager' ); ?></a>
-								  <a id="wcfm_booking_declined_button" style="float: none;" class="wcfm_submit_button" href="#" data-bookingid="<?php echo $booking_id; ?>"><?php _e( 'Decline', 'wc-frontend-manager' ); ?></a>
+								  <a id="wcfm_booking_confirmed_button" style="float: none;" class="wcfm_submit_button" href="#" data-bookingid="<?php echo esc_attr($booking_id); ?>"><?php _e( 'Confirm', 'wc-frontend-manager' ); ?></a>
+								  <a id="wcfm_booking_declined_button" style="float: none;" class="wcfm_submit_button" href="#" data-bookingid="<?php echo esc_attr($booking_id); ?>"><?php _e( 'Decline', 'wc-frontend-manager' ); ?></a>
 								  <div class="wcfm_clearfix"></div>
 								</p>
 							<?php } ?>
@@ -222,8 +222,8 @@ do_action( 'before_wcfm_bookings_details' );
 								if ( $person_type ) {
 									if( !$pfirst ) echo ', ';
 									echo $pfirst = false;
-									echo $person_type->get_name() . ' (';
-									echo $person_count;
+									echo esc_html($person_type->get_name()) . ' (';
+									echo esc_attr($person_count);
 									echo ')';
 								}
 							} 
@@ -244,7 +244,7 @@ do_action( 'before_wcfm_bookings_details' );
 				
 				<?php if( apply_filters( 'wcfm_is_allow_booking_schedule_update', true ) ) { ?>
 					<form id="wcfm_wcb_schedule_update_form">
-						<input type="hidden" name="booking_id" id="booking_id" value="<?php echo $booking_id; ?>" />
+						<input type="hidden" name="booking_id" id="booking_id" value="<?php echo esc_attr($booking_id); ?>" />
 						<p class="form-field form-field-wide">
 							<?php 
 							$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_booking_schedule_update_fields', array( 'booking_start_date' => array(

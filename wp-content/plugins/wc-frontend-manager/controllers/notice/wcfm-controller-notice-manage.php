@@ -38,7 +38,7 @@ class wcfm_Notice_Manage_Controller {
 				'post_title'   => wc_clean( $wcfm_notice_manager_form_data['title'] ),
 				'post_status'  => $notice_status,
 				'post_type'    => 'wcfm_notice',
-				'post_content' => apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['content'], ENT_QUOTES, 'UTF-8' ) ) ),
+				'post_content' => wp_filter_post_kses( apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['content'], ENT_QUOTES, 'UTF-8' ) ) ) ),
 				'post_author'  => $current_user_id
 			);
 			
@@ -80,13 +80,13 @@ class wcfm_Notice_Manage_Controller {
 					delete_transient( $cache_key );
 				}
 				
-				echo '{"status": true, "message": "' . $wcfm_notice_messages['notice_saved'] . '", "redirect": "' . get_wcfm_notice_view_url( $new_notice_id ) . '"}';
+				echo '{"status": true, "message": "' . esc_html( $wcfm_notice_messages['notice_saved'] ) . '", "redirect": "' . esc_url( get_wcfm_notice_view_url( $new_notice_id ) ) . '"}';
 				die;
 			} else {
-				echo '{"status": false, "message": "' . $wcfm_notice_messages['notice_failed'] . '"}';
+				echo '{"status": false, "message": "' . esc_html( $wcfm_notice_messages['notice_failed'] ) . '"}';
 			}
 		} else {
-			echo '{"status": false, "message": "' . $wcfm_notice_messages['no_title'] . '"}';
+			echo '{"status": false, "message": "' . esc_html( $wcfm_notice_messages['no_title'] ) . '"}';
 		}
 		
 		die;

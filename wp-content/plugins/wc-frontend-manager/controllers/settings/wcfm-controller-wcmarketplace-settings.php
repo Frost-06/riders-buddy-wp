@@ -42,7 +42,7 @@ class WCFM_Settings_WCMarketplace_Controller {
 		
 		// sanitize html editor content
 		if( apply_filters( 'wcfm_is_allow_store_description', true ) ) {
-			$wcfm_settings_form['shop_description'] = ! empty( $_POST['profile'] ) ? stripslashes( html_entity_decode( $_POST['profile'], ENT_QUOTES, 'UTF-8' ) ) : '';
+			$wcfm_settings_form['shop_description'] = ! empty( $_POST['profile'] ) ? wp_filter_post_kses( stripslashes( html_entity_decode( $_POST['profile'], ENT_QUOTES, 'UTF-8' ) ) ) : '';
 			update_user_meta( $user_id, '_vendor_description', apply_filters( 'wcfm_editor_content_before_save', $wcfm_settings_form['shop_description'] ) );
 		}
 		
@@ -200,7 +200,7 @@ class WCFM_Settings_WCMarketplace_Controller {
       	foreach ($table_rate_data_rules as $shipping_method_id => $table_rate_datas) {
 				
 					// Fetching Old Rates for this Shipping method ID
-					$old_table_rates = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}woocommerce_shipping_table_rates WHERE `rate_class` = {$shipping_class_id} AND `shipping_method_id` = {$shipping_method_id} order by 'shipping_method_id' ", OBJECT);
+					$old_table_rates = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}woocommerce_shipping_table_rates WHERE `rate_class` = %d AND `shipping_method_id` = %d order by 'shipping_method_id'", $shipping_class_id, $shipping_method_id ), OBJECT);
 					if( !empty($old_table_rates) ) {
 						foreach ( $old_table_rates as $old_table_rate ) {
 							$old_rate_ids[$old_table_rate->rate_id] = $old_table_rate->rate_id;
@@ -278,7 +278,7 @@ class WCFM_Settings_WCMarketplace_Controller {
 			// Removing Old Rates
 			if( !empty( $old_rate_ids ) ) {
 				foreach( $old_rate_ids as $old_rate_id ) {
-					$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}woocommerce_shipping_table_rates WHERE rate_id = %d;", absint( $old_rate_id ) ) );
+					$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}woocommerce_shipping_table_rates WHERE rate_id = %d", absint( $old_rate_id ) ) );
 				}
 			}
 		}

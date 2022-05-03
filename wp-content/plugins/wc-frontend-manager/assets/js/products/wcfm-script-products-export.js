@@ -62,7 +62,8 @@ jQuery( document ).ready( function( $ ) {
 				selected_columns : selected_columns,
 				export_meta      : export_meta,
 				export_types     : export_types,
-				security         : wc_product_export_params.export_nonce
+				security         : wc_product_export_params.export_nonce,
+				wcfm_ajax_nonce  : wcfm_params.wcfm_ajax_nonce
 			},
 			dataType: 'json',
 			success: function( response ) {

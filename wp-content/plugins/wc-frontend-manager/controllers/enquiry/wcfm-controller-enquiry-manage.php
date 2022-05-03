@@ -46,28 +46,29 @@ class WCFM_Enquiry_Manage_Controller {
 			// Handle Attachment Uploads - 6.1.5
 			$attchments = wcfm_handle_file_upload();
 	  	
-	  	$inquiry_reply           = apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['inquiry_reply'], ENT_QUOTES, 'UTF-8' ) ) );
+	  	$inquiry_reply           = wp_filter_post_kses( apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['inquiry_reply'], ENT_QUOTES, 'UTF-8' ) ) ) );
 	  	$inquiry_reply_by        = apply_filters( 'wcfm_message_author', get_current_user_id() );
 	  	$inquiry_id              = absint( $wcfm_enquiry_reply_form_data['inquiry_id'] );
 	  	$inquiry_product_id      = absint( $wcfm_enquiry_reply_form_data['inquiry_product_id'] );
 	  	$inquiry_vendor_id       = absint( $wcfm_enquiry_reply_form_data['inquiry_vendor_id'] );
 	  	$inquiry_customer_id     = absint( $wcfm_enquiry_reply_form_data['inquiry_customer_id'] );
-	  	$inquiry_customer_name   = $wcfm_enquiry_reply_form_data['inquiry_customer_name'];
-	  	$inquiry_customer_email  = $wcfm_enquiry_reply_form_data['inquiry_customer_email'];
+	  	$inquiry_customer_name   = esc_sql( wc_clean( $wcfm_enquiry_reply_form_data['inquiry_customer_name'] ) );
+	  	$inquiry_customer_email  = sanitize_email( $wcfm_enquiry_reply_form_data['inquiry_customer_email'] );
 	  	
 	  	$inquiry_reply           = apply_filters( 'wcfm_enquiry_reply_content', $inquiry_reply, $inquiry_product_id, $inquiry_vendor_id, $inquiry_customer_id );
 	  	$inquiry_reply_mail      = $inquiry_reply;
-	  	$inquiry_reply           = esc_sql( $inquiry_reply );
+	  	$inquiry_reply           = esc_sql( wp_filter_post_kses( $inquiry_reply ) );
 	  	
 	  	$current_time = date( 'Y-m-d H:i:s', current_time( 'timestamp', 0 ) );
 	  	
 	  	if( !defined( 'DOING_WCFM_EMAIL' ) ) 
 	  		define( 'DOING_WCFM_EMAIL', true );
 	  	
-			$wcfm_create_enquiry_reply = "INSERT into {$wpdb->prefix}wcfm_enquiries_response 
+			$wcfm_create_enquiry_reply = $wpdb->prepare( "INSERT into {$wpdb->prefix}wcfm_enquiries_response 
 																	(`reply`, `enquiry_id`, `product_id`, `vendor_id`, `customer_id`, `customer_name`, `customer_email`, `reply_by`, `posted`)
 																	VALUES
-																	('{$inquiry_reply}', {$inquiry_id}, {$inquiry_product_id}, {$inquiry_vendor_id}, {$inquiry_customer_id}, '{$inquiry_customer_name}', '{$inquiry_customer_email}', {$inquiry_reply_by}, '{$current_time}')";
+																	(%s, %d, %d, %d, %d, %s, %s, %d, %s)",
+																	$inquiry_reply, $inquiry_id, $inquiry_product_id, $inquiry_vendor_id, $inquiry_customer_id, $inquiry_customer_name, $inquiry_customer_email, $inquiry_reply_by, $current_time);
 													
 			$wpdb->query($wcfm_create_enquiry_reply);
 			$enquiry_reply_id = $wpdb->insert_id;
@@ -78,10 +79,11 @@ class WCFM_Enquiry_Manage_Controller {
 				$mail_attachments = array();
 				if( !empty( $attchments ) && isset( $attchments['inquiry_attachments'] ) && !empty( $attchments['inquiry_attachments'] ) ) {
 					$inquiry_attachments = maybe_serialize( $attchments['inquiry_attachments'] );
-					$wcfm_enuquiry_meta_update = "INSERT into {$wpdb->prefix}wcfm_enquiries_response_meta 
+					$wcfm_enuquiry_meta_update = $wpdb->prepare("INSERT into {$wpdb->prefix}wcfm_enquiries_response_meta 
 																			(`enquiry_response_id`, `key`, `value`)
 																			VALUES
-																			({$enquiry_reply_id}, 'attchment', '{$inquiry_attachments}' )";
+																			(%d, %s, %s)",
+																			$enquiry_reply_id, 'attchment', $inquiry_attachments );
 					$wpdb->query($wcfm_enuquiry_meta_update);
 					
 					// Prepare Mail Attachment
@@ -97,24 +99,26 @@ class WCFM_Enquiry_Manage_Controller {
 				}
 			
 				if(isset($wcfm_enquiry_reply_form_data['inquiry_stick']) && !empty($wcfm_enquiry_reply_form_data['inquiry_stick'])) {
-					$wcfm_update_enquiry    = "UPDATE {$wpdb->prefix}wcfm_enquiries 
+					$wcfm_update_enquiry    = $wpdb->prepare("UPDATE {$wpdb->prefix}wcfm_enquiries 
 																		SET 
-																		`reply` = '{$inquiry_reply}',
-																		`reply_by` = {$inquiry_reply_by},
+																		`reply` = %s,
+																		`reply_by` = %d,
 																		`is_private` = 0, 
-																		`replied` = '{$current_time}'
+																		`replied` = %s
 																		WHERE 
-																		`ID` = {$inquiry_id}";
+																		`ID` = %d",
+																		$inquiry_reply, $inquiry_reply_by, $current_time, $inquiry_id);
 																	
 					$wpdb->query($wcfm_update_enquiry);
 				} else {
-					$wcfm_update_enquiry    = "UPDATE {$wpdb->prefix}wcfm_enquiries 
+					$wcfm_update_enquiry    = $wpdb->prepare("UPDATE {$wpdb->prefix}wcfm_enquiries 
 																		SET 
-																		`reply` = '{$inquiry_reply}',
-																		`reply_by` = {$inquiry_reply_by},
-																		`replied` = '{$current_time}'
+																		`reply` = %s,
+																		`reply_by` = %d,
+																		`replied` = %s
 																		WHERE 
-																		`ID` = {$inquiry_id}";
+																		`ID` = %d",
+																		$inquiry_reply, $inquiry_reply_by, $current_time, $inquiry_id);
 																	
 					$wpdb->query($wcfm_update_enquiry);
 				}
@@ -127,7 +131,7 @@ class WCFM_Enquiry_Manage_Controller {
 					
 					$enquiry_for =  __( 'Store', 'wc-frontend-manager' );
 					if( $inquiry_vendor_id ) $enquiry_for = wcfm_get_vendor_store( $inquiry_vendor_id );
-					if( $inquiry_product_id ) $enquiry_for = '<a target="_blank" class="wcfm_dashboard_item_title" href="' . get_permalink( $inquiry_product_id ) . '">' . get_the_title( $inquiry_product_id ) . '</a>';
+					if( $inquiry_product_id ) $enquiry_for = '<a target="_blank" class="wcfm_dashboard_item_title" href="' . esc_url(get_permalink( $inquiry_product_id )) . '">' . get_the_title( $inquiry_product_id ) . '</a>';
 					
 					$myaccount_page_id = get_option( 'woocommerce_myaccount_page_id' );
 					$myaccount_page_url = '';
@@ -195,7 +199,7 @@ class WCFM_Enquiry_Manage_Controller {
 				// Admin Direct message
 				if( wcfm_is_vendor() ) {
 					if( apply_filters( 'wcfm_is_allow_notification_message', true, 'enquiry', 0 ) ) {
-						$wcfm_messages = sprintf( __( 'New reply posted for Inquiry <b>%s</b>', 'wc-frontend-manager' ), '<a target="_blank" class="wcfm_dashboard_item_title" href="' . get_wcfm_enquiry_manage_url( $inquiry_id ) . '">#' . sprintf( '%06u', $inquiry_id ) . '</a>' );
+						$wcfm_messages = sprintf( __( 'New reply posted for Inquiry <b>%s</b>', 'wc-frontend-manager' ), '<a target="_blank" class="wcfm_dashboard_item_title" href="' . esc_url(get_wcfm_enquiry_manage_url( $inquiry_id )) . '">#' . sprintf( '%06u', $inquiry_id ) . '</a>' );
 						$WCFM->wcfm_notification->wcfm_send_direct_message( $inquiry_vendor_id, 0, 0, 1, $wcfm_messages, 'enquiry', false );
 					}
 				}
@@ -209,9 +213,9 @@ class WCFM_Enquiry_Manage_Controller {
 	      return $enquiry_reply_id;
 	    }
 				
-			echo '{"status": true, "message": "' . $wcfm_enquiry_messages['enquiry_reply_saved'] . '", "redirect": "' . get_wcfm_enquiry_manage_url( $inquiry_id ) . '#inquiry_reply_' . $enquiry_reply_id . '"}';
+			echo '{"status": true, "message": "' . esc_html( $wcfm_enquiry_messages['enquiry_reply_saved'] ) . '", "redirect": "' . esc_url( get_wcfm_enquiry_manage_url( $inquiry_id ) ) . '#inquiry_reply_' . $enquiry_reply_id . '"}';
 		} else {
-			echo '{"status": false, "message": "' . $wcfm_enquiry_messages['no_reply'] . '"}';
+			echo '{"status": false, "message": "' . esc_html( $wcfm_enquiry_messages['no_reply'] ) . '"}';
 		}
 		
 		die;
@@ -240,18 +244,18 @@ class WCFM_My_Account_Enquiry_Manage_Controller {
 	  	// Handle Attachment Uploads - 6.1.5
 			$attchments = wcfm_handle_file_upload();
 	  	
-	  	$inquiry_reply           = apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['inquiry_reply'], ENT_QUOTES, 'UTF-8' ) ) );
+	  	$inquiry_reply           = wp_filter_post_kses( apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['inquiry_reply'], ENT_QUOTES, 'UTF-8' ) ) ) );
 	  	$inquiry_reply_by        = apply_filters( 'wcfm_message_author', get_current_user_id() );
 	  	$inquiry_id              = absint( $wcfm_enquiry_reply_form_data['inquiry_id'] );
 	  	$inquiry_product_id      = absint( $wcfm_enquiry_reply_form_data['inquiry_product_id'] );
 	  	$inquiry_vendor_id       = absint( $wcfm_enquiry_reply_form_data['inquiry_vendor_id'] );
 	  	$inquiry_customer_id     = absint( $wcfm_enquiry_reply_form_data['inquiry_customer_id'] );
-	  	$inquiry_customer_name   = $wcfm_enquiry_reply_form_data['inquiry_customer_name'];
-	  	$inquiry_customer_email  = $wcfm_enquiry_reply_form_data['inquiry_customer_email'];
+	  	$inquiry_customer_name   = esc_sql( wc_clean( $wcfm_enquiry_reply_form_data['inquiry_customer_name'] ) );
+	  	$inquiry_customer_email  = sanitize_email( $wcfm_enquiry_reply_form_data['inquiry_customer_email'] );
 	  	
 	  	$inquiry_reply           = apply_filters( 'wcfm_enquiry_reply_content', $inquiry_reply, $inquiry_product_id, $inquiry_vendor_id, $inquiry_customer_id );
 	  	$inquiry_reply_mail      = $inquiry_reply;
-	  	$inquiry_reply           = esc_sql( $inquiry_reply );
+	  	$inquiry_reply           = esc_sql( wp_filter_post_kses( $inquiry_reply ) );
 	  	
 	  	$current_time = date( 'Y-m-d H:i:s', current_time( 'timestamp', 0 ) );
 	  	
@@ -261,10 +265,11 @@ class WCFM_My_Account_Enquiry_Manage_Controller {
 	  	if( !defined( 'DOING_WCFM_EMAIL' ) ) 
 	  		define( 'DOING_WCFM_EMAIL', true );
 	  	
-	  	$wcfm_create_enquiry_reply = "INSERT into {$wpdb->prefix}wcfm_enquiries_response 
+	  	$wcfm_create_enquiry_reply = $wpdb->prepare("INSERT into {$wpdb->prefix}wcfm_enquiries_response 
 																	(`reply`, `enquiry_id`, `product_id`, `vendor_id`, `customer_id`, `customer_name`, `customer_email`, `reply_by`, `posted`)
 																	VALUES
-																	('{$inquiry_reply}', {$inquiry_id}, {$inquiry_product_id}, {$inquiry_vendor_id}, {$inquiry_customer_id}, '{$inquiry_customer_name}', '{$inquiry_customer_email}', {$inquiry_reply_by}, '{$current_time}')";
+																	(%s, %d, %d, %d, %d, %s, %s, %d, %s)",
+																	$inquiry_reply, $inquiry_id, $inquiry_product_id, $inquiry_vendor_id, $inquiry_customer_id, $inquiry_customer_name, $inquiry_customer_email, $inquiry_reply_by, $current_time);
 													
 			$wpdb->query($wcfm_create_enquiry_reply);
 			$enquiry_reply_id = $wpdb->insert_id;
@@ -272,23 +277,25 @@ class WCFM_My_Account_Enquiry_Manage_Controller {
 			if( $enquiry_reply_id ) {
 			
 				// Inquiry Last Reply Update
-				$wcfm_update_enquiry    = "UPDATE {$wpdb->prefix}wcfm_enquiries 
+				$wcfm_update_enquiry    = $wpdb->prepare("UPDATE {$wpdb->prefix}wcfm_enquiries 
 																	SET 
-																	`reply` = '{$inquiry_reply}',
-																	`reply_by` = {$inquiry_reply_by},
-																	`replied` = '{$current_time}'
+																	`reply` = %s,
+																	`reply_by` = %d,
+																	`replied` = %s
 																	WHERE 
-																	`ID` = {$inquiry_id}";
+																	`ID` = %d",
+																	$inquiry_reply, $inquiry_reply_by, $current_time, $inquiry_id);
 				$wpdb->query($wcfm_update_enquiry);
 				
 				// Attachment Update
 				$mail_attachments = array();
 				if( !empty( $attchments ) && isset( $attchments['inquiry_attachments'] ) && !empty( $attchments['inquiry_attachments'] ) ) {
 					$inquiry_attachments = maybe_serialize( $attchments['inquiry_attachments'] );
-					$wcfm_enuquiry_meta_update = "INSERT into {$wpdb->prefix}wcfm_enquiries_response_meta 
+					$wcfm_enuquiry_meta_update = $wpdb->prepare("INSERT into {$wpdb->prefix}wcfm_enquiries_response_meta 
 																			(`enquiry_response_id`, `key`, `value`)
 																			VALUES
-																			({$enquiry_reply_id}, 'attchment', '{$inquiry_attachments}' )";
+																			(%d, %s, %s)",
+																			$enquiry_reply_id, 'attchment', $inquiry_attachments );
 					$wpdb->query($wcfm_enuquiry_meta_update);
 					
 					// Prepare Mail Attachment
@@ -306,7 +313,7 @@ class WCFM_My_Account_Enquiry_Manage_Controller {
 				// Send mail to admin
 				$enquiry_for =  __( 'Store', 'wc-frontend-manager' );
 				if( $inquiry_vendor_id ) $enquiry_for = wcfm_get_vendor_store( $inquiry_vendor_id );
-				if( $inquiry_product_id ) $enquiry_for = '<a target="_blank" class="wcfm_dashboard_item_title" href="' . get_permalink( $inquiry_product_id ) . '">' . get_the_title( $inquiry_product_id ) . '</a>';
+				if( $inquiry_product_id ) $enquiry_for = '<a target="_blank" class="wcfm_dashboard_item_title" href="' . esc_url(get_permalink( $inquiry_product_id )) . '">' . get_the_title( $inquiry_product_id ) . '</a>';
 					
 				$mail_to = apply_filters( 'wcfm_admin_email_notification_receiver', get_bloginfo( 'admin_email' ), 'enquiry' );
 				$reply_mail_subject = '{site_name}: ' . __( 'Inquiry Reply', 'wc-frontend-manager' ) . ' - ' . __( 'Inquiry', 'wc-frontend-manager' ) . ' #{enquiry_id}';
@@ -344,7 +351,7 @@ class WCFM_My_Account_Enquiry_Manage_Controller {
 				
 				// Direct message
 				if( apply_filters( 'wcfm_is_allow_notification_message', true, 'enquiry', 0 ) ) {
-					$wcfm_messages = sprintf( __( 'New reply received for Inquiry <b>%s</b>', 'wc-frontend-manager' ), '<a target="_blank" class="wcfm_dashboard_item_title" href="' . get_wcfm_enquiry_manage_url( $inquiry_id ) . '">#' . sprintf( '%06u', $inquiry_id ) . '</a>' );
+					$wcfm_messages = sprintf( __( 'New reply received for Inquiry <b>%s</b>', 'wc-frontend-manager' ), '<a target="_blank" class="wcfm_dashboard_item_title" href="' . esc_url(get_wcfm_enquiry_manage_url( $inquiry_id )) . '">#' . sprintf( '%06u', $inquiry_id ) . '</a>' );
 					$WCFM->wcfm_notification->wcfm_send_direct_message( -2, 0, 1, 0, $wcfm_messages, 'enquiry', false );
 				}
 				
@@ -364,7 +371,7 @@ class WCFM_My_Account_Enquiry_Manage_Controller {
 							
 							// Direct message
 							if( apply_filters( 'wcfm_is_allow_notification_message', true, 'enquiry', $inquiry_vendor_id ) ) {
-								$wcfm_messages = sprintf( __( 'New reply received for Inquiry <b>%s</b>', 'wc-frontend-manager' ), '<a target="_blank" class="wcfm_dashboard_item_title" href="' . get_wcfm_enquiry_manage_url( $inquiry_id ) . '">#' . sprintf( '%06u', $inquiry_id ) . '</a>' );
+								$wcfm_messages = sprintf( __( 'New reply received for Inquiry <b>%s</b>', 'wc-frontend-manager' ), '<a target="_blank" class="wcfm_dashboard_item_title" href="' . esc_url(get_wcfm_enquiry_manage_url( $inquiry_id )) . '">#' . sprintf( '%06u', $inquiry_id ) . '</a>' );
 								$WCFM->wcfm_notification->wcfm_send_direct_message( -1, $inquiry_vendor_id, 1, 0, $wcfm_messages, 'enquiry', false );
 							}
 						}
@@ -378,9 +385,9 @@ class WCFM_My_Account_Enquiry_Manage_Controller {
 			if ( $myaccount_page_id ) {
 				$myaccount_page_url = trailingslashit( get_permalink( $myaccount_page_id ) );
 			}
-			echo '{"status": true, "message": "' . $wcfm_enquiry_messages['enquiry_reply_saved'] . '", "redirect": "' . $myaccount_page_url .$wcfm_myaccount_view_inquiry_endpoint.'/' . $inquiry_id . '#inquiry_reply_' . $enquiry_reply_id . '"}';
+			echo '{"status": true, "message": "' . esc_html( $wcfm_enquiry_messages['enquiry_reply_saved'] ) . '", "redirect": "' . esc_url( $myaccount_page_url .$wcfm_myaccount_view_inquiry_endpoint.'/' . $inquiry_id . '#inquiry_reply_' . $enquiry_reply_id ) . '"}';
 		} else {
-			echo '{"status": false, "message": "' . $wcfm_enquiry_messages['no_reply'] . '"}';
+			echo '{"status": false, "message": "' . esc_html( $wcfm_enquiry_messages['no_reply'] ) . '"}';
 		}
 		
 		die;

@@ -20,8 +20,8 @@ class WCFM_Reports_Out_Of_Stock_Controller {
 	public function processing() {
 		global $WCFM, $wpdb, $_POST;
 		
-		$length = wc_clean($_POST['length']);
-		$offset = wc_clean($_POST['start']);
+		$length = absint($_POST['length']);
+		$offset = absint($_POST['start']);
 		
 		$max_items = 0;
 		$items     = array();

@@ -179,6 +179,7 @@ class WCFM_Notification {
 						} else {
 							continue;
 						}
+						$wcfm_messages = apply_filters( 'wcfm_new_order_vendor_notification_message', $wcfm_messages, $order_id, $message_to );
 						$this->wcfm_send_direct_message( $author_id, $message_to, $author_is_admin, $author_is_vendor, $wcfm_messages, 'order', apply_filters( 'wcfm_is_allow_order_notification_email', false ) );
 						$order_vendors[$message_to] = $message_to;
 						
@@ -206,8 +207,9 @@ class WCFM_Notification {
 				$sql .= ' WHERE 1=1';
 				$sql .= " AND `is_direct_message` = 1";
 				if( wcfm_is_vendor() || ( function_exists( 'wcfm_is_delivery_boy' ) && wcfm_is_delivery_boy() ) || ( function_exists( 'wcfm_is_affiliate' ) && wcfm_is_affiliate() ) ) { 
-					$vendor_filter = " AND ( `author_id` = {$message_to} OR `message_to` = -1 OR `message_to` = {$message_to} )";
+					$vendor_filter = " AND ( `author_id` = %d OR `message_to` = -1 OR `message_to` = %d )";
 					$sql .= $vendor_filter;
+					$sql = $wpdb->prepare( $sql, $message_to, $message_to );
 				} else {
 					$group_manager_filter = apply_filters( 'wcfm_notification_group_manager_filter', '' );
 					if( $group_manager_filter ) {
@@ -216,12 +218,12 @@ class WCFM_Notification {
 						$sql .= " AND `author_id` != -1";
 					}
 				}
-				$sql .= " AND NOT EXISTS (SELECT * FROM {$wpdb->prefix}wcfm_messages_modifier as wcfm_messages_modifier_2 WHERE wcfm_messages.ID = wcfm_messages_modifier_2.message AND wcfm_messages_modifier_2.read_by={$message_to})";
+				$sql .= " AND NOT EXISTS (SELECT * FROM {$wpdb->prefix}wcfm_messages_modifier as wcfm_messages_modifier_2 WHERE wcfm_messages.ID = wcfm_messages_modifier_2.message AND wcfm_messages_modifier_2.read_by=%d)";
 				$sql .= " ORDER BY wcfm_messages.`ID` DESC";
 				$sql .= " LIMIT 10";
 				$sql .= " OFFSET 0";
 				
-				$wcfm_messages = $wpdb->get_results( $sql );
+				$wcfm_messages = $wpdb->get_results( $wpdb->prepare( $sql, $message_to ) );
 			} else {
 				$wcfm_messages = array();
 			}
@@ -245,11 +247,11 @@ class WCFM_Notification {
 								$message_text =  htmlspecialchars_decode($wcfm_message->message);
 								$wcfm_dashboard_message_content_length = (int) apply_filters( 'wcfm_is_allow_dashboard_message_content_length', 80 );
 								if( $wcfm_message->message_type  == 'direct' ) $message_text =  substr( strip_tags( $message_text ), 0, $wcfm_dashboard_message_content_length ) . ' ...';
-								echo '<div class="wcfm_dashboard_notification">' . $message_icon . ' ' . $message_text . '</div>';
+								echo '<div class="wcfm_dashboard_notification">' . wp_kses_post($message_icon) . ' ' . wp_kses_post($message_text) . '</div>';
 								$counter++;
 							}
 							if( count( $wcfm_messages ) > 5 ) {
-								echo '<div class="wcfm_dashboard_notifications_show_all"><a class="wcfm_submit_button" href="' . get_wcfm_messages_url() . '">' . __( 'Show All', 'wc-frontend-manager' ) . '</a></div><div class="wcfm-clearfix"></div>';
+								echo '<div class="wcfm_dashboard_notifications_show_all"><a class="wcfm_submit_button" href="' . esc_url(get_wcfm_messages_url()) . '">' . esc_html__( 'Show All', 'wc-frontend-manager' ) . '</a></div><div class="wcfm-clearfix"></div>';
 							}
 						} else {
 							_e( 'There is no notification yet!!', 'wc-frontend-manager' );
@@ -271,13 +273,23 @@ class WCFM_Notification {
   	global $WCFM;
 
   	if( is_user_logged_in() ) {
+  		if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+				echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+				wp_die();
+			}
+		
+  		if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) && !current_user_can( 'wcfm_delivery_boy' ) && !current_user_can( 'wcfm_affiliate' ) ) {
+				//wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+				wp_die();
+			}
+		
 			$unread_notice = $this->wcfm_direct_message_count( 'notice' );
 			$unread_message = $this->wcfm_direct_message_count( 'message' );
 			$unread_enquiry = $this->wcfm_direct_message_count( 'enquiry' );
 			
-			echo '{ "status": true, "notice": ' . $unread_notice . ', "message": ' .$unread_message . ', "enquiry": ' .$unread_enquiry . ' }';
+			echo '{ "status": true, "notice": ' . esc_attr($unread_notice) . ', "message": ' . esc_attr($unread_message) . ', "enquiry": ' . esc_attr($unread_enquiry) . ' }';
 		} else {
-			echo '{ "status": false, "redirect": "' . get_permalink( wc_get_page_id( 'myaccount' ) ) . '" }';
+			echo '{ "status": false, "redirect": "' . esc_url( get_permalink( wc_get_page_id( 'myaccount' ) ) ) . '" }';
 		}
 		die;
   }
@@ -308,7 +320,8 @@ class WCFM_Notification {
 					$sql .= " WHERE 1=1";
 					$sql .= " AND `reply` = ''";
 					if( wcfm_is_vendor() ) { 
-						$sql .= " AND `vendor_id` = {$message_to}";
+						$sql .= " AND `vendor_id` = %d";
+						$sql = $wpdb->prepare( $sql, $message_to );
 					}
 					$sql = apply_filters( 'wcfm_enquery_list_query', $sql );
 					$total_mesaages = $wpdb->get_var( $sql );
@@ -351,14 +364,14 @@ class WCFM_Notification {
 					$sql = 'SELECT COUNT(wcfm_messages.ID) FROM ' . $wpdb->prefix . 'wcfm_messages AS wcfm_messages';
 					$sql .= ' WHERE 1=1';
 					
-					
 					$status_filter = " AND `is_direct_message` = 1";
 					$sql .= $status_filter;
 					
 					if( wcfm_is_vendor() || ( function_exists( 'wcfm_is_delivery_boy' ) && wcfm_is_delivery_boy() ) || ( function_exists( 'wcfm_is_affiliate' ) && wcfm_is_affiliate() ) ) { 
 						//$vendor_filter = " AND `author_is_admin` = 1";
-						$vendor_filter = " AND ( `author_id` = {$message_to} OR `message_to` = -1 OR `message_to` = {$message_to} )";
+						$vendor_filter = " AND ( `author_id` = %d OR `message_to` = -1 OR `message_to` = %d )";
 						$sql .= $vendor_filter;
+						$sql = $wpdb->prepare( $sql, $message_to, $message_to );
 					} else {
 						$group_manager_filter = apply_filters( 'wcfm_notification_group_manager_filter', '' );
 						if( $group_manager_filter ) {
@@ -368,10 +381,10 @@ class WCFM_Notification {
 						}
 					}
 					
-					$message_status_filter = " AND NOT EXISTS (SELECT * FROM {$wpdb->prefix}wcfm_messages_modifier as wcfm_messages_modifier_2 WHERE wcfm_messages.ID = wcfm_messages_modifier_2.message AND wcfm_messages_modifier_2.read_by={$message_to})";
+					$message_status_filter = " AND NOT EXISTS (SELECT * FROM {$wpdb->prefix}wcfm_messages_modifier as wcfm_messages_modifier_2 WHERE wcfm_messages.ID = wcfm_messages_modifier_2.message AND wcfm_messages_modifier_2.read_by=%d)";
 					$sql .= $message_status_filter;
 					
-					$total_mesaages = $wpdb->get_var( $sql );
+					$total_mesaages = $wpdb->get_var( $wpdb->prepare( $sql, $message_to ) );
 					
 					set_transient( $cache_key, $total_mesaages );
 				}
@@ -396,26 +409,28 @@ class WCFM_Notification {
 		$is_notice = 0;
 		$is_direct_message = 1;
 		
-		$notification_messages  = esc_sql( $wcfm_messages );
-		$wcfm_messages_type     = esc_sql( $wcfm_messages_type );
+		$notification_messages  = esc_sql( wp_filter_post_kses( $wcfm_messages ) );
+		$wcfm_messages_type     = esc_sql( wc_clean( $wcfm_messages_type ) );
 		$current_time           = date( 'Y-m-d H:i:s', current_time( 'timestamp', 0 ) );
     		
 		if( apply_filters( 'wcfm_is_allow_notification_message', true, $wcfm_messages_type, $message_to ) ) {
 			
-			$wcfm_create_message     = "INSERT into {$wpdb->prefix}wcfm_messages 
+			$wcfm_create_message     = $wpdb->prepare(  "INSERT into {$wpdb->prefix}wcfm_messages 
 																	(`message`, `author_id`, `author_is_admin`, `author_is_vendor`, `is_notice`, `is_direct_message`, `message_to`, `message_type`, `created`)
 																	VALUES
-																	('{$notification_messages}', {$author_id}, {$author_is_admin}, {$author_is_vendor}, {$is_notice}, {$is_direct_message}, {$message_to}, '{$wcfm_messages_type}', '{$current_time}')";
+																	(%s, %d, %d, %d, %d, %d, %d, %s, %s)",
+																	$notification_messages, $author_id, $author_is_admin, $author_is_vendor, $is_notice, $is_direct_message, $message_to, $wcfm_messages_type, $current_time);
 																	
 			$wpdb->query($wcfm_create_message);
 			
 			$messageid = $wpdb->insert_id;
 			$todate = date('Y-m-d H:i:s');
 			if( $messageid && ( $author_id > 0 ) ) {
-				$wcfm_read_message     = "INSERT into {$wpdb->prefix}wcfm_messages_modifier 
+				$wcfm_read_message     = $wpdb->prepare(  "INSERT into {$wpdb->prefix}wcfm_messages_modifier 
 																		(`message`, `is_read`, `read_by`, `read_on`)
 																		VALUES
-																		({$messageid}, 1, {$author_id}, '{$todate}')";
+																		(%d, %d, %d, %s)",
+																		$messageid, 1, $author_id, $todate);
 				$wpdb->query($wcfm_read_message);
 			}
 			
@@ -514,6 +529,16 @@ class WCFM_Notification {
   function wcfm_message_notification() {
   	global $WCFM, $wpdb;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+			wp_die();
+		}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) && !current_user_can( 'wcfm_delivery_boy' ) && !current_user_can( 'wcfm_affiliate' ) ) {
+  		//wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	if( isset( $_POST['limit'] ) && $_POST['limit'] ) {
   		$limit = absint( $_POST['limit'] );
   		
@@ -525,13 +550,14 @@ class WCFM_Notification {
 				
 				if( wcfm_is_vendor() || ( function_exists( 'wcfm_is_delivery_boy' ) && wcfm_is_delivery_boy() ) || ( function_exists( 'wcfm_is_affiliate' ) && wcfm_is_affiliate() ) ) {
 					//$vendor_filter = " AND `author_is_admin` = 1";
-					$vendor_filter = " AND ( `author_id` = {$message_to} OR `message_to` = -1 OR `message_to` = {$message_to} )";
+					$vendor_filter = " AND ( `author_id` = %d OR `message_to` = -1 OR `message_to` = %d )";
 					$sql .= $vendor_filter;
+					$sql = $wpdb->prepare( $sql, $message_to, $message_to );
 				} else {
 					$sql .= " AND `author_id` != -1";
 				}
 				
-				$message_status_filter = " AND NOT EXISTS (SELECT * FROM {$wpdb->prefix}wcfm_messages_modifier as wcfm_messages_modifier_2 WHERE wcfm_messages.ID = wcfm_messages_modifier_2.message AND wcfm_messages_modifier_2.read_by={$message_to})";
+				$message_status_filter = " AND NOT EXISTS (SELECT * FROM {$wpdb->prefix}wcfm_messages_modifier as wcfm_messages_modifier_2 WHERE wcfm_messages.ID = wcfm_messages_modifier_2.message AND wcfm_messages_modifier_2.read_by=%d)";
 		
 				$sql .= $message_status_filter;
 				
@@ -541,7 +567,7 @@ class WCFM_Notification {
 		
 				$sql .= " OFFSET 0";
 				
-				$wcfm_messages = $wpdb->get_results( $sql );
+				$wcfm_messages = $wpdb->get_results( $wpdb->prepare( $sql, $message_to ) );
 			} else {
 				$wcfm_messages = array();
 			}
@@ -568,14 +594,25 @@ class WCFM_Notification {
   function wcfm_messages_mark_read() {
   	global $WCFM, $wpdb, $_POST;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+			wp_die();
+		}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) && !current_user_can( 'wcfm_delivery_boy' ) && !current_user_can( 'wcfm_affiliate' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	$messageid = absint( $_POST['messageid'] );
   	$message_to = apply_filters( 'wcfm_message_author', get_current_user_id() );
   	$todate = date('Y-m-d H:i:s');
   	
-  	$wcfm_read_message     = "INSERT into {$wpdb->prefix}wcfm_messages_modifier 
+  	$wcfm_read_message     = $wpdb->prepare( "INSERT into {$wpdb->prefix}wcfm_messages_modifier 
 																(`message`, `is_read`, `read_by`, `read_on`)
 																VALUES
-																({$messageid}, 1, {$message_to}, '{$todate}')";
+																(%d, %d, %d, %s)",
+																$messageid, 1, $message_to, $todate);
 		$wpdb->query($wcfm_read_message);
 		
 		if( wcfm_is_vendor() || ( function_exists( 'wcfm_is_delivery_boy' ) && wcfm_is_delivery_boy() ) || ( function_exists( 'wcfm_is_affiliate' ) && wcfm_is_affiliate() ) ) {
@@ -596,6 +633,16 @@ class WCFM_Notification {
   function wcfm_messages_bulk_mark_read() {
   	global $WCFM, $wpdb, $_POST;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+			wp_die();
+		}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) && !current_user_can( 'wcfm_delivery_boy' ) && !current_user_can( 'wcfm_affiliate' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	if( isset($_POST['selected_messages']) ) {
 			$selected_messages = wc_clean( $_POST['selected_messages'] );
 			if( is_array( $selected_messages ) && !empty( $selected_messages ) ) {
@@ -603,10 +650,11 @@ class WCFM_Notification {
 				foreach( $selected_messages as $messageid ) {
 					$todate = date('Y-m-d H:i:s');
 					
-					$wcfm_read_message     = "INSERT into {$wpdb->prefix}wcfm_messages_modifier 
+					$wcfm_read_message     = $wpdb->prepare( "INSERT into {$wpdb->prefix}wcfm_messages_modifier 
 																			(`message`, `is_read`, `read_by`, `read_on`)
 																			VALUES
-																			({$messageid}, 1, {$message_to}, '{$todate}')";
+																			(%d, %d, %d, %s)",
+																			$messageid, 1, $message_to, $todate);
 					$wpdb->query($wcfm_read_message);
 				}
 				
@@ -631,9 +679,19 @@ class WCFM_Notification {
   function wcfm_messages_delete() {
   	global $WCFM, $wpdb, $_POST;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+			wp_die();
+		}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) && !current_user_can( 'wcfm_delivery_boy' ) && !current_user_can( 'wcfm_affiliate' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	$messageid = absint( $_POST['messageid'] );
-  	$wpdb->query( "DELETE FROM {$wpdb->prefix}wcfm_messages WHERE `ID` = {$messageid}" );
-  	$wpdb->query( "DELETE FROM {$wpdb->prefix}wcfm_messages_modifier WHERE `message` = {$messageid}" );
+  	$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}wcfm_messages WHERE `ID` = %d", $messageid ) );
+  	$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}wcfm_messages_modifier WHERE `message` = %d", $messageid ) );
   	
   	if( wcfm_is_vendor() || ( function_exists( 'wcfm_is_delivery_boy' ) && wcfm_is_delivery_boy() ) || ( function_exists( 'wcfm_is_affiliate' ) && wcfm_is_affiliate() ) ) {
 			$message_to = apply_filters( 'wcfm_message_author', get_current_user_id() );
@@ -655,12 +713,22 @@ class WCFM_Notification {
   function wcfm_messages_bulk_mark_delete() {
   	global $WCFM, $wpdb, $_POST;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+			wp_die();
+		}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) && !current_user_can( 'wcfm_delivery_boy' ) && !current_user_can( 'wcfm_affiliate' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	if( isset($_POST['selected_messages']) ) {
 			$selected_messages = wc_clean( $_POST['selected_messages'] );
 			if( is_array( $selected_messages ) && !empty( $selected_messages ) ) {
 				foreach( $selected_messages as $messageid ) {
-					$wpdb->query( "DELETE FROM {$wpdb->prefix}wcfm_messages WHERE `ID` = {$messageid}" );
-					$wpdb->query( "DELETE FROM {$wpdb->prefix}wcfm_messages_modifier WHERE `message` = {$messageid}" );
+					$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}wcfm_messages WHERE `ID` = %d", $messageid ) );
+					$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}wcfm_messages_modifier WHERE `message` = %d", $messageid ) );
 				}
 				
 				if( wcfm_is_vendor() || ( function_exists( 'wcfm_is_delivery_boy' ) && wcfm_is_delivery_boy() ) || ( function_exists( 'wcfm_is_affiliate' ) && wcfm_is_affiliate() ) ) {

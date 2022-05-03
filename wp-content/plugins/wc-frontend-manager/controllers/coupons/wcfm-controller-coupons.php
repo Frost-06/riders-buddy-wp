@@ -20,8 +20,8 @@ class WCFM_Coupons_Controller {
 	public function processing() {
 		global $WCFM, $wpdb, $_POST;
 		
-		$length = wc_clean($_POST['length']);
-		$offset = wc_clean($_POST['start']);
+		$length = absint($_POST['length']);
+		$offset = absint($_POST['start']);
 		
 		$args = array(
 							'posts_per_page'   => $length,
@@ -82,9 +82,9 @@ class WCFM_Coupons_Controller {
 				$wc_coupon = new WC_Coupon( $wcfm_coupons_single->ID );
 				// Code
 				if( $wcfm_coupons_single->post_status != 'publish' ) {
-					$wcfm_coupons_json_arr[$index][] =  '<a href="' . get_wcfm_coupons_manage_url($wcfm_coupons_single->ID) . '" class="wcfm_dashboard_item_title">' . $wcfm_coupons_single->post_title . '</a>' . ' -- ' . __( ucfirst( $wcfm_coupons_single->post_status ), 'wc-frontend-manager' );
+					$wcfm_coupons_json_arr[$index][] =  '<a href="' . esc_url(get_wcfm_coupons_manage_url($wcfm_coupons_single->ID)) . '" class="wcfm_dashboard_item_title">' . $wcfm_coupons_single->post_title . '</a>' . ' -- ' . __( ucfirst( $wcfm_coupons_single->post_status ), 'wc-frontend-manager' );
 				} elseif( current_user_can( 'edit_published_shop_coupons' ) && apply_filters( 'wcfm_is_allow_edit_coupons', true ) ) {
-					$wcfm_coupons_json_arr[$index][] =  '<a href="' . get_wcfm_coupons_manage_url($wcfm_coupons_single->ID) . '" class="wcfm_dashboard_item_title">' . $wcfm_coupons_single->post_title . '</a>';
+					$wcfm_coupons_json_arr[$index][] =  '<a href="' . esc_url(get_wcfm_coupons_manage_url($wcfm_coupons_single->ID)) . '" class="wcfm_dashboard_item_title">' . $wcfm_coupons_single->post_title . '</a>';
 				} else {
 					$wcfm_coupons_json_arr[$index][] =  '<span class="wcfm_dashboard_item_title">' . $wcfm_coupons_single->post_title . '</span>';
 				}
@@ -116,9 +116,9 @@ class WCFM_Coupons_Controller {
 				// Action
 				$actions = '';
 				if( $wcfm_coupons_single->post_status == 'publish' ) {
-				  $actions .= ( current_user_can( 'edit_published_shop_coupons' ) && apply_filters( 'wcfm_is_allow_edit_coupons', true ) ) ? '<a class="wcfm-action-icon" href="' . get_wcfm_coupons_manage_url($wcfm_coupons_single->ID) . '"><span class="wcfmfa fa-edit text_tip" data-tip="' . esc_attr__( 'Edit', 'wc-frontend-manager' ) . '"></span></a>' : '';
+				  $actions .= ( current_user_can( 'edit_published_shop_coupons' ) && apply_filters( 'wcfm_is_allow_edit_coupons', true ) ) ? '<a class="wcfm-action-icon" href="' . esc_url(get_wcfm_coupons_manage_url($wcfm_coupons_single->ID)) . '"><span class="wcfmfa fa-edit text_tip" data-tip="' . esc_attr__( 'Edit', 'wc-frontend-manager' ) . '"></span></a>' : '';
 				} else {
-					$actions .= '<a class="wcfm-action-icon" href="' . get_wcfm_coupons_manage_url($wcfm_coupons_single->ID) . '"><span class="wcfmfa fa-edit text_tip" data-tip="' . esc_attr__( 'Edit', 'wc-frontend-manager' ) . '"></span></a>';
+					$actions .= '<a class="wcfm-action-icon" href="' . esc_url(get_wcfm_coupons_manage_url($wcfm_coupons_single->ID)) . '"><span class="wcfmfa fa-edit text_tip" data-tip="' . esc_attr__( 'Edit', 'wc-frontend-manager' ) . '"></span></a>';
 				}
 				$wcfm_coupons_json_arr[$index][] = apply_filters ( 'wcfm_coupons_actions', $actions, $wcfm_coupons_single );
 				

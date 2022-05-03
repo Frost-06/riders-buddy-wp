@@ -24,8 +24,8 @@ class WCFM_WCBookings_Controller {
 		
 		$wc_get_booking_status_name = apply_filters( 'wcfmu_bookings_menus', array( 'paid' => __('Paid & Confirmed', 'wc-frontend-manager' ), 'pending-confirmation' => __('Pending Confirmation', 'wc-frontend-manager' ), 'unpaid' => __('Un-paid', 'wc-frontend-manager' ), 'cancelled' => __('Cancelled', 'wc-frontend-manager' ), 'complete' => __('Complete', 'wc-frontend-manager' ), 'confirmed' => __('Confirmed', 'wc-frontend-manager' ) ) );
 		
-		$length = wc_clean($_POST['length']);
-		$offset = wc_clean($_POST['start']);
+		$length = absint($_POST['length']);
+		$offset = absint($_POST['start']);
 		
 		$include_bookings = apply_filters( 'wcfm_wcb_include_bookings', '' );
 		

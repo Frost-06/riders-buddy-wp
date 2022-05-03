@@ -28,7 +28,7 @@ $wcfm_enquiry_button_label  = isset( $wcfm_options['wcfm_enquiry_button_label'] 
 <?php
 // Fetching existing Enquries
 if( apply_filters( 'wcfm_is_pref_enquiry_tab', true ) ) {
-	$enquiries = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}wcfm_enquiries WHERE `is_private` = 0 AND `reply` != '' AND `product_id` = {$product_id} ORDER BY `ID` DESC" );
+	$enquiries = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wcfm_enquiries WHERE `is_private` = 0 AND `reply` != '' AND `product_id` = %d ORDER BY `ID` DESC", $product_id ) );
 	?>
 	
 	<h2 class="wcfm-enquiries-heading"><?php _e( 'General Enquiries', 'wc-frontend-manager' ); ?></h2>
@@ -42,7 +42,7 @@ if( apply_filters( 'wcfm_is_pref_enquiry_tab', true ) ) {
 
 	<?php if( !apply_filters( 'wcfm_is_pref_enquiry_button', true ) ) { ?>
 		<div class="wcfm-clearfix"></div>
-		<p><span class="add_enquiry" data-store="<?php echo $vendor_id; ?>" data-product="<?php echo $product_id; ?>"><span class="wcfmfa fa-question-circle fa-question-circle"></span>&nbsp;<span class="add_enquiry_label"><?php _e( $wcfm_enquiry_button_label, 'wc-frontend-manager' ); ?></span></span></p>
+		<p><span class="add_enquiry" data-store="<?php echo esc_attr($vendor_id); ?>" data-product="<?php echo esc_attr($product_id); ?>"><span class="wcfmfa fa-question-circle fa-question-circle"></span>&nbsp;<span class="add_enquiry_label"><?php esc_html_e( $wcfm_enquiry_button_label, 'wc-frontend-manager' ); ?></span></span></p>
 		<div class="wcfm-clearfix"></div>
 	<?php } ?>
 <?php } ?>
@@ -54,12 +54,12 @@ if( apply_filters( 'wcfm_is_pref_enquiry_tab', true ) ) {
 		echo '<div id="reviews" class="wcfm_enquiry_reviews enquiry_reviews"><ol class="wcfm_enquiry_list commentlist">';
 		foreach( $enquiries as $enquiry_data ) {
 			?>
-			<li class="wcfm_enquiry_item comment byuser comment-author-vnd bypostauthor even thread-even depth-1" id="li-enquiry-<?php echo $enquiry_data->ID; ?>">
-				<div id="enquiry-<?php echo $enquiry_data->ID; ?>" class="wcfm_enquiry_container comment_container">
+			<li class="wcfm_enquiry_item comment byuser comment-author-vnd bypostauthor even thread-even depth-1" id="li-enquiry-<?php echo esc_attr($enquiry_data->ID); ?>">
+				<div id="enquiry-<?php echo esc_attr($enquiry_data->ID); ?>" class="wcfm_enquiry_container comment_container">
 					<div class="comment-text">
 						<div class="enquiry-by"><span style="width:60%"><span class="wcfmfa fa-clock"></span> <?php echo date_i18n( wc_date_format(), strtotime( $enquiry_data->posted ) ); ?></span></div>
 						<p class="meta">
-							<strong class="woocommerce-review__author"><?php echo $enquiry_data->enquiry; ?></strong> 
+							<strong class="woocommerce-review__author"><?php echo wp_kses_post($enquiry_data->enquiry); ?></strong> 
 							<?php if( apply_filters( 'wcfm_is_allow_enquery_tab_customer_show', true ) ) { ?>
 								<span class="woocommerce-review__dash">&ndash;</span> 
 								<time class="woocommerce-review__published-date"><?php _e( 'by', 'wc-frontend-manager' ); ?> <?php echo apply_filters( 'wcfm_enquiry_customer_name_display',  $enquiry_data->customer_name, $enquiry_data->customer_id, $enquiry_data->ID ); ?></time>

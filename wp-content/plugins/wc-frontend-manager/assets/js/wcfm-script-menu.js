@@ -33,7 +33,8 @@ var $wcfm_page_select_args = {
 						action:   'wcfm_json_search_pages',
 						exclude:  jQuery( this ).data( 'exclude' ),
 						include:  jQuery( this ).data( 'include' ),
-						limit:    jQuery( this ).data( 'limit' )
+						limit:    jQuery( this ).data( 'limit' ),
+						wcfm_ajax_nonce: wcfm_params.wcfm_ajax_nonce
 					};
 				},
 				processResults: function( data ) {
@@ -84,7 +85,8 @@ var $wcfm_product_select_args = {
 						action:   'wcfm_json_search_products_and_variations',
 						exclude:  jQuery( this ).data( 'exclude' ),
 						include:  jQuery( this ).data( 'include' ),
-						limit:    jQuery( this ).data( 'limit' )
+						limit:    jQuery( this ).data( 'limit' ),
+						wcfm_ajax_nonce: wcfm_params.wcfm_ajax_nonce
 					};
 				},
 				processResults: function( data ) {
@@ -135,7 +137,8 @@ var $wcfm_simple_product_select_args = {
 						action:   'wcfm_json_search_products_with_variations',
 						exclude:  jQuery( this ).data( 'exclude' ),
 						include:  jQuery( this ).data( 'include' ),
-						limit:    jQuery( this ).data( 'limit' )
+						limit:    jQuery( this ).data( 'limit' ),
+						wcfm_ajax_nonce: wcfm_params.wcfm_ajax_nonce
 					};
 				},
 				processResults: function( data ) {
@@ -191,6 +194,7 @@ var $wcfm_taxonomy_select_args = {
 						limit:    jQuery( this ).data( 'limit' ),
 						taxonomy: jQuery( this ).data( 'taxonomy' ),
 						parent:   jQuery( this ).data( 'parent' ),
+						wcfm_ajax_nonce: wcfm_params.wcfm_ajax_nonce
 					};
 				},
 				processResults: function( data ) {
@@ -241,7 +245,8 @@ var $wcfm_vendor_select_args = {
 						action:   'wcfm_json_search_vendors',
 						exclude:  jQuery( this ).data( 'exclude' ),
 						include:  jQuery( this ).data( 'include' ),
-						limit:    jQuery( this ).data( 'limit' )
+						limit:    jQuery( this ).data( 'limit' ),
+						wcfm_ajax_nonce: wcfm_params.wcfm_ajax_nonce
 					};
 				},
 				processResults: function( data ) {
@@ -546,7 +551,8 @@ jQuery( document ).ready( function( $ ) {
 	  }
 	  var data = {
 			action       : 'wcfm_menu_toggler',
-			toggle_state : $toggle_state
+			toggle_state : $toggle_state,
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 		}	
 		jQuery.ajax({
 			type:		'POST',

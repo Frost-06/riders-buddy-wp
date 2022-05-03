@@ -64,7 +64,8 @@ jQuery(document).ready(function($) {
 			"data"   : function( d ) {
 				d.action          = 'wcfm_ajax_controller',
 				d.controller      = 'wcfm-customers',
-				d.customer_vendor = $customer_vendor
+				d.customer_vendor = $customer_vendor,
+				d.wcfm_ajax_nonce = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -104,7 +105,8 @@ jQuery(document).ready(function($) {
 		});
 		var data = {
 			action  : 'delete_wcfm_customer',
-			customerid : item.data('customerid')
+			customerid : item.data('customerid'),
+			wcfm_ajax_nonce : wcfm_params.wcfm_ajax_nonce
 		}	
 		jQuery.ajax({
 			type:		'POST',

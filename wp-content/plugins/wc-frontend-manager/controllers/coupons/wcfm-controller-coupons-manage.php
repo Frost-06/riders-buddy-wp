@@ -175,15 +175,15 @@ class WCFM_Coupons_Manage_Controller {
 				
 				if(!$has_error) {
 					if( get_post_status( $new_coupon_id ) == 'draft' ) {
-						if(!$has_error) echo '{"status": true, "message": "' . $wcfm_coupon_messages['coupon_saved'] . '", "id": "' . $new_coupon_id . '"}';
+						if(!$has_error) echo '{"status": true, "message": "' . esc_html( $wcfm_coupon_messages['coupon_saved'] ) . '", "id": "' . $new_coupon_id . '"}';
 					} else {
-						if(!$has_error) echo '{"status": true, "message": "' . $wcfm_coupon_messages['coupon_published'] . '", "redirect": "' . get_wcfm_coupons_manage_url($new_coupon_id) . '"}';
+						if(!$has_error) echo '{"status": true, "message": "' . esc_html( $wcfm_coupon_messages['coupon_published'] ) . '", "redirect": "' . esc_url( get_wcfm_coupons_manage_url($new_coupon_id) ) . '"}';
 					}
 				}
 				die;
 			}
 		} else {
-			echo '{"status": false, "message": "' . $wcfm_coupon_messages['no_title'] . '"}';
+			echo '{"status": false, "message": "' . esc_html( $wcfm_coupon_messages['no_title'] ) . '"}';
 		}
 		die;
 	}

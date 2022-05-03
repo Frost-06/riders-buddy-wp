@@ -34,7 +34,8 @@ jQuery(document).ready(function($) {
 				d.controller   = 'wcfm-payments',
 				d.start_date   = $start_date,
 				d.end_date     = $end_date,
-				d.status_type  = $status_type
+				d.status_type  = $status_type,
+				d.wcfm_ajax_nonce = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();

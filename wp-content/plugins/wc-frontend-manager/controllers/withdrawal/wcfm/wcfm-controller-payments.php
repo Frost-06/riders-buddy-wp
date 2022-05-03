@@ -24,8 +24,8 @@ class WCFM_Payments_Controller {
 	public function processing() {
 		global $WCFM, $wpdb, $_POST, $WCFMmp;
 		
-		$length = wc_clean($_POST['length']);
-		$offset = wc_clean($_POST['start']);
+		$length = absint($_POST['length']);
+		$offset = absint($_POST['start']);
 		
 		$start_date = date('Y-m-01');
     $end_date = date('Y-m-t');
@@ -38,26 +38,34 @@ class WCFM_Payments_Controller {
     	$end_date = date('Y-m-d', strtotime(wc_clean($_POST['end_date'])) );
     }
     
-		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_text_field( $_POST['orderby'] ) : 'ID';
+		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_sql_orderby( $_POST['orderby'] ) : 'ID';
 		$the_order   = ( ! empty( $_POST['order'] ) && 'asc' === $_POST['order'] ) ? 'ASC' : 'DESC';
 		
 		$transaction_id = ! empty( $_POST['transaction_id'] ) ? sanitize_text_field( $_POST['transaction_id'] ) : '';
 		
-		$status_filter = 'completed';
+		$status_filter = '';
+		$status_type = 'completed';
     if( isset($_POST['status_type']) ) {
-    	$status_filter = wc_clean($_POST['status_type']);
+    		$status_type = wc_clean($_POST['status_type']);
     }
-    if( $status_filter ) {
-    	$status_filter = " AND `withdraw_status` = '" . $status_filter . "'";
+    if( $status_type ) {
+    		$status_filter = " AND `withdraw_status` = %s";
     }
 
 		$sql = 'SELECT COUNT(commission.ID) FROM ' . $wpdb->prefix . 'wcfm_marketplace_withdraw_request AS commission';
 		$sql .= ' WHERE 1=1';
 		$sql .= " AND `vendor_id` = {$this->vendor_id}";
-		if( $transaction_id ) $sql .= " AND commission.ID = $transaction_id";
-		$sql .= $status_filter; 
+		if( $transaction_id ) {
+			$sql .= " AND commission.ID = %d";
+			$sql = $wpdb->prepare( $sql, $transaction_id );
+		}
+		if( $status_type ) {
+			$sql .= $status_filter; 
+			$sql = $wpdb->prepare( $sql, $status_type );
+		}
 		//$sql .= " AND commission.withdraw_status IN ('pending','completed','requested')";
-		$sql .= " AND DATE( commission.created ) BETWEEN '" . $start_date . "' AND '" . $end_date . "'";
+		$sql .= " AND DATE( commission.created ) BETWEEN %s AND %s";
+		$sql = $wpdb->prepare( $sql, $start_date, $end_date );
 		
 		$filtered_payment_count = $wpdb->get_var( $sql );
 		if( !$filtered_payment_count ) $filtered_payment_count = 0;
@@ -65,10 +73,17 @@ class WCFM_Payments_Controller {
 		$sql = 'SELECT * FROM ' . $wpdb->prefix . 'wcfm_marketplace_withdraw_request AS commission';
 		$sql .= ' WHERE 1=1';
 		$sql .= " AND `vendor_id` = {$this->vendor_id}";
-		if( $transaction_id ) $sql .= " AND commission.ID = $transaction_id";
+		if( $transaction_id ) {
+			$sql .= " AND commission.ID = %d";
+			$sql = $wpdb->prepare( $sql, $transaction_id );
+		}
 		//$sql .= " AND commission.withdraw_status IN ('pending','completed','requested')";
-		$sql .= $status_filter; 
-		$sql .= " AND DATE( commission.created ) BETWEEN '" . $start_date . "' AND '" . $end_date . "'";
+		if( $status_type ) {
+			$sql .= $status_filter; 
+			$sql = $wpdb->prepare( $sql, $status_type );
+		} 
+		$sql .= " AND DATE( commission.created ) BETWEEN %s AND %s";
+		$sql = $wpdb->prepare( $sql, $start_date, $end_date );
 		$sql .= " ORDER BY `{$the_orderby}` {$the_order}";
 		$sql .= " LIMIT {$length}";
 		$sql .= " OFFSET {$offset}";

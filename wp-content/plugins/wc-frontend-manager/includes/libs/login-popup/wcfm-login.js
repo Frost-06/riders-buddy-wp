@@ -17,7 +17,8 @@ function wcfmInitLoginPopup() {
 				}
 			});
 			var data = {
-				action  : 'wcfm_login_popup_form'
+				action  : 'wcfm_login_popup_form',
+				wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 			}	
 			
 			jQuery.ajax({
@@ -57,7 +58,8 @@ function wcfmInitLoginPopup() {
 										jQuery('#wcfm_login_popup_button').hide();
 										var data = {
 											action : 'wcfm_login_popup_submit', 
-											wcfm_login_popup_form : jQuery('#wcfm_login_popup_form').serialize()
+											wcfm_login_popup_form : jQuery('#wcfm_login_popup_form').serialize(),
+											wcfm_ajax_nonce       : wcfm_params.wcfm_ajax_nonce
 										}	
 										jQuery.post(wcfm_params.ajax_url, data, function(response) {
 											if(response) {

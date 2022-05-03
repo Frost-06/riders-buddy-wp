@@ -43,7 +43,13 @@ if( isset( $wp->query_vars['wcfm-products-manage'] ) && empty( $wp->query_vars['
 						<div class="wcfm-clearfix"></div><br />
 						<h2><?php _e( 'You have reached your product limit!', 'wc-frontend-manager' ); ?></h2>
 						<div class="wcfm-clearfix"></div><br />
-						<?php do_action( 'wcfm_product_limit_reached' ); ?>
+						<?php 
+						if( !apply_filters( 'wcfm_is_allow_verification_product_limit', true ) ) {
+							do_action( 'wcfm_verification_product_limit_reached' );
+						} else {
+							do_action( 'wcfm_product_limit_reached' ); 
+						}
+						?>
 						<div class="wcfm-clearfix"></div><br />
 					</div>
 				</div>
@@ -174,8 +180,9 @@ if( isset( $wp->query_vars['wcfm-products-manage'] ) && !empty( $wp->query_vars[
 		$is_virtual = ( get_post_meta( $product_id, '_virtual', true) == 'yes' ) ? 'enable' : '';
 		
 		// Download ptions
+		$wcfm_downloadable_product_types = apply_filters( 'wcfm_downloadable_product_types', array( 'simple', 'subscription' ) );
 		$is_downloadable = ( get_post_meta( $product_id, '_downloadable', true) == 'yes' ) ? 'enable' : '';
-		if( $product_type != 'simple' ) $is_downloadable = '';
+		if( !in_array( $product_type, $wcfm_downloadable_product_types ) ) $is_downloadable = '';
 		if($is_downloadable == 'enable') {
 			$downloadable_files = (array) get_post_meta( $product_id, '_downloadable_files', true);
 			$download_limit = ( -1 == get_post_meta( $product_id, '_download_limit', true) ) ? '' : get_post_meta( $product_id, '_download_limit', true);
@@ -213,7 +220,7 @@ if( isset( $wp->query_vars['wcfm-products-manage'] ) && !empty( $wp->query_vars[
 		}
 		
 		// Product Stock options
-		$manage_stock = $product->managing_stock( 'edit' ) ? 'enable' : '';
+		$manage_stock = $product->get_manage_stock( 'edit' ) ? 'enable' : '';
 		$stock_qty = $product->get_stock_quantity( 'edit' );
 		$backorders = $product->get_backorders( 'edit' );
 		$stock_status = $product->get_stock_status( 'edit' ); 
@@ -308,7 +315,7 @@ if( isset( $wp->query_vars['wcfm-products-manage'] ) && !empty( $wp->query_vars[
 					$variations[$variation_id_key]['sale_price_dates_to'] = $variation_data->get_date_on_sale_to( 'edit' ) && ( $date = $variation_data->get_date_on_sale_to( 'edit' )->getOffsetTimestamp() ) ? date_i18n( 'Y-m-d', $date ) : '';
 					
 					// Variation Stock Data
-					$variations[$variation_id_key]['manage_stock'] = $variation_data->managing_stock( 'edit' ) ? 'enable' : '';
+					$variations[$variation_id_key]['manage_stock'] = $variation_data->get_manage_stock( 'edit' ) ? 'enable' : '';
 					$variations[$variation_id_key]['stock_status'] = $variation_data->get_stock_status( 'edit' );
 					$variations[$variation_id_key]['stock_qty'] = $variation_data->get_stock_quantity( 'edit' );
 					$variations[$variation_id_key]['backorders'] = $variation_data->get_backorders( 'edit' );

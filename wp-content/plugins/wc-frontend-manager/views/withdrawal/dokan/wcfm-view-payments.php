@@ -32,14 +32,14 @@ $end_date = date_i18n( wc_date_format(), strtotime( date('t-m-Y') ) );
 	  <div class="wcfm-container wcfm-top-element-container">
 			<h2>
 				<?php _e( 'Transactions for: ', 'wc-frontend-manager' ); ?> 
-				<span class="trans_start_date"><?php echo $start_date; ?></span>
+				<span class="trans_start_date"><?php echo esc_attr($start_date); ?></span>
 				<?php echo ' - '; ?>
-				<span class="trans_end_date"><?php echo $end_date; ?>
+				<span class="trans_end_date"><?php echo esc_attr($end_dat); ?>
 			</h2>
 			
 			<?php
 			if( $wcfm_is_allow_withdrawal = apply_filters( 'wcfm_is_allow_withdrawal', true ) ) {
-				echo '<a class="add_new_wcfm_ele_dashboard text_tip" href="'.wcfm_withdrawal_url().'" data-tip="'. __('Withdrawal Request', 'wc-frontend-manager') .'"><span class="wcfmfa fa-currency">' . get_woocommerce_currency_symbol() . '</span><span class="text">' . __('Withdrawal', 'wc-frontend-manager' ) . '</span></a>';
+				echo '<a class="add_new_wcfm_ele_dashboard text_tip" href="'.esc_url(wcfm_withdrawal_url()).'" data-tip="'. __('Withdrawal Request', 'wc-frontend-manager') .'"><span class="wcfmfa fa-currency">' . get_woocommerce_currency_symbol() . '</span><span class="text">' . __('Withdrawal', 'wc-frontend-manager' ) . '</span></a>';
 			}
 			?>
 			<div class="wcfm-clearfix"></div>
@@ -53,8 +53,8 @@ $end_date = date_i18n( wc_date_format(), strtotime( date('t-m-Y') ) );
 				<option value="0"><?php  _e( 'Processing', 'wc-frontend-manager' ); ?></option>
 				<option value="2"><?php  _e( 'Cancelled', 'wc-frontend-manager' ); ?></option>
 			</select>
-			<input id="payment_start_date_filter" type="text" class="wcfm-text" name="payment_start_date_filter" placeholder="<?php echo apply_filters( 'wcfm_date_filter_format', wc_date_format() ); ?>" data-date_format="<?php echo str_replace( 'mmmm', 'mm', str_replace( 'yyyy', 'yy', strtolower( wcfm_wp_date_format_to_js( wc_date_format() ) ) ) ); ?>" value="<?php echo $start_date; ?>" style="width: 160px;" />
-			<input id="payment_end_date_filter" type="text" class="wcfm-text" name="payment_end_date_filter" placeholder="<?php echo apply_filters( 'wcfm_date_filter_format', wc_date_format() ); ?>" data-date_format="<?php echo str_replace( 'mmmm', 'mm', str_replace( 'yyyy', 'yy', strtolower( wcfm_wp_date_format_to_js( wc_date_format() ) ) ) ); ?>" value="<?php echo $end_date; ?>" style="width: 160px;" />
+			<input id="payment_start_date_filter" type="text" class="wcfm-text" name="payment_start_date_filter" placeholder="<?php echo apply_filters( 'wcfm_date_filter_format', wc_date_format() ); ?>" data-date_format="<?php echo str_replace( 'mmmm', 'mm', str_replace( 'yyyy', 'yy', strtolower( wcfm_wp_date_format_to_js( wc_date_format() ) ) ) ); ?>" value="<?php echo esc_attr($start_date); ?>" style="width: 160px;" />
+			<input id="payment_end_date_filter" type="text" class="wcfm-text" name="payment_end_date_filter" placeholder="<?php echo apply_filters( 'wcfm_date_filter_format', wc_date_format() ); ?>" data-date_format="<?php echo str_replace( 'mmmm', 'mm', str_replace( 'yyyy', 'yy', strtolower( wcfm_wp_date_format_to_js( wc_date_format() ) ) ) ); ?>" value="<?php echo esc_attr($end_date); ?>" style="width: 160px;" />
 		</div>
 	  
 	  <?php do_action( 'before_wcfm_payments' ); ?>

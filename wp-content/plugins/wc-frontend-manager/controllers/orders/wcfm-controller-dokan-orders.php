@@ -27,15 +27,15 @@ class WCFM_Orders_Dokan_Controller {
 		$length = 10;
 		$offset = 0;
 		
-		if( isset( $_POST['length'] ) ) $length = wc_clean($_POST['length']);
-		if( isset( $_POST['start'] ) ) $offset = wc_clean($_POST['start']);
+		if( isset( $_POST['length'] ) ) $length = absint($_POST['length']);
+		if( isset( $_POST['start'] ) ) $offset = absint($_POST['start']);
 		
 		$user_id = $this->vendor_id;
 		
 		$can_view_orders = apply_filters( 'wcfm_is_allow_order_details', true );
 		$group_manager_filter = apply_filters( 'wcfm_orders_group_manager_filter', '', 'seller_id' );
 		
-		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_text_field( $_POST['orderby'] ) : 'order_id';
+		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_sql_orderby( $_POST['orderby'] ) : 'order_id';
 		$the_order   = ( ! empty( $_POST['order'] ) && 'asc' === $_POST['order'] ) ? 'ASC' : 'DESC';
 
 		$items_per_page = $length;
@@ -47,12 +47,14 @@ class WCFM_Orders_Dokan_Controller {
 		if( $group_manager_filter ) {
 			$sql .= $group_manager_filter;
 		} else {
-			$sql .= " AND `seller_id` = {$this->vendor_id}";
+			$sql .= " AND `seller_id` = %d";
+			$sql = $wpdb->prepare( $sql, $this->vendor_id );
 		}
 		
 		$order_status = ! empty( $_POST['order_status'] ) ? sanitize_text_field( $_POST['order_status'] ) : 'all';
 		if( $order_status != 'all' ) {
-			$sql .= " AND `order_status` = 'wc-{$order_status}'";
+			$sql .= " AND `order_status` = %s";
+			$sql = $wpdb->prepare( $sql, 'wc-'.$order_status );
 		}
 
 		// check if it is a search
@@ -60,7 +62,8 @@ class WCFM_Orders_Dokan_Controller {
 			$order_id = absint( $_POST['search']['value'] );
 			if( function_exists( 'wc_sequential_order_numbers' ) ) { $order_id = wc_sequential_order_numbers()->find_order_by_order_number( $order_id ); }
 
-			$sql .= " AND `order_id` = {$order_id}";
+			$sql .= " AND `order_id` = %d";
+			$sql = $wpdb->prepare( $sql, $order_id );
 
 		} else {
 
@@ -75,7 +78,7 @@ class WCFM_Orders_Dokan_Controller {
 			}
 
 			if ( ! empty( $_POST['commission_status'] ) ) {
-				$commission_status = esc_sql( $_POST['commission_status'] );
+				$commission_status = wc_clean( $_POST['commission_status'] );
 
 				$status_filter = " AND `status` = '{$commission_status}'";
 
@@ -93,12 +96,14 @@ class WCFM_Orders_Dokan_Controller {
 		if( $group_manager_filter ) {
 			$sql .= $group_manager_filter;
 		} else {
-			$sql .= " AND `seller_id` = {$this->vendor_id}";
+			$sql .= " AND `seller_id` = %d";
+			$sql = $wpdb->prepare( $sql, $this->vendor_id );
 		}
 		
 		$order_status = ! empty( $_POST['order_status'] ) ? sanitize_text_field( $_POST['order_status'] ) : 'all';
 		if( $order_status != 'all' ) {
-			$sql .= " AND `order_status` = 'wc-{$order_status}'";
+			$sql .= " AND `order_status` = %s";
+			$sql = $wpdb->prepare( $sql, 'wc-'.$order_status );
 		}
 
 		// check if it is a search
@@ -106,7 +111,8 @@ class WCFM_Orders_Dokan_Controller {
 			$order_id = absint( $_POST['search']['value'] );
 			if( function_exists( 'wc_sequential_order_numbers' ) ) { $order_id = wc_sequential_order_numbers()->find_order_by_order_number( $order_id ); }
 
-			$sql .= " AND `order_id` = {$order_id}";
+			$sql .= " AND `order_id` = %d";
+			$sql = $wpdb->prepare( $sql, $order_id );
 
 		} else {
 

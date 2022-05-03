@@ -36,7 +36,7 @@ class WCFM_Capability_Controller {
 		
 		do_action( 'wcfm_capability_update', $wcfm_capability_form );
 		
-		echo '{"status": true, "message": "' . __( 'Capability saved successfully', 'wc-frontend-manager' ) . '"}';
+		echo '{"status": true, "message": "' . esc_html( __( 'Capability saved successfully', 'wc-frontend-manager' ) ) . '"}';
 		
 		die;
 	}

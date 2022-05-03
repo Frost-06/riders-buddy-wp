@@ -50,7 +50,7 @@ include_once( WC_BOOKINGS_ABSPATH . 'includes/admin/class-wc-bookings-admin.php'
 						if($is_first) $is_first = false;
 						else echo " | ";
 						?>
-						<a class="<?php echo ( $wcfmu_bookings_menu_key == $booking_status ) ? 'active' : ''; ?>" href="<?php echo get_wcfm_bookings_url( $wcfmu_bookings_menu_key ); ?>"><?php echo $wcfmu_bookings_menu; ?></a>
+						<a class="<?php echo ( $wcfmu_bookings_menu_key == $booking_status ) ? 'active' : ''; ?>" href="<?php echo esc_url(get_wcfm_bookings_url( $wcfmu_bookings_menu_key )); ?>"><?php echo esc_html($wcfmu_bookings_menu); ?></a>
 					</li>
 					<?php
 				}
@@ -67,7 +67,7 @@ include_once( WC_BOOKINGS_ABSPATH . 'includes/admin/class-wc-bookings-admin.php'
 			
 			if( $wcfm_is_allow_manual_booking = apply_filters( 'wcfm_is_allow_manual_booking', true ) ) {
 				if( WCFM_Dependencies::wcfmu_plugin_active_check() ) {
-					echo '<a class="add_new_wcfm_ele_dashboard text_tip" href="'.get_wcfm_create_bookings_url().'" data-tip="' . __( 'Create Booking', 'wc-frontend-manager' ) . '"><span class="wcfmfa fa-calendar-plus"></span></a>';
+					echo '<a class="add_new_wcfm_ele_dashboard text_tip" href="'.esc_url(get_wcfm_create_bookings_url()).'" data-tip="' . __( 'Create Booking', 'wc-frontend-manager' ) . '"><span class="wcfmfa fa-calendar-plus"></span></a>';
 				}
 			}
 			
@@ -98,9 +98,9 @@ include_once( WC_BOOKINGS_ABSPATH . 'includes/admin/class-wc-bookings-admin.php'
 		  <select id="dropdown_booking_filter" name="filter_bookings" style="width:200px">
 				<option value=""><?php _e( 'Filter Bookings', 'woocommerce-bookings' ); ?></option>
 				<?php if ( $product_filters = WC_Bookings_Admin::get_booking_products() ) : ?>
-					<optgroup label="<?php _e( 'By appointable product', 'woocommerce-bookings' ); ?>">
+					<optgroup label="<?php _e( 'By appointable product', 'wc-frontend-manager' ); ?>">
 						<?php foreach ( $product_filters as $product_filter ) : ?>
-							<option value="<?php echo $product_filter->get_id(); ?>"><?php echo $product_filter->get_name(); ?></option>
+							<option value="<?php echo esc_attr($product_filter->get_id()); ?>"><?php echo wp_kses_post($product_filter->get_name()); ?></option>
 						<?php endforeach; ?>
 					</optgroup>
 				<?php endif; ?>

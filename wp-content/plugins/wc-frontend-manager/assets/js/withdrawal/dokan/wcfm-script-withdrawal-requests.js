@@ -34,7 +34,8 @@ jQuery(document).ready(function($) {
 				d.controller     = 'wcfm-withdrawal-requests',
 				d.transaction_id = GetURLParameter( 'transaction_id' ),
 				d.order          = 'desc',
-				d.status_type    = $status_type
+				d.status_type    = $status_type,
+				d.wcfm_ajax_nonce = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -60,6 +61,7 @@ jQuery(document).ready(function($) {
 			action                      : 'wcfm_ajax_controller',
 			controller                  : 'wcfm-withdrawal-requests-approve',
 			wcfm_withdrawal_manage_form : $('#wcfm_withdrawal_requests_manage_form').serialize(),
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce,
 			status                      : 'submit'
 		}	
 		$.post(wcfm_params.ajax_url, data, function(response) {
@@ -94,6 +96,7 @@ jQuery(document).ready(function($) {
 			action                      : 'wcfm_ajax_controller',
 			controller                  : 'wcfm-withdrawal-requests-cancel',
 			wcfm_withdrawal_manage_form : $('#wcfm_withdrawal_requests_manage_form').serialize(),
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce,
 			status                      : 'submit'
 		}	
 		$.post(wcfm_params.ajax_url, data, function(response) {

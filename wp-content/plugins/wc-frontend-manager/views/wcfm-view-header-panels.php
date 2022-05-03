@@ -25,7 +25,7 @@ if( !$wp_user_avatar && apply_filters( 'wcfm_is_pref_buddypress', true ) && WCFM
 	$wp_user_avatar = bp_core_fetch_avatar( array( 'html' => false, 'item_id' => $user_id ) );
 }
 if ( !$wp_user_avatar ) {	
-	$wp_user_avatar = apply_filters( 'wcfm_defaut_user_avatar', $WCFM->plugin_url . 'assets/images/user.png' );
+	$wp_user_avatar = apply_filters( 'wcfm_defaut_user_avatar', esc_url($WCFM->plugin_url) . 'assets/images/user.png' );
 }
 
 $unread_notice = $WCFM->wcfm_notification->wcfm_direct_message_count( 'notice' );
@@ -57,19 +57,19 @@ if( !$wcfm_is_allow_headpanels ) {
   <?php do_action( 'wcfm_before_header_panel_item' ); ?>
   
   <?php if( apply_filters( 'wcfm_is_pref_profile', true ) && apply_filters( 'wcfm_is_allow_profile', true ) ) { ?>
-    <a href="<?php echo get_wcfm_profile_url(); ?>" class="wcfm_header_panel_profile <?php if( isset( $wp->query_vars['wcfm-profile'] ) ) echo 'active'; ?>"><img class="wcfm_header_panel_profile_img  text_tip" src="<?php echo $wp_user_avatar; ?>" data-tip="<?php _e( 'Profile', 'wc-frontend-manager' ); ?>" /></a>
+    <a href="<?php echo get_wcfm_profile_url(); ?>" class="wcfm_header_panel_profile <?php if( isset( $wp->query_vars['wcfm-profile'] ) ) echo 'active'; ?>"><img class="wcfm_header_panel_profile_img  text_tip" src="<?php echo esc_url($wp_user_avatar); ?>" data-tip="<?php _e( 'Profile', 'wc-frontend-manager' ); ?>" /></a>
   <?php } ?>
   
   <?php if( ( apply_filters( 'wcfm_is_pref_direct_message', true ) && apply_filters( 'wcfm_is_allow_direct_message', true ) ) || ( apply_filters( 'wcfm_is_pref_notification', true ) && apply_filters( 'wcfm_is_allow_notifications', true ) ) ) { ?>
-    <a href="<?php echo get_wcfm_messages_url( ); ?>" class="wcfm_header_panel_messages text_tip <?php if( isset( $wp->query_vars['wcfm-messages'] ) ) echo 'active'; ?>" data-tip="<?php _e( 'Notification Board', 'wc-frontend-manager' ); ?>"><i class="wcfmfa fa-bell"></i><span class="unread_notification_count message_count"><?php echo $unread_message; ?></span><div class="notification-ring"></div></a>
+    <a href="<?php echo get_wcfm_messages_url( ); ?>" class="wcfm_header_panel_messages text_tip <?php if( isset( $wp->query_vars['wcfm-messages'] ) ) echo 'active'; ?>" data-tip="<?php _e( 'Notification Board', 'wc-frontend-manager' ); ?>"><i class="wcfmfa fa-bell"></i><span class="unread_notification_count message_count"><?php echo esc_attr($unread_message); ?></span><div class="notification-ring"></div></a>
   <?php } ?>
   
   <?php if( apply_filters( 'wcfm_is_pref_enquiry', true ) && apply_filters( 'wcfm_is_allow_enquiry', true ) ) { ?>
-    <a href="<?php echo get_wcfm_enquiry_url(); ?>" class="wcfm_header_panel_enquiry text_tip <?php if( isset( $wp->query_vars['wcfm-enquiry'] ) || isset( $wp->query_vars['wcfm-enquiry-manage'] ) ) echo 'active'; ?>" data-tip="<?php _e( 'Inquiry Board', 'wc-frontend-manager' ); ?>"><i class="wcfmfa fa-question-circle"></i><span class="unread_notification_count enquiry_count"><?php echo $unread_enquiry; ?></span><div class="notification-ring"></div></a>
+    <a href="<?php echo get_wcfm_enquiry_url(); ?>" class="wcfm_header_panel_enquiry text_tip <?php if( isset( $wp->query_vars['wcfm-enquiry'] ) || isset( $wp->query_vars['wcfm-enquiry-manage'] ) ) echo 'active'; ?>" data-tip="<?php _e( 'Inquiry Board', 'wc-frontend-manager' ); ?>"><i class="wcfmfa fa-question-circle"></i><span class="unread_notification_count enquiry_count"><?php echo esc_attr($unread_enquiry); ?></span><div class="notification-ring"></div></a>
   <?php } ?>
   
   <?php if( apply_filters( 'wcfm_is_pref_notice', true ) && apply_filters( 'wcfm_is_allow_notice', true ) ) { ?>
-    <a href="<?php echo get_wcfm_notices_url( ); ?>" class="wcfm_header_panel_notice text_tip <?php if( isset( $wp->query_vars['wcfm-notices'] ) || isset( $wp->query_vars['wcfm-notice-manage'] ) || isset( $wp->query_vars['wcfm-notice-view'] ) ) echo 'active'; ?>" data-tip="<?php _e( 'Announcement', 'wc-frontend-manager' ); ?>"><i class="wcfmfa fa-bullhorn"></i><?php if( wcfm_is_vendor() ) { ?><span class="unread_notification_count notice_count"><?php echo $unread_notice; ?></span><?php } ?><div class="notification-ring"></div></a>
+    <a href="<?php echo get_wcfm_notices_url( ); ?>" class="wcfm_header_panel_notice text_tip <?php if( isset( $wp->query_vars['wcfm-notices'] ) || isset( $wp->query_vars['wcfm-notice-manage'] ) || isset( $wp->query_vars['wcfm-notice-view'] ) ) echo 'active'; ?>" data-tip="<?php _e( 'Announcement', 'wc-frontend-manager' ); ?>"><i class="wcfmfa fa-bullhorn"></i><?php if( wcfm_is_vendor() ) { ?><span class="unread_notification_count notice_count"><?php echo esc_attr($unread_notice); ?></span><?php } ?><div class="notification-ring"></div></a>
   <?php } ?>
   
   <?php if( apply_filters( 'wcfm_is_pref_knowledgebase', true ) && apply_filters( 'wcfm_is_allow_knowledgebase', true ) ) { ?>

@@ -85,9 +85,9 @@ class WCFM_Follow_Shortcode {
 		?>
 		<div class="wcfm_ele_wrapper wcfm_follow_widget">
 			<div class="wcfm-clearfix"></div>
-			<a href="#" class="wcfm_follow_me" data-count="<?php echo $followers; ?>" data-vendor_id="<?php echo $vendor_id; ?>" data-user_id="<?php echo $user_id; ?>" style="<?php echo $button_style; ?>"><span class="wcfmfa fa-child"></span>&nbsp;&nbsp;<span class="add_enquiry_label wcfm_follow_me_lable"><?php echo $follow_button_label; ?></span></a>
+			<a href="#" class="wcfm_follow_me" data-count="<?php echo $followers; ?>" data-vendor_id="<?php echo esc_attr($vendor_id); ?>" data-user_id="<?php echo esc_attr($user_id); ?>" style="<?php echo esc_attr($button_style); ?>"><span class="wcfmfa fa-child"></span>&nbsp;&nbsp;<span class="add_enquiry_label wcfm_follow_me_lable"><?php echo esc_html($follow_button_label); ?></span></a>
 			<?php if( $base_color ) { ?>
-				<style>a.wcfm_catalog_enquiry:hover{background: <?php echo $base_color; ?> !important;border-bottom-color: <?php echo $base_color; ?> !important;}</style>
+				<style>a.wcfm_catalog_enquiry:hover{background: <?php echo esc_attr($base_color); ?> !important;border-bottom-color: <?php echo esc_attr($base_color); ?> !important;}</style>
 			<?php } ?>
 			<div class="wcfm-clearfix"></div><br />
 			<script>

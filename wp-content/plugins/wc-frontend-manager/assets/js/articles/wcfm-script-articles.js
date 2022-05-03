@@ -34,7 +34,8 @@ jQuery(document).ready(function($) {
 				d.controller = 'wcfm-articles',
 				d.article_cat      = $article_cat,
 				d.article_vendor   = $article_vendor,
-				d.article_status   = GetURLParameter( 'article_status' )
+				d.article_status   = GetURLParameter( 'article_status' ),
+				d.wcfm_ajax_nonce  = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -81,7 +82,8 @@ jQuery(document).ready(function($) {
 		});
 		var data = {
 			action    : 'delete_wcfm_article',
-			articleid : item.data('articleid')
+			articleid : item.data('articleid'),
+			wcfm_ajax_nonce : wcfm_params.wcfm_ajax_nonce
 		}	
 		jQuery.ajax({
 			type:		'POST',

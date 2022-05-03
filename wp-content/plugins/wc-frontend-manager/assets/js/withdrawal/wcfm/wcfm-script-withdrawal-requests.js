@@ -47,8 +47,9 @@ jQuery(document).ready(function($) {
 				d.status_type         = $status_type,
 				d.withdrawal_vendor   = $withdrawal_vendor,
 				d.start_date          = $filter_date_form,
-				d.end_date            = $filter_date_to
-				d.order               = 'desc'
+				d.end_date            = $filter_date_to,
+				d.order               = 'desc',
+				d.wcfm_ajax_nonce     = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -87,6 +88,7 @@ jQuery(document).ready(function($) {
 			action                      : 'wcfm_ajax_controller',
 			controller                  : 'wcfm-withdrawal-requests-approve',
 			wcfm_withdrawal_manage_form : $('#wcfm_withdrawal_requests_manage_form').serialize(),
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce,
 			status                      : 'submit'
 		}	
 		$.post(wcfm_params.ajax_url, data, function(response) {
@@ -125,6 +127,7 @@ jQuery(document).ready(function($) {
 			action                      : 'wcfm_ajax_controller',
 			controller                  : 'wcfm-withdrawal-requests-cancel',
 			wcfm_withdrawal_manage_form : $('#wcfm_withdrawal_requests_manage_form').serialize(),
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce,
 			status                      : 'submit'
 		}	
 		$.post(wcfm_params.ajax_url, data, function(response) {

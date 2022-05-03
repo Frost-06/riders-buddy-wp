@@ -20,8 +20,8 @@ class WCFM_Orders_Controller {
 	public function processing() {
 		global $WCFM, $wpdb, $_POST;
 		
-		$length = wc_clean($_POST['length']);
-		$offset = wc_clean($_POST['start']);
+		$length = absint($_POST['length']);
+		$offset = absint($_POST['start']);
 		
 		$filtering_on = false;
 		
@@ -80,7 +80,8 @@ class WCFM_Orders_Controller {
 			if ( ! empty( $_POST['order_vendor'] ) ) {
 				$sql  = "SELECT order_id FROM {$wpdb->prefix}wcfm_marketplace_orders";
 				$sql .= " WHERE 1=1";
-				$sql .= " AND `vendor_id` = " . wc_clean($_POST['order_vendor']);
+				$sql .= " AND `vendor_id` = %d";
+				$sql = $wpdb->prepare( $sql, absint($_POST['order_vendor']) );
 			
 				$vendor_orders_list = $wpdb->get_results( $sql );
 				if( !empty( $vendor_orders_list ) ) {
@@ -101,7 +102,7 @@ class WCFM_Orders_Controller {
 				'relation' => 'AND',
 				array(
 					'key'     => '_wcfm_delivery_boys',
-					'value'   => wc_clean($_POST['delivery_boy']),
+					'value'   => absint($_POST['delivery_boy']),
 					'compare' => 'LIKE'
 				)
 			);
@@ -335,7 +336,7 @@ class WCFM_Orders_Controller {
 				$index++;
 			}												
 		}
-		if( !empty($wcfm_orders_json_arr) ) $wcfm_orders_json .= json_encode($wcfm_orders_json_arr);
+		if( !empty($wcfm_orders_json_arr) ) $wcfm_orders_json .= json_encode( apply_filters ( 'wcfm_orders_controller_data', $wcfm_orders_json_arr, 'admin', 0 ) );
 		else $wcfm_orders_json .= '[]';
 		$wcfm_orders_json .= '
 													}';

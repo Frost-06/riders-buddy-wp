@@ -124,7 +124,7 @@ class WCFM_WCMarketplace {
   	if ( $vendor->image ) {
 			$store_logo = $vendor->image;
 			if( $vendor->permalink ) {
-				$store_logo = '<a class="wcfm_store_logo_icon" href="'.apply_filters('wcmp_vendor_shop_permalink', $vendor->permalink).'" target="_blank"><img src="' . $store_logo . '" alt="Store Logo" /></a>';
+				$store_logo = '<a class="wcfm_store_logo_icon" href="'.apply_filters('wcmp_vendor_shop_permalink', $vendor->permalink).'" target="_blank"><img src="' . esc_url($store_logo) . '" alt="Store Logo" /></a>';
 			}
 		}
   	return $store_logo;
@@ -187,8 +187,8 @@ class WCFM_WCMarketplace {
 		// Order Customers
   	$sql = 'SELECT order_id FROM ' . $wpdb->prefix . 'wcmp_vendor_orders';
 		$sql .= ' WHERE 1=1';
-		$sql .= " AND `vendor_id` = {$this->vendor_id}";
-		$wcfm_orders_array = $wpdb->get_results( $sql );
+		$sql .= " AND `vendor_id` = %d";
+		$wcfm_orders_array = $wpdb->get_results( $wpdb->prepare( $sql, $this->vendor_id ) );
 		if(!empty($wcfm_orders_array)) {
 			foreach($wcfm_orders_array as $wcfm_orders_single) {
 				$the_order = wc_get_order( $wcfm_orders_single->order_id );
@@ -391,8 +391,8 @@ class WCFM_WCMarketplace {
   function wcmarketplace_valid_line_items( $items, $order_id ) {
   	global $WCFM, $wpdb;
   	
-  	$sql = "SELECT `product_id` FROM {$wpdb->prefix}wcmp_vendor_orders WHERE `vendor_id` = {$this->vendor_id} AND `order_id` = {$order_id}";
-  	$valid_products = $wpdb->get_results($sql);
+  	$sql = "SELECT `product_id` FROM {$wpdb->prefix}wcmp_vendor_orders WHERE `vendor_id` = %d AND `order_id` = %d";
+  	$valid_products = $wpdb->get_results( $wpdb->prepare( $sql, $this->vendor_id, $order_id ) );
   	$valid_items = array();
   	if( !empty($valid_products) ) {
   		foreach( $valid_products as $valid_product ) {
@@ -523,10 +523,10 @@ class WCFM_WCMarketplace {
 		$sql = "
 			SELECT commission_id, commission_amount AS line_total, shipping AS total_shipping, tax, shipping_tax_amount 
 			FROM {$wpdb->prefix}wcmp_vendor_orders
-			WHERE (product_id = " . $product_id . " OR product_id = " . $variation_id . ")
-			AND   order_id = " . $order->get_id() . "
-			AND   `vendor_id` = " . $this->vendor_id;
-		$order_line_due = $wpdb->get_results( $sql );
+			WHERE (product_id = %d OR product_id = %d)
+			AND   order_id = %d
+			AND   `vendor_id` = %d";
+		$order_line_due = $wpdb->get_results( $wpdb->prepare( $sql, $product_id, $variation_id, $order->get_id(), $this->vendor_id ) );
 		
 		if( !empty( $order_line_due ) ) {
 		?>
@@ -609,9 +609,9 @@ class WCFM_WCMarketplace {
        SUM(	shipping_tax_amount) as shipping_tax_amount,
        commission_id
        FROM {$wpdb->prefix}wcmp_vendor_orders
-       WHERE order_id = " . $order_id . "
-       AND `vendor_id` = " . $this->vendor_id;
-    $order_due = $wpdb->get_results( $sql );
+       WHERE order_id = %d
+       AND `vendor_id` = %d";
+    $order_due = $wpdb->get_results( $wpdb->prepare( $sql, $order_id, $this->vendor_id ) );
     $total = 0;
     
     if( $order_due[0]->commission_id ) {
@@ -826,13 +826,13 @@ class WCFM_WCMarketplace {
 		if( !empty( $wcmp_knowledgebases ) ) {
   	  foreach( $wcmp_knowledgebases as $wcmp_knowledgebase ) {
   	  	?>
-  	  	<div class="page_collapsible" id="wcfm_knowledgebase_listing_head-<?php echo $wcmp_knowledgebase->ID; ?>">
+  	  	<div class="page_collapsible" id="wcfm_knowledgebase_listing_head-<?php echo esc_attr($wcmp_knowledgebase->ID); ?>">
 					<label class="wcfmfa fa-bookmark"></label>
-					<?php echo $wcmp_knowledgebase->post_title; ?><span></span>
+					<?php echo wp_kses_post($wcmp_knowledgebase->post_title); ?><span></span>
 				</div>
   	  	<div class="wcfm-container">
-					<div id="wcfm_knowledgebase_listing_expander-<?php echo $wcmp_knowledgebase->ID; ?>" class="wcfm_knowledgebase wcfm-content">
-						<?php echo $wcmp_knowledgebase->post_content; ?>
+					<div id="wcfm_knowledgebase_listing_expander-<?php echo esc_attr($wcmp_knowledgebase->ID); ?>" class="wcfm_knowledgebase wcfm-content">
+						<?php echo wp_kses_post($wcmp_knowledgebase->post_content); ?>
 					</div>
 				</div>
 				<div class="wcfm-clearfix"></div><br />
@@ -850,13 +850,24 @@ class WCFM_WCMarketplace {
 	 */
   function wcmarketplace_auto_suggesion_product() {
 		global $WCFM, $WCMp, $wpdb;
+		
+		if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+			wp_die();
+		}
+		
+		if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+		
 		$searchstr = $_POST['protitle'];
 		$querystr = "select DISTINCT post_title, ID from {$wpdb->prefix}posts where post_title like '{$searchstr}%' and post_status = 'publish' and post_type = 'product' GROUP BY post_title order by post_title  LIMIT 0,10";
 		$results = $wpdb->get_results($querystr);
 		if ( count( $results ) > 0 ) {
 			echo "<ul>";
 			foreach ($results as $result) {
-				echo '<li data-element="' . $result->ID . '"><a class="wcfm_product_multi_seller_associate" href="#" data-proid="' . $result->ID . '">' . $result->post_title . '</a></li>';
+				echo '<li data-element="' . esc_attr($result->ID) . '"><a class="wcfm_product_multi_seller_associate" href="#" data-proid="' . esc_attr($result->ID) . '">' . wp_kses_post($result->post_title) . '</a></li>';
 			}
 			echo "</ul>";
 		}
@@ -868,6 +879,16 @@ class WCFM_WCMarketplace {
 	 */
 	public function wcfm_product_multi_seller_associate() {
 		global $WCFM, $WCFMu, $_POST;
+		
+		if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+			wp_die();
+		}
+		
+		if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
 		
 		if( !class_exists( 'WC_Admin_Duplicate_Product' ) ) {
 			include( WC_ABSPATH . 'includes/admin/class-wc-admin-duplicate-product.php' );
@@ -910,7 +931,7 @@ class WCFM_WCMarketplace {
 		do_action( 'after_wcfm_product_duplicate', $duplicate->get_id(), $product );
 
 		// Redirect to the edit screen for the new draft page
-		echo '{"status": true, "redirect": "' . get_wcfm_edit_product_url( $duplicate->get_id() ) . '", "id": "' . $duplicate->get_id() . '"}';
+		echo '{"status": true, "redirect": "' . esc_url( get_wcfm_edit_product_url( $duplicate->get_id() ) ) . '", "id": "' . $duplicate->get_id() . '"}';
 		
 		die;
 	}

@@ -39,7 +39,7 @@ class WCFM_Settings_WCVendors_Controller {
 		//$wcfm_settings_form = array_map( 'stripslashes', $wcfm_settings_form );
 		
 		// sanitize html editor content
-		$wcfm_settings_form['shop_description'] = ! empty( $_POST['profile'] ) ? apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['profile'], ENT_QUOTES, 'UTF-8' ) ) ) : '';
+		$wcfm_settings_form['shop_description'] = ! empty( $_POST['profile'] ) ? wp_filter_post_kses( apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['profile'], ENT_QUOTES, 'UTF-8' ) ) ) ) : '';
 		
 		if( apply_filters( 'wcfm_is_allow_store_name', true ) ) {
 			update_user_meta( $user_id, 'pv_shop_name', $wcfm_settings_form['shop_name'] );

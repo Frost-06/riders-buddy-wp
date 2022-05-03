@@ -116,21 +116,21 @@ class WCFM_Products_Controller {
 						$args['tax_query'][] = array(
 																					'taxonomy' => WC_PRODUCT_VENDORS_TAXONOMY,
 																					'field' => 'term_id',
-																					'terms' => wc_clean($_POST['product_vendor']),
+																					'terms' => absint($_POST['product_vendor']),
 																				);
 					} elseif( $is_marketplace == 'wcvendors' ) {
 						$args['author'] = $_POST['product_vendor'];
 					} elseif( $is_marketplace == 'wcmarketplace' ) {
-						$vendor_term = absint( get_user_meta( wc_clean($_POST['product_vendor']), '_vendor_term_id', true ) );
+						$vendor_term = absint( get_user_meta( absint($_POST['product_vendor']), '_vendor_term_id', true ) );
 						$args['tax_query'][] = array(
 																					'taxonomy' => 'dc_vendor_shop',
 																					'field' => 'term_id',
 																					'terms' => $vendor_term,
 																				);
 					} elseif( $is_marketplace == 'dokan' ) {
-						$args['author'] = wc_clean($_POST['product_vendor']);
+						$args['author'] = absint($_POST['product_vendor']);
 					} elseif( $is_marketplace == 'wcfmmarketplace' ) {
-						$args['author'] = wc_clean($_POST['product_vendor']);
+						$args['author'] = absint($_POST['product_vendor']);
 					}
 				}
 			}
@@ -326,9 +326,11 @@ class WCFM_Products_Controller {
 										$taxonomies .= "<br /><strong>" . __( $product_taxonomy->label, 'wc-frontend-manager' ) . '</strong>: ';
 										$is_first = true;
 										foreach($taxonomy_values as $pkey => $ptaxonomy) {
-											if( !$is_first ) $taxonomies .= ', ';
-											$is_first = false;
-											$taxonomies .= '<a style="color: #dd4b39;" href="' . get_term_link( $ptaxonomy->term_id ) . '" target="_blank">' . $ptaxonomy->name . '</a>';
+											if( !is_wp_error( $ptaxonomy ) ) {
+												if( !$is_first ) $taxonomies .= ', ';
+												$is_first = false;
+												$taxonomies .= '<a style="color: #dd4b39;" href="' . get_term_link( $ptaxonomy->term_id ) . '" target="_blank">' . $ptaxonomy->name . '</a>';
+											}
 										}
 									}
 								}

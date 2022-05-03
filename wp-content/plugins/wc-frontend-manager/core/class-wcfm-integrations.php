@@ -1217,7 +1217,7 @@ class WCFM_Integrations {
 							foreach($origins as $origin) {
 								$idx=$origin['origin_code'];
 								?>
-								<option value=<?php echo '"'.$idx.'"'; if($vendor_data_asal_kota === $idx){echo ' selected';}?>><?php echo $origin["kota_kabupaten"]; ?></option>
+								<option value=<?php echo '"'.$idx.'"'; if($vendor_data_asal_kota === $idx){echo ' selected';}?>><?php echo esc_html($origin["kota_kabupaten"]); ?></option>
 						  <?php
 							}
 						  ?>
@@ -1591,6 +1591,17 @@ class WCFM_Integrations {
 	 * Listing Approve
 	 */
 	function wcfm_listing_approve() {
+		
+		if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+			wp_die();
+		}
+		
+		if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+		
 		if ( !empty( $_GET['listing_id'] ) && !wcfm_is_vendor() ) {
 			$listing_id  = absint( $_GET['listing_id'] );
 			$job_data = [

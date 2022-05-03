@@ -292,6 +292,11 @@ class WCFM_WCBookings {
   public function wcb_ajax_controller() {
   	global $WCFM, $WCFMu;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
   	$controllers_path = $WCFM->plugin_path . 'controllers/wc_bookings/';
   	
   	$controller = '';
@@ -300,6 +305,11 @@ class WCFM_WCBookings {
   		
   		switch( $controller ) {
   			case 'wcfm-bookings':
+  				if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+		
 					include_once( $controllers_path . 'wcfm-controller-wcbookings.php' );
 					if( defined('WCFM_REST_API_CALL') ) {
             $booking_wcfm_manage_object = new WCFM_WCBookings_Controller();
@@ -310,6 +320,11 @@ class WCFM_WCBookings {
 				break;
 				
 				case 'wcfm-booking-schedule-manage':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+		
 					include_once( $controllers_path . 'wcfm-controller-wcbookings-schedule-manage.php' );
 					new WCFM_WCBookings_Schedule_Manage_Controller();
 				break;
@@ -343,8 +358,8 @@ class WCFM_WCBookings {
 		$wcfm_pm_block_class_wcbokings_general = apply_filters( 'wcfm_pm_block_class_wcbokings_general', 'booking', $product_id, $product_type );
   	?>
   	<!-- collapsible Booking 1 -->
-	  <div class="page_collapsible products_manage_wcbokings_general <?php echo $wcfm_pm_block_class_wcbokings_general; ?>" id="wcfm_products_manage_form_booking_options_head"><label class="wcfmfa fa-calendar"></label><?php _e('Booking Options', 'wc-frontend-manager'); ?><span></span></div>
-		<div class="wcfm-container <?php echo $wcfm_pm_block_class_wcbokings_general; ?>">
+	  <div class="page_collapsible products_manage_wcbokings_general <?php echo esc_attr($wcfm_pm_block_class_wcbokings_general); ?>" id="wcfm_products_manage_form_booking_options_head"><label class="wcfmfa fa-calendar"></label><?php _e('Booking Options', 'wc-frontend-manager'); ?><span></span></div>
+		<div class="wcfm-container <?php echo esc_attr($wcfm_pm_block_class_wcbokings_general); ?>">
 			<div id="wcfm_products_manage_form_booking_options_expander" class="wcfm-content">
 			  <?php
 					$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_wcbokings_general_fields', array(  

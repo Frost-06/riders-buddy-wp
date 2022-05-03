@@ -21,8 +21,8 @@ class WCFM_Articles_Controller {
 	public function processing() {
 		global $WCFM, $wpdb, $_POST;
 		
-		$length = wc_clean($_POST['length']);
-		$offset = wc_clean($_POST['start']);
+		$length = absint($_POST['length']);
+		$offset = absint($_POST['start']);
 		
 		$args = array(
 							'posts_per_page'   => $length,
@@ -48,7 +48,7 @@ class WCFM_Articles_Controller {
 			$args['s'] = wc_clean($_POST['search']['value']);
 		}
 		
-		if( isset($_POST['article_status']) && !empty($_POST['article_status']) ) $args['post_status'] = $_POST['article_status'];
+		if( isset($_POST['article_status']) && !empty($_POST['article_status']) ) $args['post_status'] = wc_clean($_POST['article_status']);
   	
 		if( isset($_POST['article_cat']) && !empty($_POST['article_cat']) ) {
 			$args['tax_query'][] = array(
@@ -115,19 +115,19 @@ class WCFM_Articles_Controller {
 				
 				// Thumb
 				if( apply_filters( 'wcfm_is_allow_edit_articles', true ) ) {
-					$wcfm_articles_json_arr[$index][] =  '<a href="' . get_wcfm_articles_manage_url( $wcfm_articles_single->ID ) . '"><img width="40" height="40" class="attachment-thumbnail size-thumbnail wp-post-image" src="' . get_the_post_thumbnail_url( $wcfm_articles_single->ID ) . '" /></a>';
+					$wcfm_articles_json_arr[$index][] =  '<a href="' . esc_url(get_wcfm_articles_manage_url( $wcfm_articles_single->ID )) . '"><img width="40" height="40" class="attachment-thumbnail size-thumbnail wp-post-image" src="' . esc_url(get_the_post_thumbnail_url( $wcfm_articles_single->ID )) . '" /></a>';
 				} else {
-					$wcfm_articles_json_arr[$index][] =  '<img width="40" height="40" class="attachment-thumbnail size-thumbnail wp-post-image" src="' . get_the_post_thumbnail_url( $wcfm_articles_single->ID ) . '" />';
+					$wcfm_articles_json_arr[$index][] =  '<img width="40" height="40" class="attachment-thumbnail size-thumbnail wp-post-image" src="' . esc_url(get_the_post_thumbnail_url( $wcfm_articles_single->ID )) . '" />';
 				}
 				
 				// Title
 				if( apply_filters( 'wcfm_is_allow_edit_articles', true ) ) {
-					$wcfm_articles_json_arr[$index][] =  apply_filters( 'wcfm_article_title_dashboard', '<a href="' . get_wcfm_articles_manage_url( $wcfm_articles_single->ID ) . '" class="wcfm_article_title wcfm_dashboard_item_title">' . $wcfm_articles_single->post_title . '</a>', $wcfm_articles_single->ID );
+					$wcfm_articles_json_arr[$index][] =  apply_filters( 'wcfm_article_title_dashboard', '<a href="' . esc_url(get_wcfm_articles_manage_url( $wcfm_articles_single->ID )) . '" class="wcfm_article_title wcfm_dashboard_item_title">' . $wcfm_articles_single->post_title . '</a>', $wcfm_articles_single->ID );
 				} else {
 					if( $wcfm_articles_single->post_status == 'publish' ) {
 						$wcfm_articles_json_arr[$index][] =  apply_filters( 'wcfm_article_title_dashboard', $wcfm_articles_single->post_title, $wcfm_articles_single->ID );
 					} elseif( apply_filters( 'wcfm_is_allow_edit_articles', true ) ) {
-						$wcfm_articles_json_arr[$index][] =  apply_filters( 'wcfm_article_title_dashboard', '<a href="' . get_wcfm_articles_manage_url( $wcfm_articles_single->ID ) . '" class="wcfm_article_title wcfm_dashboard_item_title">' . $wcfm_articles_single->post_title . '</a>', $wcfm_articles_single->ID );
+						$wcfm_articles_json_arr[$index][] =  apply_filters( 'wcfm_article_title_dashboard', '<a href="' . esc_url(get_wcfm_articles_manage_url( $wcfm_articles_single->ID )) . '" class="wcfm_article_title wcfm_dashboard_item_title">' . $wcfm_articles_single->post_title . '</a>', $wcfm_articles_single->ID );
 					} else {
 						$wcfm_articles_json_arr[$index][] =  apply_filters( 'wcfm_article_title_dashboard', $wcfm_articles_single->post_title, $wcfm_articles_single->ID );
 					}
@@ -163,14 +163,14 @@ class WCFM_Articles_Controller {
 				}
 				
 				// Action
-				$actions = '<a class="wcfm-action-icon" target="_blank" href="' . get_permalink( $wcfm_articles_single->ID ) . '"><span class="wcfmfa fa-eye text_tip" data-tip="' . esc_attr__( 'View', 'wc-frontend-manager' ) . '"></span></a>';
+				$actions = '<a class="wcfm-action-icon" target="_blank" href="' . esc_url(get_permalink( $wcfm_articles_single->ID )) . '"><span class="wcfmfa fa-eye text_tip" data-tip="' . esc_attr__( 'View', 'wc-frontend-manager' ) . '"></span></a>';
 				
 				if( $wcfm_articles_single->post_status == 'publish' ) {
-					$actions .= ( apply_filters( 'wcfm_is_allow_edit_articles', true ) ) ? '<a class="wcfm-action-icon" href="' . get_wcfm_articles_manage_url( $wcfm_articles_single->ID ) . '"><span class="wcfmfa fa-edit text_tip" data-tip="' . esc_attr__( 'Edit', 'wc-frontend-manager' ) . '"></span></a>' : '';
-					$actions .= ( apply_filters( 'wcfm_is_allow_delete_articles', true ) ) ? '<a class="wcfm-action-icon wcfm_article_delete" href="#" data-articleid="' . $wcfm_articles_single->ID . '"><span class="wcfmfa fa-trash-alt text_tip" data-tip="' . esc_attr__( 'Delete', 'wc-frontend-manager' ) . '"></span></a>' : '';
+					$actions .= ( apply_filters( 'wcfm_is_allow_edit_articles', true ) ) ? '<a class="wcfm-action-icon" href="' . esc_url(get_wcfm_articles_manage_url( $wcfm_articles_single->ID )) . '"><span class="wcfmfa fa-edit text_tip" data-tip="' . esc_attr__( 'Edit', 'wc-frontend-manager' ) . '"></span></a>' : '';
+					$actions .= ( apply_filters( 'wcfm_is_allow_delete_articles', true ) ) ? '<a class="wcfm-action-icon wcfm_article_delete" href="#" data-articleid="' . esc_attr($wcfm_articles_single->ID) . '"><span class="wcfmfa fa-trash-alt text_tip" data-tip="' . esc_attr__( 'Delete', 'wc-frontend-manager' ) . '"></span></a>' : '';
 				} else {
-					$actions .= ( apply_filters( 'wcfm_is_allow_edit_articles', true ) ) ? '<a class="wcfm-action-icon" href="' . get_wcfm_articles_manage_url( $wcfm_articles_single->ID ) . '"><span class="wcfmfa fa-edit text_tip" data-tip="' . esc_attr__( 'Edit', 'wc-frontend-manager' ) . '"></span></a>' : '';
-					$actions .= ( apply_filters( 'wcfm_is_allow_delete_articles', true ) ) ? '<a class="wcfm_article_delete wcfm-action-icon" href="#" data-articleid="' . $wcfm_articles_single->ID . '"><span class="wcfmfa fa-trash-alt text_tip" data-tip="' . esc_attr__( 'Delete', 'wc-frontend-manager' ) . '"></span></a>' : '';
+					$actions .= ( apply_filters( 'wcfm_is_allow_edit_articles', true ) ) ? '<a class="wcfm-action-icon" href="' . esc_url(get_wcfm_articles_manage_url( $wcfm_articles_single->ID )) . '"><span class="wcfmfa fa-edit text_tip" data-tip="' . esc_attr__( 'Edit', 'wc-frontend-manager' ) . '"></span></a>' : '';
+					$actions .= ( apply_filters( 'wcfm_is_allow_delete_articles', true ) ) ? '<a class="wcfm_article_delete wcfm-action-icon" href="#" data-articleid="' . esc_attr($wcfm_articles_single->ID) . '"><span class="wcfmfa fa-trash-alt text_tip" data-tip="' . esc_attr__( 'Delete', 'wc-frontend-manager' ) . '"></span></a>' : '';
 				}
 				
 				$wcfm_articles_json_arr[$index][] =  apply_filters ( 'wcfm_articles_actions',  $actions, $wcfm_articles_single );

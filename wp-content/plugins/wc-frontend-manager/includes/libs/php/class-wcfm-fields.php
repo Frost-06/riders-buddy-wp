@@ -767,7 +767,7 @@ class WCFM_Fields {
     	}
     	$placeholder = apply_filters( 'wcfm_default_placeholder_image', $WCFM->plugin_url . 'includes/libs/upload/images/Placeholder.png' );
     	if( !$img_src ) $img_src = $placeholder;
-      $mimeProp = '<img id="'.esc_attr($field['id']).'_display" data-placeholder="'.$placeholder.'" src="'.esc_attr( $img_src ).'" width="'.absint( $field['prwidth'] ).'" class="'.$placeHolder.'" />';
+      $mimeProp = '<img id="'.esc_attr($field['id']).'_display" data-placeholder="'.$placeholder.'" src="'.esc_url( $img_src ).'" width="'.absint( $field['prwidth'] ).'" class="'.$placeHolder.'" />';
     } else {
       if($field['value'])
         $field['mime'] = pathinfo( wcfm_get_attachment_url( $field['value'] ), PATHINFO_EXTENSION );

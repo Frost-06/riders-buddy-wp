@@ -567,7 +567,7 @@ do_action( 'before_wcfm_orders_details', $order_id );
 										<div class="view">
 											<?php
 												if ( $item->get_total() ) {
-													echo wc_price( $item->get_subtotal(), array( 'currency' => $order->get_currency() ) );
+													echo wc_price( $item->get_total(), array( 'currency' => $order->get_currency() ) );
 												}
 								
 												if ( $item->get_subtotal() !== $item->get_total() ) {
@@ -852,7 +852,7 @@ do_action( 'before_wcfm_orders_details', $order_id );
 									<ul class="wc_coupon_list"><?php
 										echo '<li><strong>' . __( 'Coupon(s) Used', 'wc-frontend-manager' ) . '</strong></li>';
 										foreach ( $coupons as $item_id => $item ) {
-											$post_id = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_title = %s AND post_type = 'shop_coupon' AND post_status = 'publish' LIMIT 1;", $item->get_name() ) );
+											$post_id = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_title = %s AND post_type = 'shop_coupon' AND post_status = 'publish' LIMIT 1", $item->get_name() ) );
 					
 											if( apply_filters( 'wcfm_is_allow_show_only_vendor_coupon_to_vendors', true ) && wcfm_is_vendor() && ( !wcfm_get_vendor_id_by_post( $post_id ) || ( wcfm_get_vendor_id_by_post( $post_id ) && ($WCFMmp->vendor_id != wcfm_get_vendor_id_by_post( $post_id ) ) ) ) ) continue;
 											

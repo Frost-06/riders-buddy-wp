@@ -34,7 +34,7 @@ $logo_image_url = wp_get_attachment_image_src( $logo, 'thumbnail' );
 if ( !empty( $logo_image_url ) ) {
 	$logo_image_url = $logo_image_url[0];
 } else {
-	$logo_image_url = $WCFM->plugin_url . 'assets/images/your-logo-here.png';
+	$logo_image_url = esc_url( $WCFM->plugin_url . 'assets/images/your-logo-here.png' );
 }
 
 $store_logo = $logo_image_url;
@@ -51,7 +51,7 @@ if( isset( $wp->query_vars['wcfm-vendors-manage'] ) && !empty( $wp->query_vars['
 		$vendor_store = wcfm_get_vendor_store( $vendor_id );
 		$store_logo = $WCFM->wcfm_vendor_support->wcfm_get_vendor_logo_by_vendor( $vendor_id );
 		if( !$store_logo ) {
-			$store_logo = apply_filters( 'wcfmmp_store_default_logo', $WCFM->plugin_url . 'assets/images/wcfmmp.png' );
+			$store_logo = apply_filters( 'wcfmmp_store_default_logo', esc_url($WCFM->plugin_url) . 'assets/images/wcfmmp.png' );
 		}
 		$marketplece = wcfm_is_marketplace();
   	if( $marketplece == 'wcvendors' ) {
@@ -168,7 +168,7 @@ if( $WCFM->is_marketplace && ( $WCFM->is_marketplace == 'wcfmmarketplace' ) && a
 	  <div id="wcfm_page_load"></div>
 	  
 	  <div class="wcfm-container wcfm-top-element-container">
-	    <img class="vendor_store_logo" src="<?php echo $store_logo; ?>" alt="Store Logo" />
+	    <img class="vendor_store_logo" src="<?php echo esc_url($store_logo); ?>" alt="Store Logo" />
 	    <h2>
 	      <?php 
 	        echo strip_tags( $vendor_store );
@@ -217,7 +217,7 @@ if( $WCFM->is_marketplace && ( $WCFM->is_marketplace == 'wcfmmarketplace' ) && a
 		<?php if( apply_filters( 'wcfm_is_pref_stats_box', true ) ) { ?>
 			<div class="wcfm_dashboard_stats">
 				<div class="wcfm_dashboard_stats_block">
-				  <a href="#" onclick="return false;">
+				  <a href="<?php echo esc_url($stat_box_link); ?>">
 						<span class="wcfmfa fa-currency"><?php echo get_woocommerce_currency_symbol() ; ?></span>
 						<div>
 							<strong>
@@ -232,7 +232,7 @@ if( $WCFM->is_marketplace && ( $WCFM->is_marketplace == 'wcfmmarketplace' ) && a
 				</div>
 				
 				<div class="wcfm_dashboard_stats_block">
-				  <a href="#" onclick="return false;">
+				  <a href="<?php echo esc_url($stat_box_link); ?>">
 						<span class="wcfmfa fa-money fa-money-bill-alt"></span>
 						<div>
 							<strong>
@@ -250,7 +250,7 @@ if( $WCFM->is_marketplace && ( $WCFM->is_marketplace == 'wcfmmarketplace' ) && a
 				</div>
 				
 				<div class="wcfm_dashboard_stats_block">
-					<a href="#" onclick="return false;">
+					<a href="<?php echo get_wcfm_products_url( '', $vendor_id ); ?>">
 						<span class="wcfmfa fa-cube"></span>
 						<div>
 							<?php 
@@ -265,7 +265,7 @@ if( $WCFM->is_marketplace && ( $WCFM->is_marketplace == 'wcfmmarketplace' ) && a
 				</div>
 				
 				<div class="wcfm_dashboard_stats_block">
-				  <a href="#" onclick="return false;">
+				  <a href="<?php echo get_wcfm_orders_url( '', $vendor_id ); ?>">
 						<span class="wcfmfa fa-cart-plus"></span>
 						<div>
 							<?php 
@@ -289,7 +289,7 @@ if( $WCFM->is_marketplace && ( $WCFM->is_marketplace == 'wcfmmarketplace' ) && a
 			<div class="wcfm-container">
 				<div id="vendors_manage_general_expander" class="wcfm-content">
 					<p class="store_name wcfm_ele wcfm_title"><strong><?php _e( 'Store', 'wc-frontend-manager' ); ?></strong></p>
-					<span class="wcfm_vendor_store"><?php echo $vendor_store ?></span>
+					<span class="wcfm_vendor_store"><?php echo wp_kses_post($vendor_store); ?></span>
 					<div class="wcfm_clearfix"></div>
 					<?php
 						do_action( 'before_wcfm_vendor_vendor_fields_general', $vendor_admin_id, $vendor_id );
@@ -312,7 +312,7 @@ if( $WCFM->is_marketplace && ( $WCFM->is_marketplace == 'wcfmmarketplace' ) && a
 						if( $seller_info ) {
 						?>
 							<p class="store_name wcfm_ele wcfm_title"><strong><?php _e( 'Seller Info', 'wc-frontend-manager' ); ?></strong></p>
-							<span class="wcfm_vendor_store_info"><?php echo $seller_info ?></span>
+							<span class="wcfm_vendor_store_info"><?php echo wp_kses_post($seller_info); ?></span>
 							<div class="wcfm_clearfix"></div>
 						<?php
 						}

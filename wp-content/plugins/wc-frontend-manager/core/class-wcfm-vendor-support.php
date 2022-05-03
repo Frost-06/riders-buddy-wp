@@ -459,7 +459,7 @@ class WCFM_Vendor_Support {
 			if( $wcfm_associate_vendor ) $vendor_arr = array( $wcfm_associate_vendor => $this->wcfm_get_vendor_store_name_by_vendor($wcfm_associate_vendor) ); 
 			?>
 			<!-- collapsible 11.5 - WCFM Vendor Association -->
-			<div class="page_collapsible products_manage_vendor_association simple variable grouped external booking <?php echo $wcfm_wpml_edit_disable_element; ?>" id="wcfm_products_manage_form_vendor_association_head"><label class="wcfmfa fa-user-alt fa-user-alt"></label><?php echo apply_filters( 'wcfm_sold_by_label', $wcfm_associate_vendor, __( 'Store', 'wc-frontend-manager' ) ); ?><span></span></div>
+			<div class="page_collapsible products_manage_vendor_association simple variable grouped external booking <?php echo esc_attr($wcfm_wpml_edit_disable_element); ?>" id="wcfm_products_manage_form_vendor_association_head"><label class="wcfmfa fa-user-alt fa-user-alt"></label><?php echo esc_attr(apply_filters( 'wcfm_sold_by_label', $wcfm_associate_vendor, __( 'Store', 'wc-frontend-manager' ) )); ?><span></span></div>
 			<div class="wcfm-container simple variable external grouped booking">
 				<div id="wcfm_products_manage_form_vendor_association_expander" class="wcfm-content">
 					<?php
@@ -755,8 +755,8 @@ class WCFM_Vendor_Support {
   function wcfm_vendor_valid_line_items( $items, $order_id, $vendor_id ) {
   	global $WCFM, $wpdb;
   	
-  	$sql = "SELECT `product_id`, `item_id` FROM {$wpdb->prefix}wcfm_marketplace_orders WHERE `vendor_id` = {$vendor_id} AND `order_id` = {$order_id}";
-  	$valid_products = $wpdb->get_results($sql);
+  	$sql = "SELECT `product_id`, `item_id` FROM {$wpdb->prefix}wcfm_marketplace_orders WHERE `vendor_id` = %d AND `order_id` = %d";
+  	$valid_products = $wpdb->get_results( $wpdb->prepare( $sql, $vendor_id, $order_id ) );
   	$valid_items = array();
   	if( !empty($valid_products) ) {
   		foreach( $valid_products as $valid_product ) {
@@ -1163,7 +1163,7 @@ class WCFM_Vendor_Support {
 	public function wcfm_get_vendor_logo_by_vendor( $vendor_id ) {
 		global $WCFM, $wpdb, $WCMp;
   	
-  	$store_logo = apply_filters( 'wcfmmp_store_default_logo', $WCFM->plugin_url . 'assets/images/wcfmmp-blue.png' );
+  	$store_logo = apply_filters( 'wcfmmp_store_default_logo', esc_url($WCFM->plugin_url) . 'assets/images/wcfmmp-blue.png' );
   	
   	if( !$vendor_id ) return $store_logo;
   	$vendor_id = absint( $vendor_id );
@@ -1245,7 +1245,7 @@ class WCFM_Vendor_Support {
 			if(  empty( $shop_name ) && $vendor_user ) {
 				$shop_name     = $vendor_user->display_name;
 			}
-			if( $shop_name ) { $vendor_store = $shop_name; }
+			if( $shop_name ) { $vendor_store = esc_attr($shop_name); }
 		}
 		
 		return $vendor_store;
@@ -1302,7 +1302,7 @@ class WCFM_Vendor_Support {
 				$shop_name     = $vendor_user->display_name;
 			}
 			$shop_link     = wcfmmp_get_store_url( $vendor_id );
-			if( $shop_name ) { $vendor_store = '<a class="wcfm_dashboard_item_title" ' . $store_open_by . ' href="' . apply_filters( 'wcfmmp_vendor_shop_permalink', $shop_link, $vendor_id ) . '">' . $shop_name . '</a>'; }
+			if( $shop_name ) { $vendor_store = '<a class="wcfm_dashboard_item_title" ' . $store_open_by . ' href="' . apply_filters( 'wcfmmp_vendor_shop_permalink', $shop_link, $vendor_id ) . '">' . esc_attr( $shop_name ) . '</a>'; }
 			else { $vendor_store = '<a class="wcfm_dashboard_item_title" ' . $store_open_by . ' href="' . apply_filters( 'wcfmmp_vendor_shop_permalink', $shop_link, $vendor_id ) . '">' . __('Shop', 'wc-frontend-manager') . '</a>'; }
 		}
 		
@@ -1506,9 +1506,13 @@ class WCFM_Vendor_Support {
   	if( $marketplece == 'wcvendors' ) {
   		$sql = "SELECT order_id, GROUP_CONCAT(product_id) product_ids, SUM( commission.total_shipping ) AS total_shipping FROM {$wpdb->prefix}pv_commission AS commission";
 			$sql .= " WHERE 1=1";
-			if( $vendor_id ) $sql .= " AND `vendor_id` = {$vendor_id}";
+			if( $vendor_id ) {
+				$sql .= " AND `vendor_id` = %d";
+				$sql = $wpdb->prepare( $sql, $vendor_id );
+			}
 			if( $order_id ) {
-				$sql .= " AND `order_id` = {$order_id}";
+				$sql .= " AND `order_id` = %d";
+				$sql = $wpdb->prepare( $sql, $order_id );
 			} else {
 				if( $is_paid ) {
 					$sql .= " AND commission.status = 'paid'";
@@ -1575,9 +1579,14 @@ class WCFM_Vendor_Support {
 		} elseif( $marketplece == 'wcmarketplace' ) {
 			$sql = "SELECT order_item_id, shipping, shipping_tax_amount FROM {$wpdb->prefix}wcmp_vendor_orders AS commission";
 			$sql .= " WHERE 1=1";
-			if( $vendor_id ) $sql .= " AND `vendor_id` = {$vendor_id}";
+			if( $vendor_id ) {
+				$sql .= " AND `vendor_id` = %d";
+				$sql = $wpdb->prepare( $sql, $vendor_id );
+			}
 			if( $order_id ) {
-				$sql .= " AND `order_id` = {$order_id}";
+				$sql .= " AND `order_id` = %d";
+				$sql = $wpdb->prepare( $sql, $order_id );
+				
 			} else {
 				$sql .= " AND `line_item_type` = 'product' AND `commission_id` != 0 AND `commission_id` != '' AND `is_trashed` != 1";
 				if( $is_paid ) {
@@ -1611,9 +1620,13 @@ class WCFM_Vendor_Support {
 		} elseif( $marketplece == 'wcpvendors' ) {
 			$sql = "SELECT SUM( commission.product_amount ) AS total_product_amount, SUM( commission.product_shipping_amount ) AS product_shipping_amount, SUM( commission.product_shipping_tax_amount ) AS product_shipping_tax_amount, SUM( commission.product_tax_amount ) AS product_tax_amount FROM " . WC_PRODUCT_VENDORS_COMMISSION_TABLE . " AS commission";
 			$sql .= " WHERE 1=1";
-			if( $vendor_id )  $sql .= " AND commission.vendor_id = {$vendor_id}";
+			if( $vendor_id )  {
+				$sql .= " AND commission.vendor_id = %d";
+				$sql = $wpdb->prepare( $sql, $vendor_id );
+			}
 			if( $order_id ) {
-				$sql .= " AND `order_id` = {$order_id}";
+				$sql .= " AND `order_id` = %d";
+				$sql = $wpdb->prepare( $sql, $order_id );
 			} else {
 				if( $is_paid ) {
 					$sql .= " AND commission.commission_status = 'paid'";
@@ -1632,9 +1645,13 @@ class WCFM_Vendor_Support {
 		} elseif( $marketplece == 'dokan' ) {
 			$sql = "SELECT SUM( commission.order_total ) AS total_order_amount FROM {$wpdb->prefix}dokan_orders AS commission LEFT JOIN {$wpdb->posts} p ON commission.order_id = p.ID";
 			$sql .= " WHERE 1=1";
-			if( $vendor_id )  $sql .= " AND commission.seller_id = {$vendor_id}";
+			if( $vendor_id )  {
+				$sql .= " AND commission.seller_id = %d";
+				$sql = $wpdb->prepare( $sql, $vendor_id );
+			}
 			if( $order_id ) {
-				$sql .= " AND `commission.order_id` = {$order_id}";
+				$sql .= " AND `commission.order_id` = %d";
+				$sql = $wpdb->prepare( $sql, $order_id );
 			} else {   
 				$status = dokan_withdraw_get_active_order_status_in_comma();
 				$sql .= " AND commission.order_status IN ({$status})";
@@ -1650,9 +1667,13 @@ class WCFM_Vendor_Support {
 		} elseif( $marketplece == 'wcfmmarketplace' ) {
 			$sql = "SELECT ID, order_id, item_id, item_total, item_sub_total, refunded_amount, shipping, tax, shipping_tax_amount FROM {$wpdb->prefix}wcfm_marketplace_orders AS commission";
 			$sql .= " WHERE 1=1";
-			if( $vendor_id ) $sql .= " AND `vendor_id` = {$vendor_id}";
+			if( $vendor_id ) {
+				$sql .= " AND `vendor_id` = %d";
+				$sql = $wpdb->prepare( $sql, $vendor_id );
+			}
 			if( $order_id ) {
-				$sql .= " AND `order_id` = {$order_id}";
+				$sql .= " AND `order_id` = %d";
+				$sql = $wpdb->prepare( $sql, $order_id );
 				//$sql .= " AND `is_refunded` != 1";
 			} else {
 				$sql .= apply_filters( 'wcfm_order_status_condition', '', 'commission' );
@@ -1772,7 +1793,10 @@ class WCFM_Vendor_Support {
   		if( $is_paid ) {
   			$sql = "SELECT SUM( withdraw.amount ) AS amount FROM {$wpdb->prefix}dokan_withdraw AS withdraw";
   			$sql .= " WHERE 1=1";
-  			if( $vendor_id ) $sql .= " AND withdraw.user_id = {$vendor_id}";
+  			if( $vendor_id ) {
+  				$sql .= " AND withdraw.user_id = %d";
+  				$sql = $wpdb->prepare( $sql, $vendor_id );
+  			}
   			$sql .= " AND withdraw.status = 1";
   			$sql = wcfm_query_time_range_filter( $sql, 'date', $interval, $filter_date_form, $filter_date_to, 'withdraw' );
   			$total_commissions = $wpdb->get_results( $sql );
@@ -1881,7 +1905,7 @@ class WCFM_Vendor_Support {
 			
 			$sql = 'SELECT order_id, total_commission FROM ' . $wpdb->prefix . 'wcfm_marketplace_orders AS commission';
 			$sql .= ' WHERE 1=1';
-			$sql .= " AND `vendor_id` = {$vendor_id}";
+			$sql .= " AND `vendor_id` = %d";
 			$sql .= apply_filters( 'wcfm_order_status_condition', '', 'commission' );
 			$sql .= " AND commission.withdraw_status IN ('pending', 'cancelled')";
 			$sql .= " AND commission.refund_status != 'requested'";
@@ -1891,7 +1915,7 @@ class WCFM_Vendor_Support {
 				$sql .= " AND DATE( commission.created ) BETWEEN '" . $filter_date_form . "' AND '" . $filter_date_to . "'";
 			}
 			
-			$wcfm_withdrawals_array = $wpdb->get_results( $sql );
+			$wcfm_withdrawals_array = $wpdb->get_results( $wpdb->prepare( $sql, $vendor_id ) );
 			
 			if(!empty($wcfm_withdrawals_array)) {
 				foreach($wcfm_withdrawals_array as $wcfm_withdrawals_single) {
@@ -2201,8 +2225,8 @@ class WCFM_Vendor_Support {
   	
 		$sql = "SELECT order_id FROM {$wpdb->prefix}{$commission_table}";
 		$sql .= " WHERE 1=1";
-		$sql .= " AND {$vendor_handler} = {$vendor_id}";
-		$vendor_orders = $wpdb->get_results( $sql );
+		$sql .= " AND {$vendor_handler} = %d";
+		$vendor_orders = $wpdb->get_results( $wpdb->prepare( $sql, $vendor_id ) );
 		
 		if( !empty( $vendor_orders ) ) {
 			foreach( $vendor_orders as $vendor_order ) {
@@ -2411,9 +2435,9 @@ class WCFM_Vendor_Support {
   	  case 'order':
 				$sql = "SELECT * FROM {$wpdb->prefix}wcfm_marketplace_orders AS commission";
 				$sql .= " WHERE 1=1";
-				$sql .= " AND commission.order_id = {$component_id}";
-				$sql .= " AND commission.vendor_id = {$current_vendor}";
-				$vendor_order_data = $wpdb->get_results( $sql );
+				$sql .= " AND commission.order_id = %d";
+				$sql .= " AND commission.vendor_id = %d";
+				$vendor_order_data = $wpdb->get_results( $wpdb->prepare( $sql, $component_id, $current_vendor ) );
 				if( empty($vendor_order_data) ) { $is_component_for_vendor = false; }
 			break;
 			
@@ -2427,18 +2451,18 @@ class WCFM_Vendor_Support {
 			case 'inquiry':
 				$sql = "SELECT * FROM {$wpdb->prefix}wcfm_enquiries AS commission";
 				$sql .= " WHERE 1=1";
-				$sql .= " AND commission.ID = {$component_id}";
-				$sql .= " AND commission.vendor_id = {$current_vendor}";
-				$vendor_order_data = $wpdb->get_results( $sql );
+				$sql .= " AND commission.ID = %d";
+				$sql .= " AND commission.vendor_id = %d";
+				$vendor_order_data = $wpdb->get_results( $wpdb->prepare( $sql, $component_id, $current_vendor ) );
 				if( empty($vendor_order_data) ) { $is_component_for_vendor = false; }
 			break;
 			
 			case 'support':
 				$sql = "SELECT * FROM {$wpdb->prefix}wcfm_support AS commission";
 				$sql .= " WHERE 1=1";
-				$sql .= " AND commission.ID = {$component_id}";
-				$sql .= " AND commission.vendor_id = {$current_vendor}";
-				$vendor_support_data = $wpdb->get_results( $sql );
+				$sql .= " AND commission.ID = %d";
+				$sql .= " AND commission.vendor_id = %d";
+				$vendor_support_data = $wpdb->get_results( $wpdb->prepare( $sql, $component_id, $current_vendor ) );
 				if( empty($vendor_support_data) ) { $is_component_for_vendor = false; }
 			break;
 			

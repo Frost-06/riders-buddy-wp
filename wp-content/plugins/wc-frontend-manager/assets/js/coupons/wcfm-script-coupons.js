@@ -34,7 +34,8 @@ jQuery(document).ready(function($) {
 				d.action          = 'wcfm_ajax_controller',
 				d.controller      = 'wcfm-coupons',
 				d.coupon_type     = $coupon_type,
-				d.coupon_vendor   = $coupon_vendor
+				d.coupon_vendor   = $coupon_vendor,
+				d.wcfm_ajax_nonce = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();

@@ -22,6 +22,8 @@ if( file_exists( $stylesheet_path . 'header.php' ) ) {
 	include_once( $default_path . 'header.php' );
 }	
 
+do_action( 'after_wcfm_dashboard_header' );
+
 while ( have_posts() ) : the_post(); ?>
 	<div id="wcfm-main-content" class="<?php echo ''; ?>">
 		<div class="wcfm-content-container">
@@ -36,6 +38,8 @@ while ( have_posts() ) : the_post(); ?>
 	<?php
 endwhile;
 wp_reset_query();
+
+do_action( 'before_wcfm_dashboard_footer' );
 
 if( file_exists( $stylesheet_path . 'footer.php' ) ) {
 	include_once( $stylesheet_path . 'footer.php' );

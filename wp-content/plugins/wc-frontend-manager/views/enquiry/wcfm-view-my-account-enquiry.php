@@ -25,10 +25,10 @@ $wcfm_myaccount_view_inquiry_endpoint = ! empty( $wcfm_myac_modified_endpoints['
 if( is_user_logged_in() ) {
 	$enquiry_query = "SELECT * FROM {$wpdb->prefix}wcfm_enquiries AS commission";
 	$enquiry_query .= " WHERE 1 = 1";
-	$enquiry_query .= " AND `customer_id` = " . get_current_user_id();
+	$enquiry_query .= " AND `customer_id` = %d";
 	$enquiry_query .= " ORDER BY commission.`ID` DESC";
 	
-	$wcfm_inqueries = $wpdb->get_results( $enquiry_query );
+	$wcfm_inqueries = $wpdb->get_results( $wpdb->prepare( $enquiry_query, get_current_user_id() ) );
 	
 	$myaccount_page_id = get_option( 'woocommerce_myaccount_page_id' );
 	if ( $myaccount_page_id ) {
@@ -52,7 +52,7 @@ if( is_user_logged_in() ) {
 				<?php if( !empty( $wcfm_inqueries ) ) { foreach( $wcfm_inqueries as $wcfm_enquiry ) { ?>
 					<tr class="woocommerce-enquiry-table__row woocommerce-enquiry-table__row--status-completed enquiry">
 						<td class="woocommerce-enquiry-table__cell woocommerce-enquiry-table__cell-enquiry-number" data-title="<?php _e( 'Query', 'wc-frontend-manager' ); ?>">
-							<a href="<?php echo $myaccount_page_url . $wcfm_myaccount_view_inquiry_endpoint . '/' . $wcfm_enquiry->ID; ?>"><?php echo $wcfm_enquiry->enquiry; ?></a>
+							<a href="<?php echo esc_url($myaccount_page_url . $wcfm_myaccount_view_inquiry_endpoint . '/' . $wcfm_enquiry->ID); ?>"><?php echo $wcfm_enquiry->enquiry; ?></a>
 						</td>
 						<td class="woocommerce-enquiry-table__cell woocommerce-enquiry-table__cell-enquiry-category" data-title="<?php _e( 'Product', 'wc-frontend-manager' ); ?>">
 							<?php if( $wcfm_enquiry->product_id ) { echo '<a class="wcfm-enquiry-product" target="_blank" href="' . get_permalink($wcfm_enquiry->product_id) . '">' . get_the_title($wcfm_enquiry->product_id) . '</a>'; } else { echo '&ndash;'; } ?>
@@ -64,7 +64,7 @@ if( is_user_logged_in() ) {
 							<td class="woocommerce-enquiry-table__cell woocommerce-enquiry-table__cell-enquiry-priority" data-title="<?php _e( 'Additional Info', 'wc-frontend-manager' ); ?>">
 								<?php
 								$additional_info = '';
-								$wcfm_enquiry_meta_values = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}wcfm_enquiries_meta WHERE `enquiry_id` = " . $wcfm_enquiry->ID);
+								$wcfm_enquiry_meta_values = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wcfm_enquiries_meta WHERE `enquiry_id` = %d", $wcfm_enquiry->ID ) );
 								if( !empty( $wcfm_enquiry_meta_values ) ) {
 									foreach( $wcfm_enquiry_meta_values as $wcfm_enquiry_meta_value ) {
 										$additional_info .= __( $wcfm_enquiry_meta_value->key, 'wc-frontend-manager' ) . ': ' . $wcfm_enquiry_meta_value->value . '<br />';
@@ -72,12 +72,12 @@ if( is_user_logged_in() ) {
 								} else {
 									$additional_info = '&ndash;';
 								}
-								echo $additional_info;
+								echo wp_kses_post($additional_info);
 								?>
 							</td>
 						<?php } ?>
 						<td class="woocommerce-enquiry-table__cell woocommerce-enquiry-table__cell-enquiry-actions" data-title="<?php _e( 'Actions', 'wc-frontend-manager' ); ?>">
-							<a href="<?php echo $myaccount_page_url . $wcfm_myaccount_view_inquiry_endpoint . '/' . $wcfm_enquiry->ID; ?>" class="woocommerce-button button view"><?php _e( 'View', 'wc-frontend-manager' ); ?></a>													
+							<a href="<?php echo esc_url($myaccount_page_url . $wcfm_myaccount_view_inquiry_endpoint . '/' . $wcfm_enquiry->ID); ?>" class="woocommerce-button button view"><?php _e( 'View', 'wc-frontend-manager' ); ?></a>													
 						</td>
 					</tr>
 				<?php } } else { ?>

@@ -539,7 +539,7 @@ $is_marketplace = wcfm_is_marketplace();
 									$secret_key = $testmode ? sanitize_text_field( $WCFMmp->wcfmmp_withdrawal_options['stripe_test_secret_key'] ) : sanitize_text_field( $WCFMmp->wcfmmp_withdrawal_options['stripe_secret_key'] );
 									if (isset($client_id) && isset($secret_key)) {
 										if ( !isset( $_GET['marketplace_wirecard'] ) && isset($_GET['code'])) {
-											$code = $_GET['code'];
+											$code = wc_clean($_GET['code']);
 											if (!is_user_logged_in()) {
 												if (isset($_GET['state'])) {
 													$user_id = wc_clean($_GET['state']);
@@ -765,7 +765,7 @@ $is_marketplace = wcfm_is_marketplace();
 											} else {
 												$url = 'https://connect.stripe.com/oauth/authorize?' . http_build_query($authorize_request_body);
 											}
-											$stripe_connect_url = $WCFM->plugin_url . 'assets/images/blue-on-light.png';
+											$stripe_connect_url = esc_url( $WCFM->plugin_url . 'assets/images/blue-on-light.png' );
 
 											if (!$status) {
 												?>
@@ -782,7 +782,7 @@ $is_marketplace = wcfm_is_marketplace();
 															<tr>
 																<th></th>
 																<td>
-																	<a href=<?php echo $url; ?> target="_self"><img src="<?php echo $stripe_connect_url; ?>" /></a>
+																	<a href=<?php echo esc_url($url); ?> target="_self"><img src="<?php echo esc_url($stripe_connect_url); ?>" /></a>
 																</td>
 															</tr>
 														</tbody>
@@ -804,7 +804,7 @@ $is_marketplace = wcfm_is_marketplace();
 																<tr>
 																	<th></th>
 																	<td>
-																		<a href=<?php echo $url; ?> target="_self"><img src="<?php echo $stripe_connect_url; ?>" /></a>
+																		<a href=<?php echo esc_url($url); ?> target="_self"><img src="<?php echo esc_url($stripe_connect_url); ?>" /></a>
 																	</td>
 																</tr>
 															</tbody>
@@ -991,8 +991,8 @@ $is_marketplace = wcfm_is_marketplace();
 </div>
 
 <script type="text/javascript">
-	var selected_state = '<?php echo $state; ?>';
-	var input_selected_state = '<?php echo $state; ?>';
-	var csd_selected_state = '<?php echo $vendor_csd_return_state; ?>';
-	var input_csd_state = '<?php echo $vendor_csd_return_state; ?>';
+	var selected_state = '<?php echo esc_attr($state); ?>';
+	var input_selected_state = '<?php echo esc_attr($state); ?>';
+	var csd_selected_state = '<?php echo esc_attr($vendor_csd_return_state); ?>';
+	var input_csd_state = '<?php echo esc_attr($vendor_csd_return_state); ?>';
 </script>

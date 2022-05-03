@@ -281,9 +281,9 @@ $store_lng = get_user_meta( $user_id, '_store_lng', true ) ? get_user_meta( $use
 										<?php foreach ($template_options as $template => $template_image): ?>
 											<li>
 												<label>
-													<input type="radio" <?php checked($template, $shop_template); ?> name="shop_template" value="<?php echo $template; ?>" />  
+													<input type="radio" <?php checked($template, $shop_template); ?> name="shop_template" value="<?php echo esc_attr($template); ?>" />  
 													<i class="wcfmfa fa-square-o" aria-hidden="true"></i>
-													<img src="<?php echo $template_image; ?>" />
+													<img src="<?php echo esc_url($template_image); ?>" />
 												</label>
 											</li>
 										<?php endforeach; ?>
@@ -331,7 +331,7 @@ $store_lng = get_user_meta( $user_id, '_store_lng', true ) ? get_user_meta( $use
 											$secret_key = $testmode ? get_wcmp_vendor_settings('test_secret_key', 'payment', 'stripe_gateway') : get_wcmp_vendor_settings('live_secret_key', 'payment', 'stripe_gateway');
 											if (isset($client_id) && isset($secret_key)) {
 												if (isset($_GET['code'])) {
-													$code = $_GET['code'];
+													$code = wc_clean($_GET['code']);
 													if (!is_user_logged_in()) {
 														if (isset($_GET['state'])) {
 															$user_id = wc_clean($_GET['state']);
@@ -568,7 +568,7 @@ $store_lng = get_user_meta( $user_id, '_store_lng', true ) ? get_user_meta( $use
 																	<tr>
 																		<th></th>
 																		<td>
-																			<a href=<?php echo $url; ?> target="_self"><img src="<?php echo $stripe_connect_url; ?>" /></a>
+																			<a href=<?php echo esc_url($url); ?> target="_self"><img src="<?php echo esc_url($stripe_connect_url); ?>" /></a>
 																		</td>
 																	</tr>
 																</tbody>
@@ -590,7 +590,7 @@ $store_lng = get_user_meta( $user_id, '_store_lng', true ) ? get_user_meta( $use
 																		<tr>
 																			<th></th>
 																			<td>
-																					<a href=<?php echo $url; ?> target="_self"><img src="<?php echo $stripe_connect_url; ?>" /></a>
+																					<a href=<?php echo esc_url($url); ?> target="_self"><img src="<?php echo esc_url($stripe_connect_url); ?>" /></a>
 																			</td>
 																		</tr>
 																	</tbody>
@@ -658,7 +658,7 @@ $store_lng = get_user_meta( $user_id, '_store_lng', true ) ? get_user_meta( $use
 													echo "<h2>" . __( 'Shipping Zone', 'wc-frontend-manager' ) . ': ' . $zone->get_zone_name() . "</h2><div class='wcfm_clearfix'></div>";
 													
 													$table_rate_shipping_rules = array();
-													$table_rates = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}woocommerce_shipping_table_rates WHERE `rate_class` = {$shipping_class_id} AND `shipping_method_id` = {$raw_method->instance_id} order by 'shipping_method_id' ", OBJECT);
+													$table_rates = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}woocommerce_shipping_table_rates WHERE `rate_class` = %d AND `shipping_method_id` = %d order by 'shipping_method_id' ", $shipping_class_id, $raw_method->instance_id ), OBJECT);
 							
 													if( !empty($table_rates) ) {
 														foreach ( $table_rates as $table_rate ) {
@@ -779,7 +779,7 @@ $store_lng = get_user_meta( $user_id, '_store_lng', true ) ? get_user_meta( $use
 			  
 				<input type="submit" name="save-data" value="<?php _e( 'Save', 'wc-frontend-manager' ); ?>" id="wcfm_settings_save_button" class="wcfm_submit_button" />
 			</div>
-			
+			<input type="hidden" name="wcfm_nonce" value="<?php echo wp_create_nonce( 'wcfm_settings' ); ?>" />
 		</form>
 		<?php
 		do_action( 'after_wcfm_wcmarketplace_settings' );
@@ -787,6 +787,6 @@ $store_lng = get_user_meta( $user_id, '_store_lng', true ) ? get_user_meta( $use
 	</div>
 </div>
 <script type="text/javascript">
-	var selected_state = '<?php echo $state; ?>';
-	var input_selected_state = '<?php echo $state; ?>';
+	var selected_state = '<?php echo esc_attr($state); ?>';
+	var input_selected_state = '<?php echo esc_attr($state); ?>';
 </script>

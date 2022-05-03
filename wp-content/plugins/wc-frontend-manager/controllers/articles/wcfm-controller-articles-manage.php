@@ -69,8 +69,8 @@ class WCFM_Articles_Manage_Controller {
 				'post_title'   => wc_clean( $wcfm_articles_manage_form_data['title'] ),
 				'post_status'  => $article_status,
 				'post_type'    => 'post',
-				'post_excerpt' => apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['excerpt'], ENT_QUOTES, 'UTF-8' ) ) ),
-				'post_content' => apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['description'], ENT_QUOTES, 'UTF-8' ) ) ),
+				'post_excerpt' => wp_filter_post_kses( apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['excerpt'], ENT_QUOTES, 'UTF-8' ) ) ) ),
+				'post_content' => wp_filter_post_kses( apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['description'], ENT_QUOTES, 'UTF-8' ) ) ) ),
 				'post_author'  => $current_user_id,
 				'post_name' => sanitize_title($wcfm_articles_manage_form_data['title'])
 			), $wcfm_articles_manage_form_data );
@@ -192,20 +192,20 @@ class WCFM_Articles_Manage_Controller {
 				if(!$has_error) {
 					if( get_post_status( $new_article_id ) == 'publish' ) {
 						if( !apply_filters( 'wcfm_is_allow_edit_articles', true ) ) {
-						 if(!$has_error) echo '{"status": true, "message": "' . apply_filters( 'article_published_message', $wcfm_articles_manage_messages['article_published'], $new_article_id ) . '", "redirect": "' . apply_filters( 'wcfm_article_save_publish_redirect', get_permalink( $new_article_id ), $new_article_id ) . '", "id": "' . $new_article_id . '", "title": "' . get_the_title( $new_article_id ) . '"}';
+						 if(!$has_error) echo '{"status": true, "message": "' . esc_html( apply_filters( 'article_published_message', $wcfm_articles_manage_messages['article_published'], $new_article_id ) ) . '", "redirect": "' . esc_url( apply_filters( 'wcfm_article_save_publish_redirect', get_permalink( $new_article_id ), $new_article_id ) ) . '", "id": "' . $new_article_id . '", "title": "' . esc_html( get_the_title( $new_article_id ) ) . '"}';
 						} else {
-							if(!$has_error) echo '{"status": true, "message": "' . apply_filters( 'article_published_message', $wcfm_articles_manage_messages['article_published'], $new_article_id ) . '", "redirect": "' . apply_filters( 'wcfm_article_save_publish_redirect', get_wcfm_articles_manage_url( $new_article_id ), $new_article_id ) . '", "id": "' . $new_article_id . '", "title": "' . get_the_title( $new_article_id ) . '"}';
+							if(!$has_error) echo '{"status": true, "message": "' . esc_html( apply_filters( 'article_published_message', $wcfm_articles_manage_messages['article_published'], $new_article_id ) ) . '", "redirect": "' . esc_url( apply_filters( 'wcfm_article_save_publish_redirect', get_wcfm_articles_manage_url( $new_article_id ), $new_article_id ) ) . '", "id": "' . $new_article_id . '", "title": "' . esc_html( get_the_title( $new_article_id ) ) . '"}';
 						}
 					} elseif( get_post_status( $new_article_id ) == 'pending' ) {
-						if(!$has_error) echo '{"status": true, "message": "' . apply_filters( 'article_pending_message', $wcfm_articles_manage_messages['article_pending'], $new_article_id ) . '", "redirect": "' . apply_filters( 'wcfm_article_save_pending_redirect', get_wcfm_articles_manage_url( $new_article_id ), $new_article_id ) . '", "id": "' . $new_article_id . '", "title": "' . get_the_title( $new_article_id ) . '"}';
+						if(!$has_error) echo '{"status": true, "message": "' . esc_html( apply_filters( 'article_pending_message', $wcfm_articles_manage_messages['article_pending'], $new_article_id ) ) . '", "redirect": "' . esc_url( apply_filters( 'wcfm_article_save_pending_redirect', get_wcfm_articles_manage_url( $new_article_id ), $new_article_id ) ) . '", "id": "' . $new_article_id . '", "title": "' . esc_html( get_the_title( $new_article_id ) ) . '"}';
 					} else {
-						if(!$has_error) echo '{"status": true, "message": "' . apply_filters( 'article_saved_message', $wcfm_articles_manage_messages['article_saved'], $new_article_id ) . '", "redirect": "' . apply_filters( 'wcfm_article_save_draft_redirect', get_wcfm_articles_manage_url( $new_article_id ), $new_article_id ) . '", "id": "' . $new_article_id . '"}';
+						if(!$has_error) echo '{"status": true, "message": "' . esc_html( apply_filters( 'article_saved_message', $wcfm_articles_manage_messages['article_saved'], $new_article_id ) ) . '", "redirect": "' . esc_url( apply_filters( 'wcfm_article_save_draft_redirect', get_wcfm_articles_manage_url( $new_article_id ), $new_article_id ) ) . '", "id": "' . $new_article_id . '"}';
 					}
 				}
 				die;
 			}
 		} else {
-			echo '{"status": false, "message": "' . $wcfm_articles_manage_messages['no_title'] . '"}';
+			echo '{"status": false, "message": "' . esc_html( $wcfm_articles_manage_messages['no_title'] ) . '"}';
 		}
 	  die;
 	}

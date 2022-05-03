@@ -30,11 +30,11 @@ class WCFM_Notice_Reply_Controller {
 	  	
 	  	// Creating new notice
 			$new_notice = array(
-				'post_title'   => 'Reply for #' . wc_clean( $_POST['topic_id'] ),
-				'post_parent'  => wc_clean( $_POST['topic_id'] ),
+				'post_title'   => 'Reply for #' . absint( $_POST['topic_id'] ),
+				'post_parent'  => absint( $_POST['topic_id'] ),
 				'post_status'  => $notice_status,
 				'post_type'    => 'wcfm_notice',
-				'post_content' => apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['topic_reply'], ENT_QUOTES, 'UTF-8' ) ) ),
+				'post_content' => wp_filter_post_kses( apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['topic_reply'], ENT_QUOTES, 'UTF-8' ) ) ) ),
 				'post_author'  => $current_user_id
 			);
 			
@@ -42,13 +42,13 @@ class WCFM_Notice_Reply_Controller {
 			
 			if(!is_wp_error($new_notice_id)) {
 				
-				echo '{"status": true, "message": "' . $wcfm_notice_messages['reply_published'] . '", "redirect": "' . get_wcfm_notice_view_url( wc_clean($_POST['topic_id']) ) . '#topic_reply_' . $new_notice_id . '"}';
+				echo '{"status": true, "message": "' . esc_html( $wcfm_notice_messages['reply_published'] ) . '", "redirect": "' . esc_url( get_wcfm_notice_view_url( absint($_POST['topic_id']) ) . '#topic_reply_' . $new_notice_id ) . '"}';
 				die;
 			} else {
-				echo '{"status": false, "message": "' . $wcfm_notice_messages['notice_failed'] . '"}';
+				echo '{"status": false, "message": "' . esc_html( $wcfm_notice_messages['notice_failed'] ) . '"}';
 			}
 		} else {
-			echo '{"status": false, "message": "' . $wcfm_notice_messages['no_title'] . '"}';
+			echo '{"status": false, "message": "' . esc_html( $wcfm_notice_messages['no_title'] ) . '"}';
 		}
 		
 		die;

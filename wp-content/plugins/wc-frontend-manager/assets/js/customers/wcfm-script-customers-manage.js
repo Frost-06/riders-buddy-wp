@@ -88,7 +88,8 @@ jQuery(document).ready(function($) {
 				action                   : 'wcfm_ajax_controller',
 				controller               : 'wcfm-customers-manage',
 				wcfm_customers_manage_form : $('#wcfm_customers_manage_form').serialize(),
-				status                   : 'submit'
+				status                   : 'submit',
+				wcfm_ajax_nonce          : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {

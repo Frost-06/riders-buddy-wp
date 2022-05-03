@@ -60,7 +60,7 @@ $message_types  = get_wcfm_message_types();
 				<select name="filter-by-type" id="filter-by-type" style="width: 150px;">
 					<option value='all'><?php esc_html_e( 'All', 'wc-frontend-manager' ); ?></option>
 					<?php foreach( $message_types as $message_type => $message_type_label ) { ?>
-						<option value='<?php echo $message_type; ?>' <?php selected( $message_type, $selected_type, true ); ?>><?php echo $message_type_label; ?></option>
+						<option value='<?php echo esc_attr($message_type); ?>' <?php selected( $message_type, $selected_type, true ); ?>><?php echo esc_html($message_type_label); ?></option>
 					<?php } ?>
 				</select>
 			</div>

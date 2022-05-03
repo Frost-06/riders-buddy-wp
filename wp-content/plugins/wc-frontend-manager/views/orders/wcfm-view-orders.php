@@ -17,6 +17,8 @@ if( !$wcfm_is_allow_orders ) {
 	return;
 }
 
+$order_vendor = ! empty( $_GET['order_vendor'] ) ? sanitize_text_field( $_GET['order_vendor'] ) : '';
+
 //include_once( $WCFM->plugin_path . 'controllers/orders/wcfm-controller-wcmarketplace-orders.php' );
 //new WCFM_Orders_WCMarketplace_Controller();
 
@@ -49,8 +51,9 @@ $admin_fee_mode = apply_filters( 'wcfm_is_admin_fee_mode', false );
 					$is_marketplace = wcfm_is_marketplace();
 					if( $is_marketplace && ( $is_marketplace == 'wcfmmarketplace' ) ) {
 						$vendor_arr = array(); //$WCFM->wcfm_vendor_support->wcfm_get_vendor_list();
+						if( $order_vendor ) $vendor_arr = array( $order_vendor => wcfm_get_vendor_store_name($order_vendor) );
 						$WCFM->wcfm_fields->wcfm_generate_form_field( array(
-																											"dropdown_vendor" => array( 'type' => 'select', 'options' => $vendor_arr, 'attributes' => array( 'style' => 'width: 150px;' ) )
+																											"dropdown_vendor" => array( 'type' => 'select', 'options' => $vendor_arr, 'value' => $order_vendor, 'attributes' => array( 'style' => 'width: 150px;' ) )
 																											 ) );
 					}
 					?>

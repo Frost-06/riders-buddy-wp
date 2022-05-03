@@ -20,14 +20,14 @@ class WCFM_Messages_Controller {
 	public function processing() {
 		global $WCFM, $wpdb, $_POST, $start_date, $end_date;
 		
-		$length = wc_clean($_POST['length']);
-		$offset = wc_clean($_POST['start']);
+		$length = absint($_POST['length']);
+		$offset = absint($_POST['start']);
 		
 		$message_to = apply_filters( 'wcfm_message_author', get_current_user_id() );
 		
 		$message_status = '';
 		if ( ! empty( $_POST['message_status'] ) ) {
-			$message_status = esc_sql( $_POST['message_status'] );
+			$message_status = wc_clean( $_POST['message_status'] );
 		}
 		
 		$message_type = '';
@@ -36,7 +36,7 @@ class WCFM_Messages_Controller {
 			$message_type = wc_clean( $_POST['message_type'] );
 		}
 		
-		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_text_field( $_POST['orderby'] ) : 'ID';
+		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_sql_orderby( $_POST['orderby'] ) : 'ID';
 		$the_order   = ( ! empty( $_POST['order'] ) && 'asc' === $_POST['order'] ) ? 'ASC' : 'DESC';
 
 		$items_per_page = $length;
@@ -53,21 +53,22 @@ class WCFM_Messages_Controller {
 
 		$sql .= ' WHERE 1=1';
 		
-		$status_filter = " AND `is_direct_message` = 1";
-		
+		$status_filter = " AND `is_direct_message` = %d";
 		$sql .= $status_filter;
+		$sql = $wpdb->prepare( $sql, 1 );
 		
 		$type_filter = '';
 		if( $message_type != 'all' ) {
-		  $type_filter = " AND `message_type` = '" . $message_type . "'";
+		  $type_filter = " AND `message_type` = %s";
+		  $sql .= $type_filter;
+		  $sql = $wpdb->prepare( $sql, $message_type );
 		}
 		
-		$sql .= $type_filter;
-
 		if( wcfm_is_vendor() || ( function_exists( 'wcfm_is_delivery_boy' ) && wcfm_is_delivery_boy() ) || ( function_exists( 'wcfm_is_affiliate' ) && wcfm_is_affiliate() ) ) { 
 			//$vendor_filter = " AND `author_is_admin` = 1";
-			$vendor_filter = " AND ( `author_id` = {$message_to} OR `message_to` = -1 OR `message_to` = {$message_to} )";
+			$vendor_filter = " AND ( `author_id` = %d OR `message_to` = -1 OR `message_to` = %d )";
 			$sql .= $vendor_filter;
+			$sql = $wpdb->prepare( $sql, $message_to, $message_to );
 		} else {
 			$group_manager_filter = apply_filters( 'wcfm_notification_group_manager_filter', '' );
 			if( $group_manager_filter ) {
@@ -79,12 +80,15 @@ class WCFM_Messages_Controller {
 		
 		
 		$message_status_filter = '';
-		if( $message_status == 'read' ) {
-			$message_status_filter = " AND wcfm_messages_modifier.is_read = 1 AND wcfm_messages_modifier.read_by = {$message_to}";
-		} elseif( $message_status == 'unread' ) {
-			$message_status_filter = " AND NOT EXISTS (SELECT * FROM {$wpdb->prefix}wcfm_messages_modifier as wcfm_messages_modifier_2 WHERE wcfm_messages.ID = wcfm_messages_modifier_2.message AND wcfm_messages_modifier_2.read_by={$message_to})";
+		if( $message_status ) {
+			if( $message_status == 'read' ) {
+				$message_status_filter = " AND wcfm_messages_modifier.is_read = 1 AND wcfm_messages_modifier.read_by = %d";
+			} elseif( $message_status == 'unread' ) {
+				$message_status_filter = " AND NOT EXISTS (SELECT * FROM {$wpdb->prefix}wcfm_messages_modifier as wcfm_messages_modifier_2 WHERE wcfm_messages.ID = wcfm_messages_modifier_2.message AND wcfm_messages_modifier_2.read_by=%d)";
+			}
+			$sql .= $message_status_filter;
+			$sql = $wpdb->prepare( $sql, $message_to );
 		}
-		$sql .= $message_status_filter;
 		
 		$total_mesaages = $wpdb->get_var( $sql );
 
@@ -95,11 +99,16 @@ class WCFM_Messages_Controller {
 		$sql .= ' WHERE 1=1';
 
 		$sql .= $status_filter;
+		$sql = $wpdb->prepare( $sql, 1 );
 		
-		$sql .= $type_filter;
+		if( $type_filter ) {
+			$sql .= $type_filter;
+			$sql = $wpdb->prepare( $sql, $message_type );
+		}
 		
 		if( wcfm_is_vendor() || ( function_exists( 'wcfm_is_delivery_boy' ) && wcfm_is_delivery_boy() ) || ( function_exists( 'wcfm_is_affiliate' ) && wcfm_is_affiliate() ) ) { 
 			$sql .= $vendor_filter;
+			$sql = $wpdb->prepare( $sql, $message_to, $message_to );
 		} else {
 			$group_manager_filter = apply_filters( 'wcfm_notification_group_manager_filter', '' );
 			if( $group_manager_filter ) {
@@ -109,7 +118,10 @@ class WCFM_Messages_Controller {
 			}
 		}
 		
-		$sql .= $message_status_filter;
+		if( $message_status && $message_status_filter ) {
+			$sql .= $message_status_filter;
+			$sql = $wpdb->prepare( $sql, $message_to );
+		}
 
 		$sql .= " ORDER BY wcfm_messages.`{$the_orderby}` {$the_order}";
 

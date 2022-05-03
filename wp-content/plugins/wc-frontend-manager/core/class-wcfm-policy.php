@@ -65,11 +65,11 @@ class WCFM_Policy {
 		<!-- collapsible -->
 		<div class="page_collapsible" id="wcfm_settings_form_policies_head">
 			<label class="wcfmfa fa-ambulance"></label>
-			<?php echo apply_filters( 'wcfm_sold_by_label', '', __( 'Store', 'wc-frontend-manager' ) ) . ' ' . __('Policies', 'wc-frontend-manager'); ?><span></span>
+			<?php echo esc_attr( apply_filters( 'wcfm_sold_by_label', '', __( 'Store', 'wc-frontend-manager' ) ) . ' ' . __('Policies', 'wc-frontend-manager') ); ?><span></span>
 		</div>
 		<div class="wcfm-container">
 			<div id="wcfm_settings_form_policies_expander" class="wcfm-content">
-			  <h2><?php echo apply_filters( 'wcfm_sold_by_label', '', __( 'Store', 'wc-frontend-manager' ) ) . ' ' . __('Store Policies Setting', 'wc-frontend-manager'); ?></h2>
+			  <h2><?php echo esc_attr( apply_filters( 'wcfm_sold_by_label', '', __( 'Store', 'wc-frontend-manager' ) ) . ' ' . __('Store Policies Setting', 'wc-frontend-manager') ); ?></h2>
 				<?php wcfm_video_tutorial( 'https://wclovers.com/knowledgebase/wcfm-store-policies/' ); ?>
 				<div class="wcfm_clearfix"></div>
 				<?php
@@ -108,15 +108,15 @@ class WCFM_Policy {
 		}
 		
 		if( isset( $_POST['shipping_policy'] ) ) {
-			$wcfm_policy_options['shipping_policy'] = apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['shipping_policy'], ENT_QUOTES, 'UTF-8' ) ) );
+			$wcfm_policy_options['shipping_policy'] = wp_filter_post_kses( apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['shipping_policy'], ENT_QUOTES, 'UTF-8' ) ) ) );
 		}
 		
 		if( isset( $_POST['refund_policy'] ) ) {
-			$wcfm_policy_options['refund_policy'] = apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['refund_policy'], ENT_QUOTES, 'UTF-8' ) ) );
+			$wcfm_policy_options['refund_policy'] = wp_filter_post_kses( apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['refund_policy'], ENT_QUOTES, 'UTF-8' ) ) ) );
 		}
 		
 		if( isset( $_POST['cancellation_policy'] ) ) {
-			$wcfm_policy_options['cancellation_policy'] = apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['cancellation_policy'], ENT_QUOTES, 'UTF-8' ) ) );
+			$wcfm_policy_options['cancellation_policy'] = wp_filter_post_kses( apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['cancellation_policy'], ENT_QUOTES, 'UTF-8' ) ) ) );
 		}
 		
 		wcfm_update_option( 'wcfm_policy_options', $wcfm_policy_options );
@@ -225,21 +225,21 @@ class WCFM_Policy {
 		}
 		
 		if( isset( $_POST['shipping_policy'] ) ) {
-			$wcfm_policy_vendor_options['shipping_policy'] = apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['shipping_policy'], ENT_QUOTES, 'UTF-8' ) ) );
+			$wcfm_policy_vendor_options['shipping_policy'] = wp_filter_post_kses( apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['shipping_policy'], ENT_QUOTES, 'UTF-8' ) ) ) );
 			if( $is_marketplace && ( $is_marketplace == 'dokan' ) ) {
 				update_user_meta( $vendor_id, '_dps_ship_policy', $wcfm_policy_vendor_options['shipping_policy'] );
 			}
 		}
 		
 		if( isset( $_POST['refund_policy'] ) ) {
-			$wcfm_policy_vendor_options['refund_policy'] = apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['refund_policy'], ENT_QUOTES, 'UTF-8' ) ) );
+			$wcfm_policy_vendor_options['refund_policy'] = wp_filter_post_kses( apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['refund_policy'], ENT_QUOTES, 'UTF-8' ) ) ) );
 			if( $is_marketplace && ( $is_marketplace == 'dokan' ) ) {
 				update_user_meta( $vendor_id, '_dps_refund_policy', $wcfm_policy_vendor_options['refund_policy'] );
 			}
 		}
 		
 		if( isset( $_POST['cancellation_policy'] ) ) {
-			$wcfm_policy_vendor_options['cancellation_policy'] = apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['cancellation_policy'], ENT_QUOTES, 'UTF-8' ) ) );
+			$wcfm_policy_vendor_options['cancellation_policy'] = wp_filter_post_kses( apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['cancellation_policy'], ENT_QUOTES, 'UTF-8' ) ) ) );
 		}
 		
 		wcfm_update_user_meta( $vendor_id, 'wcfm_policy_vendor_options', $wcfm_policy_vendor_options );
@@ -372,19 +372,19 @@ class WCFM_Policy {
 		}
 		
 		if( isset( $wcfm_products_manage_form_data['wcfm_shipping_policy'] ) && !empty( $wcfm_products_manage_form_data['wcfm_shipping_policy'] ) ) {
-			$wcfm_policy_product_options['shipping_policy'] = apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $wcfm_products_manage_form_data['wcfm_shipping_policy'], ENT_QUOTES, 'UTF-8' ) ) );
+			$wcfm_policy_product_options['shipping_policy'] = wp_filter_post_kses( apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $wcfm_products_manage_form_data['wcfm_shipping_policy'], ENT_QUOTES, 'UTF-8' ) ) ) );
 			if( $is_marketplace && ($is_marketplace == 'wcmarketplace') ) {
 				update_post_meta( $new_product_id, '_wcmp_shipping_policy', $wcfm_products_manage_form_data['wcfm_shipping_policy'] );
 			}
 		}
 		if( isset( $wcfm_products_manage_form_data['wcfm_refund_policy'] ) && !empty( $wcfm_products_manage_form_data['wcfm_refund_policy'] ) ) {
-			$wcfm_policy_product_options['refund_policy'] = apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $wcfm_products_manage_form_data['wcfm_refund_policy'], ENT_QUOTES, 'UTF-8' ) ) );
+			$wcfm_policy_product_options['refund_policy'] = wp_filter_post_kses( apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $wcfm_products_manage_form_data['wcfm_refund_policy'], ENT_QUOTES, 'UTF-8' ) ) ) );
 			if( $is_marketplace && ($is_marketplace == 'wcmarketplace') ) {
 				update_post_meta( $new_product_id, '_wcmp_refund_policy', $wcfm_products_manage_form_data['wcfm_refund_policy'] );
 			}
 		}
 		if( isset( $wcfm_products_manage_form_data['wcfm_cancellation_policy'] ) && !empty( $wcfm_products_manage_form_data['wcfm_cancellation_policy'] ) ) {
-			$wcfm_policy_product_options['cancellation_policy'] = apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $wcfm_products_manage_form_data['wcfm_cancellation_policy'], ENT_QUOTES, 'UTF-8' ) ) );
+			$wcfm_policy_product_options['cancellation_policy'] = wp_filter_post_kses( apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $wcfm_products_manage_form_data['wcfm_cancellation_policy'], ENT_QUOTES, 'UTF-8' ) ) ) );
 			if( $is_marketplace && ($is_marketplace == 'wcmarketplace') ) {
 				update_post_meta( $new_product_id, '_wcmp_cancellation_policy', $wcfm_products_manage_form_data['wcfm_cancellation_policy'] );
 			}
@@ -602,17 +602,17 @@ class WCFM_Policy {
 			<?php if( !wcfm_empty($shipping_policy) ) { ?>
 			  <div class="wcfm-shipping-policies">
 					<h2 class="wcfm_policies_heading"><?php echo apply_filters('wcfm_shipping_policies_heading', __('Shipping Policy', 'wc-frontend-manager')); ?></h2>
-					<div class="wcfm_policies_description" ><?php echo $shipping_policy; ?></div>
+					<div class="wcfm_policies_description" ><?php echo wp_kses_post($shipping_policy); ?></div>
 			  </div>
 			<?php } if( !wcfm_empty( $refund_policy ) ) { ?>
 			  <div class="wcfm-refund-policies">
 					<h2 class="wcfm_policies_heading"><?php echo apply_filters('wcfm_refund_policies_heading', __('Refund Policy', 'wc-frontend-manager')); ?></h2>
-					<div class="wcfm_policies_description" ><?php echo $refund_policy; ?></div>
+					<div class="wcfm_policies_description" ><?php echo wp_kses_post($refund_policy); ?></div>
 			  </div>
 			<?php } if( !wcfm_empty( $cancellation_policy ) ) { ?>
 			  <div class="wcfm-cancellation-policies">
 					<h2 class="wcfm_policies_heading"><?php echo apply_filters('wcfm_cancellation_policies_heading', __('Cancellation / Return / Exchange Policy', 'wc-frontend-manager')); ?></h2>
-					<div class="wcfm_policies_description" ><?php echo $cancellation_policy; ?></div>
+					<div class="wcfm_policies_description" ><?php echo wp_kses_post($cancellation_policy); ?></div>
 			  </div>
 			<?php } ?>
 			

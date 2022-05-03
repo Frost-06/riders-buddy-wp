@@ -28,8 +28,8 @@ class WCFM_Listings_Controller {
 																																					'pending_payment' => __( 'Pending Payment', 'wc-frontend-manager')
 																																				) );
 		
-		$length = wc_clean($_POST['length']);
-		$offset = wc_clean($_POST['start']);
+		$length = absint($_POST['length']);
+		$offset = absint($_POST['start']);
 		
 		$args = array(
 							'posts_per_page'   => $length,
@@ -158,7 +158,7 @@ class WCFM_Listings_Controller {
 				$actions = '';
 				
 				if ( in_array( $wcfm_listings_single->post_status, [ 'pending', 'pending_payment' ], true ) && !wcfm_is_vendor() ) {
-					$actions .= '<a class="wcfm-action-icon" href="' . add_query_arg( array( 'action' => 'approve_listing', 'listing_id' => $wcfm_listings_single->ID ), WC()->ajax_url() ) . '"><span class="wcfmfa fa-check text_tip" data-tip="' . esc_attr__( 'Approve', 'wp-job-manager' ) . '"></span></a>';
+					$actions .= '<a class="wcfm-action-icon" href="' . wp_nonce_url( add_query_arg( array( 'action' => 'approve_listing', 'listing_id' => $wcfm_listings_single->ID ), WC()->ajax_url() ), 'wcfm_ajax_nonce', 'wcfm_ajax_nonce' ) . '"><span class="wcfmfa fa-check text_tip" data-tip="' . esc_attr__( 'Approve', 'wp-job-manager' ) . '"></span></a>';
 				}
 				
 				$actions .= '<a target="_blank" class="wcfm-action-icon" href="' . get_permalink( $wcfm_listings_single->ID ) . '"><span class="wcfmfa fa-eye text_tip" data-tip="' . esc_attr__( 'View', 'wc-frontend-manager' ) . '"></span></a>';

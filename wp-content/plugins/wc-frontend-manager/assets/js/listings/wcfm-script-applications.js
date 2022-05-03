@@ -36,6 +36,7 @@ jQuery(document).ready(function($) {
 				d.action       = 'wcfm_ajax_controller',
 				d.controller   = 'wcfm-applications',
 				d.listing_id   = GetURLParameter( 'listing_id' ),
+				d.wcfm_ajax_nonce = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -61,6 +62,7 @@ jQuery(document).ready(function($) {
 				var data = {
 					action          : 'wcfm_application_delete',
 					applicationid   : $(this).data('applicationid'),
+					wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 				}	
 				jQuery.ajax({
 					type:		'POST',

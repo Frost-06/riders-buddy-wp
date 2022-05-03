@@ -133,7 +133,8 @@ jQuery(document).ready(function($) {
 		});
 		var data = {
 			action : 'delete_wcfm_product',
-			proid : item.data('proid')
+			proid : item.data('proid'),
+			wcfm_ajax_nonce : wcfm_params.wcfm_ajax_nonce
 		}	
 		jQuery.ajax({
 			type:		'POST',
@@ -257,7 +258,8 @@ jQuery(document).ready(function($) {
 		clearTimeout(messageCountRefrsherTime);
 		messageCountRefrsherTime = setTimeout(function() {
 			var data = {
-				action : 'wcfm_message_count'
+				action : 'wcfm_message_count',
+				wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 			}	
 			jQuery.ajax({
 				type:		'POST',
@@ -304,7 +306,8 @@ jQuery(document).ready(function($) {
 			
 			var data = {
 				action : 'wcfm_message_notification',
-				limit  : (message_count - unread_message)
+				limit  : (message_count - unread_message),
+				wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 			}	
 			jQuery.ajax({
 				type:		'POST',
@@ -346,7 +349,8 @@ jQuery(document).ready(function($) {
 				$is_blank   = $(this).attr('target');
 				var data = {
 					action     : 'wcfm_store_external_product_view_update',
-					product_id : $product_id
+					product_id : $product_id,
+					wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 				}	
 				jQuery.ajax({
 					type:		'POST',
@@ -383,7 +387,8 @@ jQuery(document).ready(function($) {
 					firstDay: wcfm_datepicker_params.firstDay,
 					isRTL: wcfm_datepicker_params.isRTL,
 					changeMonth: true,
-					changeYear: true
+					changeYear: true,
+					yearRange: '1920:2030'
 				});
 			}
 		});
@@ -404,7 +409,8 @@ jQuery(document).ready(function($) {
 				isRTL: wcfm_datepicker_params.isRTL,
 				timeFormat: 'h:mm tt',
 				changeMonth: true,
-				changeYear: true
+				changeYear: true,
+				yearRange: '1920:2030'
 			});
 		});
 		
@@ -442,7 +448,8 @@ jQuery(document).ready(function($) {
 		var data = {
 			action  : 'wcfm_enquiry_form_content',
 			store   : 0,
-			product : 0
+			product : 0,
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 		}	
 		
 		jQuery.ajax({
@@ -571,6 +578,7 @@ jQuery(document).ready(function($) {
 				action                   : 'wcfm_ajax_controller',
 				controller               : 'wcfm-enquiry-tab',
 				wcfm_enquiry_tab_form    : $enquiry_form.serialize(),
+				wcfm_ajax_nonce          : wcfm_params.wcfm_ajax_nonce,
 				status                   : 'submit'
 			}	
 			jQuery.post(wcfm_params.ajax_url, data, function(response) {
@@ -618,6 +626,7 @@ jQuery(document).ready(function($) {
 		var data = {
 			action         : 'wcfm_choose_membership',
 			membership     : $(this).data('membership'),
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce,
 		}	
 		$.post(wcfm_params.ajax_url, data, function(response) {
 			if(response) {
@@ -652,7 +661,8 @@ function intiateWCFMuQuickEdit() {
 			});
 			var data = {
 				action  : 'wcfmu_quick_edit_html',
-				product : jQueryproduct
+				product : jQueryproduct,
+				wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 			}	
 			
 			jQuery.ajax({
@@ -689,7 +699,8 @@ function intiateWCFMuQuickEdit() {
 										var data = {
 											action : 'wcfm_ajax_controller',
 											controller : 'wcfm-products-quick-manage', 
-											wcfm_quick_edit_form : jQuery('#wcfm_quick_edit_form').serialize()
+											wcfm_quick_edit_form : jQuery('#wcfm_quick_edit_form').serialize(),
+											wcfm_ajax_nonce       : wcfm_params.wcfm_ajax_nonce
 										}	
 										jQuery.post(wcfm_params.ajax_url, data, function(response) {
 											if(response) {
@@ -732,7 +743,8 @@ function intiateWCFMuScreenManager() {
 			
 			var data = {
 				action  : 'wcfmu_screen_manager_html',
-				screen  : jQueryScreen
+				screen  : jQueryScreen,
+				wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 			}	
 			
 			jQuery.ajax({
@@ -757,7 +769,8 @@ function intiateWCFMuScreenManager() {
 								var data = {
 									action : 'wcfm_ajax_controller',
 									controller : 'wcfm-screen-manage', 
-									wcfm_screen_manager_form : jQuery('#wcfm_screen_manager_form').serialize()
+									wcfm_screen_manager_form : jQuery('#wcfm_screen_manager_form').serialize(),
+									wcfm_ajax_nonce          : wcfm_params.wcfm_ajax_nonce
 								}	
 								jQuery.post(wcfm_params.ajax_url, data, function(response) {
 									if(response) {
@@ -806,6 +819,7 @@ jQuery( document ).ready( function( $ ) {
 			orderid      : $(this).data('orderid'),
 			productid    : $(this).data('productid'),
 			orderitemid  : $(this).data('orderitemid'),
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 		}	
 		$.ajax({
 			type:		'POST',
@@ -1937,6 +1951,15 @@ function wcfmcapitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-var audio = new Audio(wcfm_notification_sound);
-var wcfm_notification_sound = new Audio(wcfm_notification_sound);
-var wcfm_desktop_notification_sound = new Audio(wcfm_desktop_notification_sound);
+if (typeof wcfm_notification_sound !== 'undefined') {
+	var audio = new Audio(wcfm_notification_sound.file);
+	var wcfm_notification_sound = new Audio(wcfm_notification_sound.file);
+} else {
+	var audio = new Audio(wcfm_notification_sound);
+	var wcfm_notification_sound = new Audio(wcfm_notification_sound);
+}
+if (typeof wcfm_desktop_notification_sound !== 'undefined') {
+	var wcfm_desktop_notification_sound = new Audio(wcfm_desktop_notification_sound.file);
+} else {
+	var wcfm_desktop_notification_sound = new Audio(wcfm_desktop_notification_sound);
+}

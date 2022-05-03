@@ -111,7 +111,7 @@ class WCFM_Dokan {
 			$store_logo = $gravatar_url;
 			$shop_link       = dokan_get_store_url( $user_id );
 			if( $shop_link ) {
-				$store_logo = '<a class="wcfm_store_logo_icon" href="' . $shop_link . '" target="_blank"><img src="' . $store_logo . '" alt="Store Logo" /></a>';
+				$store_logo = '<a class="wcfm_store_logo_icon" href="' . $shop_link . '" target="_blank"><img src="' . esc_url($store_logo) . '" alt="Store Logo" /></a>';
 			}
 		}
   	return $store_logo;
@@ -186,8 +186,8 @@ class WCFM_Dokan {
 		// Order Customers
   	$sql = 'SELECT order_id FROM ' . $wpdb->prefix . 'dokan_orders';
 		$sql .= ' WHERE 1=1';
-		$sql .= " AND `seller_id` = {$this->vendor_id}";
-		$wcfm_orders_array = $wpdb->get_results( $sql );
+		$sql .= " AND `seller_id` = %d";
+		$wcfm_orders_array = $wpdb->get_results( $wpdb->prepare( $sql, $this->vendor_id ) );
 		if(!empty($wcfm_orders_array)) {
 			foreach($wcfm_orders_array as $wcfm_orders_single) {
 				$the_order = wc_get_order( $wcfm_orders_single->order_id );

@@ -139,7 +139,7 @@ class WCFM_WCVendors {
 			$store_logo = $logo_image_url[0];
 			$shop_link       = WCV_Vendors::get_vendor_shop_page( wp_get_current_user()->user_login );
 			if( $shop_link ) {
-				$store_logo = '<a class="wcfm_store_logo_icon" href="' . $shop_link . '" target="_blank"><img src="' . $store_logo . '" alt="Store Logo" /></a>';
+				$store_logo = '<a class="wcfm_store_logo_icon" href="' . $shop_link . '" target="_blank"><img src="' . esc_url($store_logo) . '" alt="Store Logo" /></a>';
 			}
 		}
   	return $store_logo;
@@ -193,7 +193,7 @@ class WCFM_WCVendors {
   function wcfm_home() {
   	global $WCFM;
   	
-  	echo '<a href="' . get_wcfm_page() . '"><img class="text_tip" data-tip="' . __( 'WCFM Home', 'wc-frontend-manager' ) . '" id="wcfm_home" src="' . $WCFM->plugin_url . '/assets/images/wcfm-30x30.png" alt="' . __( 'WCFM Home', 'wc-frontend-manager' ) . '" /></a>';
+  	echo '<a href="' . esc_url(get_wcfm_page()) . '"><img class="text_tip" data-tip="' . __( 'WCFM Home', 'wc-frontend-manager' ) . '" id="wcfm_home" src="' . esc_url($WCFM->plugin_url) . '/assets/images/wcfm-30x30.png" alt="' . __( 'WCFM Home', 'wc-frontend-manager' ) . '" /></a>';
   }
   
   // WCFM WCVendors Add product URL
@@ -268,8 +268,8 @@ class WCFM_WCVendors {
 		// Order Customers
   	$sql = 'SELECT order_id FROM ' . $wpdb->prefix . 'pv_commission';
 		$sql .= ' WHERE 1=1';
-		$sql .= " AND `vendor_id` = {$this->vendor_id}";
-		$wcfm_orders_array = $wpdb->get_results( $sql );
+		$sql .= " AND `vendor_id` = %d";
+		$wcfm_orders_array = $wpdb->get_results( $wpdb->prepare( $sql, $this->vendor_id ) );
 		if(!empty($wcfm_orders_array)) {
 			foreach($wcfm_orders_array as $wcfm_orders_single) {
 				$the_order = wc_get_order( $wcfm_orders_single->order_id );
@@ -685,10 +685,10 @@ class WCFM_WCVendors {
 		$sql = "
 			SELECT total_due as line_total, total_shipping, tax 
 			FROM {$wpdb->prefix}pv_commission
-			WHERE   (product_id = " . $product_id . " OR product_id = " . $variation_id . ")
-			AND     order_id = " . $order->get_id() . "
-			AND     vendor_id = " . $this->vendor_id;
-		$order_line_due = $wpdb->get_results( $sql );
+			WHERE   (product_id = %d OR product_id = %d)
+			AND     order_id = %d
+			AND     vendor_id = %d";
+		$order_line_due = $wpdb->get_results( $wpdb->prepare( $sql, $product_id, $variation_id, $order->get_id(), $this->vendor_id ) );
 		if( !empty( $order_line_due ) ) {
 			$line_total += $order_line_due[0]->total_shipping; 
 		  $line_total += $order_line_due[0]->tax;
@@ -785,9 +785,9 @@ class WCFM_WCVendors {
 	   SUM(total_shipping) as shipping,
        SUM(tax) as tax
        FROM {$wpdb->prefix}pv_commission
-       WHERE order_id = " . $order_id . "
-       AND vendor_id = " . $this->vendor_id;
-    $order_due = $wpdb->get_results( $sql );
+       WHERE order_id = %d
+       AND vendor_id = %d";
+  $order_due = $wpdb->get_results( $wpdb->prepare( $sql, $order_id, $this->vendor_id ) );
   	$total = $order_due[0]->line_total; 
   	if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) {
 			if ( WC_Vendors::$pv_options->get_option( 'give_shipping' ) ) {

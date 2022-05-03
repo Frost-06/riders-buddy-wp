@@ -95,9 +95,9 @@ class WCFM_Enquiry_Shortcode {
 		?>
 		<div class="wcfm_ele_wrapper wcfm_enquiry_widget">
 			<div class="wcfm-clearfix"></div>
-			<a href="#" class="wcfm_catalog_enquiry <?php echo $button_class; ?>" data-store="<?php echo $vendor_id; ?>" data-product="<?php echo $product_id; ?>" style="<?php echo $button_style; ?>"><span class="wcfmfa fa-question-circle"></span>&nbsp;&nbsp;<span class="add_enquiry_label"><?php _e( $ask_question_label, 'wc-frontend-manager' ); ?></span></a>
+			<a href="#" class="wcfm_catalog_enquiry <?php echo esc_attr($button_class); ?>" data-store="<?php echo esc_attr($vendor_id); ?>" data-product="<?php echo esc_attr($product_id); ?>" style="<?php echo esc_attr($button_style); ?>"><span class="wcfmfa fa-question-circle"></span>&nbsp;&nbsp;<span class="add_enquiry_label"><?php esc_html_e( $ask_question_label, 'wc-frontend-manager' ); ?></span></a>
 			<?php if( $hover_color ) { ?>
-				<style>a.wcfm_catalog_enquiry:hover{background: <?php echo $hover_color; ?> !important;background-color: <?php echo $hover_color; ?> !important;border-bottom-color: <?php echo $hover_color; ?> !important;color: <?php echo $hover_text_color; ?> !important;}</style>
+				<style>a.wcfm_catalog_enquiry:hover{background: <?php echo esc_attr($hover_color); ?> !important;background-color: <?php echo esc_attr($hover_color); ?> !important;border-bottom-color: <?php echo esc_attr($hover_color); ?> !important;color: <?php echo esc_attr($hover_text_color); ?> !important;}</style>
 			<?php } ?>
 			<div class="wcfm-clearfix"></div><br />
 		</div>

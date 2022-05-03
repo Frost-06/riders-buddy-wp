@@ -28,7 +28,8 @@ jQuery(document).ready( function($) {
 					action:       'wcfm_add_taxonomy_new_term',
 					taxonomy:     $taxonomy,
 					new_term:     $new_term,
-					parent_term:  $parent_term
+					parent_term:  $parent_term,
+					wcfm_ajax_nonce          : wcfm_params.wcfm_ajax_nonce
 				};
 		
 				$('.wcfm_add_new_taxonomy_box').block({
@@ -98,7 +99,8 @@ jQuery(document).ready( function($) {
 				controller               : 'wcfm-knowledgebase-manage',
 				wcfm_knowledgebase_manage_form : $('#wcfm_knowledgebase_manage_form').serialize(),
 				content                  : content,
-				status                   : 'submit'
+				status                   : 'submit',
+				wcfm_ajax_nonce          : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {

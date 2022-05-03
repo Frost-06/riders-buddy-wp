@@ -40,7 +40,7 @@ $transaction = get_post($transaction_id);
 	  <div id="wcfm_page_load"></div>
 	  
 	  <div class="wcfm-container wcfm-top-element-container">
-			<h2><?php _e( 'Transaction #', 'wc-frontend-manager' ); echo $transaction_id; ?></h2>
+			<h2><?php _e( 'Transaction #', 'wc-frontend-manager' ); echo esc_attr($transaction_id); ?></h2>
 			<span class="transaction-status transaction-status-<?php echo sanitize_title( $transaction->post_status ); ?>"><?php echo ucfirst( str_replace( 'wcmp_', '', $transaction->post_status ) ); ?></span>
 			
 			<?php

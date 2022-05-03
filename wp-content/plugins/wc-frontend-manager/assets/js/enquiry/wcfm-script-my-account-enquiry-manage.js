@@ -28,7 +28,8 @@ jQuery(document).ready( function($) {
 			$form_data.append( 'inquiry_reply', inquiry_reply );
 			$form_data.append( 'wcfm_inquiry_reply_form', $('#wcfm_inquiry_reply_form').serialize() ); 
 			$form_data.append( 'action', 'wcfm_ajax_controller' ); 
-			$form_data.append( 'controller', 'wcfm-my-account-enquiry-manage' ); 
+			$form_data.append( 'controller', 'wcfm-my-account-enquiry-manage' );
+			$form_data.append( 'wcfm_ajax_nonce', wcfm_params.wcfm_ajax_nonce );
 			
 			$.ajax({
 				type         : 'POST',

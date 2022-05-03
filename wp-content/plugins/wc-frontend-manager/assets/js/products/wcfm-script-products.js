@@ -4,6 +4,8 @@ $product_taxonomy = {};
 $product_vendor = '';
 
 jQuery(document).ready(function($) {
+		
+	$product_vendor = GetURLParameter( 'product_vendor' );
 	
 	$wcfm_products_table = $('#wcfm-products').DataTable( {
 		"processing": true,
@@ -52,7 +54,8 @@ jQuery(document).ready(function($) {
 				d.product_cat      = $product_cat,
 				d.product_taxonomy = $product_taxonomy,
 				d.product_vendor   = $product_vendor,
-				d.product_status   = GetURLParameter( 'product_status' )
+				d.product_status   = GetURLParameter( 'product_status' ),
+				d.wcfm_ajax_nonce  = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -116,7 +119,8 @@ jQuery(document).ready(function($) {
 		});
 		var data = {
 			action : 'wcfm_product_approve',
-			proid : item.data('proid')
+			proid : item.data('proid'),
+			wcfm_ajax_nonce : wcfm_params.wcfm_ajax_nonce
 		}	
 		jQuery.ajax({
 			type:		'POST',
@@ -152,6 +156,7 @@ jQuery(document).ready(function($) {
 		var data = {
 			action : 'wcfm_product_reject',
 			proid  : item.data('proid'),
+			wcfm_ajax_nonce : wcfm_params.wcfm_ajax_nonce,
 			reason : rconfirm
 		}	
 		jQuery.ajax({
@@ -187,7 +192,8 @@ jQuery(document).ready(function($) {
 		});
 		var data = {
 			action : 'wcfm_product_archive',
-			proid : item.data('proid')
+			proid : item.data('proid'),
+			wcfm_ajax_nonce : wcfm_params.wcfm_ajax_nonce
 		}	
 		jQuery.ajax({
 			type:		'POST',
@@ -222,7 +228,8 @@ jQuery(document).ready(function($) {
 		});
 		var data = {
 			action : 'delete_wcfm_product',
-			proid : item.data('proid')
+			proid : item.data('proid'),
+			wcfm_ajax_nonce : wcfm_params.wcfm_ajax_nonce
 		}	
 		jQuery.ajax({
 			type:		'POST',

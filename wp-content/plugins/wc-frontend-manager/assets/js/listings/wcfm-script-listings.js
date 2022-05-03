@@ -41,7 +41,8 @@ jQuery(document).ready(function($) {
 				d.action     = 'wcfm_ajax_controller',
 				d.controller = 'wcfm-listings',
 				d.listing_status   = GetURLParameter( 'listing_status' ),
-				d.listing_vendor   = $listing_vendor
+				d.listing_vendor   = $listing_vendor,
+				d.wcfm_ajax_nonce  = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -67,7 +68,8 @@ jQuery(document).ready(function($) {
 				var data = {
 					action   : 'wcfm_listing_featured',
 					listid   : $(this).data('listid'),
-					featured : $(this).data('featured')
+					featured : $(this).data('featured'),
+					wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 				}	
 				jQuery.ajax({
 					type:		'POST',

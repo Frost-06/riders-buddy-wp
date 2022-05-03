@@ -101,7 +101,8 @@ jQuery( document ).ready( function( $ ) {
 					action:       'wcfm_add_taxonomy_new_term',
 					taxonomy:     $taxonomy,
 					new_term:     $new_term,
-					parent_term:  $parent_term
+					parent_term:  $parent_term,
+					wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 				};
 		
 				$('.wcfm_add_new_taxonomy_box').block({
@@ -143,7 +144,8 @@ jQuery( document ).ready( function( $ ) {
 		  if( !$wcfm_tag_cloud_fetched ) {
 				var data = {
 					action : 'get-tagcloud',
-					tax    : 'post_tag'
+					tax    : 'post_tag',
+					wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce,
 				}	
 				$.post(wcfm_params.ajax_url, data, function(response) {
 					if(response) {
@@ -338,7 +340,8 @@ jQuery( document ).ready( function( $ ) {
 				wcfm_articles_manage_form : $('#wcfm_articles_manage_form').serialize(),
 				excerpt     : excerpt,
 				description : description,
-				status : 'draft'
+				status : 'draft',
+				wcfm_ajax_nonce      : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {
@@ -390,7 +393,8 @@ jQuery( document ).ready( function( $ ) {
 				wcfm_articles_manage_form : $('#wcfm_articles_manage_form').serialize(),
 				excerpt     : excerpt,
 				description : description,
-				status : 'submit'
+				status : 'submit',
+				wcfm_ajax_nonce      : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {

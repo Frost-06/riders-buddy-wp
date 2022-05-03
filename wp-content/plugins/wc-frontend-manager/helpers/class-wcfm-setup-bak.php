@@ -19,15 +19,15 @@ class WCFM_Dashboard_Setup {
 	private $steps = array();
 
 	public function __construct() {
-		//add_action( 'admin_menu', array( $this, 'wcfm_admin_menus' ) );
-		//add_action( 'admin_init', array( $this, 'wcfm_dashboard_setup' ) );
+		add_action( 'admin_menu', array( $this, 'wcfm_admin_menus' ) );
+		add_action( 'admin_init', array( $this, 'wcfm_dashboard_setup' ) );
 	}
 
 	/**
 	 * Add admin menus/screens.
 	 */
 	public function wcfm_admin_menus() {
-		//add_dashboard_page( '', '', 'manage_options', 'wcfm-setup', '' );
+		add_dashboard_page( '', '', 'manage_options', 'wcfm-setup', '' );
 	}
 
 	/**
@@ -228,9 +228,9 @@ class WCFM_Dashboard_Setup {
 				</head>
 				<body class="wc-setup wp-core-ui">
 				   <?php if( $is_marketplace == 'wcfmmarketplace' ) { ?>
-						 <h1 id="wc-logo"><a href="http://wclovers.com/"><img src="<?php echo $WCFM->plugin_url; ?>assets/images/wcfmmp-75x75.png" alt="WCFM" /><span>WCFM Marketplace</span></a></h1>
+						 <h1 id="wc-logo"><a href="http://wclovers.com/"><img src="<?php echo esc_url($WCFM->plugin_url); ?>assets/images/wcfmmp-75x75.png" alt="WCFM" /><span>WCFM Marketplace</span></a></h1>
 					 <?php } else { ?> 
-						 <h1 id="wc-logo"><a href="http://wclovers.com/"><img src="<?php echo $WCFM->plugin_url; ?>assets/images/wcfm-transparent.png" alt="WCFM" /><span>WC Frontend Manager</span></a></h1>
+						 <h1 id="wc-logo"><a href="http://wclovers.com/"><img src="<?php echo esc_url($WCFM->plugin_url); ?>assets/images/wcfm-transparent.png" alt="WCFM" /><span>WC Frontend Manager</span></a></h1>
 					<?php } ?>
 						<?php
 	}
@@ -411,8 +411,8 @@ class WCFM_Dashboard_Setup {
 																																											"vendor_store_url" => array('label' => __('Vendor Store URL', 'wc-multivendor-marketplace') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'in_table' => 'yes', 'desc_class' => 'wcfm_page_options_desc', 'value' => $wcfm_store_url, 'desc' => sprintf( __( 'Define the seller store URL  (%s/[this-text]/[seller-name])', 'wc-multivendor-marketplace' ), get_site_url() )  ),
 																																											"vendor_sold_by" => array('label' => __('Visible Sold By', 'wc-multivendor-marketplace'), 'type' => 'checkboxoffon', 'in_table' => 'yes', 'class' => 'wcfm-checkbox input-checkbox wcfm_ele', 'label_class' => 'wcfm_title checkbox_title', 'value' => 'yes', 'dfvalue' => $vendor_sold_by, 'desc_class' => 'wcfm_page_options_desc', 'desc' => __( 'Uncheck this to disable Sold By display for products.', 'wc-multivendor-marketplace' ) ),
 																																											"vendor_sold_by_template" => array('label' => __('Sold By Template', 'wc-multivendor-marketplace'), 'type' => 'select', 'in_table' => 'yes', 'options' => array( 'simple' => __( 'Simple', 'wc-multivendor-marketplace' ), 'advanced' => __( 'Advanced', 'wc-multivendor-marketplace' ) ), 'class' => 'wcfm-select wcfm_ele', 'label_class' => 'wcfm_title', 'value' => $vendor_sold_by_template, 'desc_class' => 'wcfm_page_options_desc', 'desc' => __( 'Single product page Sold By template.', 'wc-multivendor-marketplace' ) ),
-																																											"sold_by_template_simple" => array( 'label' => '&nbsp;', 'type' => 'html', 'in_table' => 'yes', 'wrapper_class' => 'vendor_sold_by_type vendor_sold_by_type_simple', 'label_class' => 'wcfm_title wcfm_ele', 'value' => '<img src="'.$WCFMmp->plugin_url.'assets/images/sold_by_simple.png" />', 'attributes' => array( 'style' => 'border: 1px dotted #ccc;margin-bottom:15px;' ) ),
-																																											"sold_by_template_advanced" => array( 'label' => '&nbsp;', 'type' => 'html', 'in_table' => 'yes', 'wrapper_class' => 'vendor_sold_by_type vendor_sold_by_type_advanced', 'label_class' => 'wcfm_title wcfm_ele', 'value' => '<img src="'.$WCFMmp->plugin_url.'assets/images/sold_by_advanced.png" />', 'attributes' => array( 'style' => 'border: 1px dotted #ccc;margin-bottom:15px;' ) ),
+																																											"sold_by_template_simple" => array( 'label' => '&nbsp;', 'type' => 'html', 'in_table' => 'yes', 'wrapper_class' => 'vendor_sold_by_type vendor_sold_by_type_simple', 'label_class' => 'wcfm_title wcfm_ele', 'value' => '<img src="'.esc_url($WCFMmp->plugin_url).'assets/images/sold_by_simple.png" />', 'attributes' => array( 'style' => 'border: 1px dotted #ccc;margin-bottom:15px;' ) ),
+																																											"sold_by_template_advanced" => array( 'label' => '&nbsp;', 'type' => 'html', 'in_table' => 'yes', 'wrapper_class' => 'vendor_sold_by_type vendor_sold_by_type_advanced', 'label_class' => 'wcfm_title wcfm_ele', 'value' => '<img src="'.esc_url($WCFMmp->plugin_url).'assets/images/sold_by_advanced.png" />', 'attributes' => array( 'style' => 'border: 1px dotted #ccc;margin-bottom:15px;' ) ),
 																																											"vendor_sold_by_position" => array( 'label' => __('Sold By Position', 'wc-multivendor-marketplace'), 'type' => 'select', 'in_table' => 'yes', 'options' => array( 'bellow_price' => __( 'Bellow Price', 'wc-multivendor-marketplace' ), 'bellow_sc' => __( 'Below Short Description', 'wc-multivendor-marketplace' ), 'bellow_atc' => __( 'Below Add to Cart', 'wc-multivendor-marketplace' ) ), 'class' => 'wcfm-select wcfm_ele', 'label_class' => 'wcfm_title', 'value' => $vendor_sold_by_position, 'desc_class' => 'wcfm_page_options_desc', 'desc' => __( 'Sold by display position at Single Product Page.', 'wc-multivendor-marketplace' ) ),
 																																											"store_name_position" => array( 'label' => __('Store Name Position', 'wc-multivendor-marketplace'), 'type' => 'select', 'in_table' => 'yes', 'options' => array( 'on_banner' => __( 'On Banner', 'wc-multivendor-marketplace' ), 'on_header' => __( 'At Header', 'wc-multivendor-marketplace' ) ), 'class' => 'wcfm-select wcfm_ele', 'label_class' => 'wcfm_title', 'value' => $store_name_position, 'desc_class' => 'wcfm_page_options_desc', 'desc' => __( 'Store name position at Vendor Store Page.', 'wc-multivendor-marketplace' ) ),
 																																											"store_sidebar" => array( 'label' => __('Store Sidebar', 'wc-multivendor-marketplace'), 'type' => 'checkboxoffon', 'in_table' => 'yes', 'class' => 'wcfm-checkbox input-checkbox wcfm_ele', 'label_class' => 'wcfm_title checkbox_title', 'value' => 'yes', 'dfvalue' => $store_sidebar, 'desc_class' => 'wcfm_page_options_desc', 'desc' => __( 'Uncheck this to disable vendor store sidebar.', 'wc-multivendor-marketplace' ) ),

@@ -304,7 +304,7 @@ class WCFM_Query {
 		// Map query vars to their keys, or get them if endpoints are not supported
 		foreach ( $this->query_vars as $key => $var ) {
 			if ( isset( $_GET[ $var ] ) ) {
-				$wp->query_vars[ $key ] = $_GET[ $var ];
+				$wp->query_vars[ $key ] = wc_clean( $_GET[ $var ] );
 			}
 
 			elseif ( isset( $wp->query_vars[ $var ] ) ) {

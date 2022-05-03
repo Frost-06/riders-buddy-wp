@@ -40,7 +40,7 @@ $wcfm_enquiry_form_heading  = apply_filters( 'wcfm_enquiry_form_heading', $wcfm_
 <div class="enquiry_form_wrapper_hide">
 	<div id="enquiry_form_wrapper">
 		<div id="enquiry_form" class="wcfm_popup_wrapper">
-			<div style="margin-bottom: 15px;"><h2 style="float: none;"><?php echo $wcfm_enquiry_form_heading; ?></h2></div>
+			<div style="margin-bottom: 15px;"><h2 style="float: none;"><?php echo wp_kses_post($wcfm_enquiry_form_heading); ?></h2></div>
 			
 			<form action="" method="post" id="wcfm_enquiry_form" class="enquiry-form" novalidate="">
 				<?php if( !is_user_logged_in() ) { ?>
@@ -212,8 +212,8 @@ $wcfm_enquiry_form_heading  = apply_filters( 'wcfm_enquiry_form_heading', $wcfm_
 				
 				<p class="form-submit">
 					<input name="submit" type="submit" id="wcfm_enquiry_submit_button" class="submit wcfm_popup_button" value="<?php _e( 'Submit', 'wc-frontend-manager' ); ?>"> 
-					<input type="hidden" name="product_id" value="<?php echo $product_id; ?>" id="enquiry_product_id">
-					<input type="hidden" name="vendor_id" value="<?php echo $vendor_id; ?>" id="enquiry_vendor_id">
+					<input type="hidden" name="product_id" value="<?php echo esc_attr($product_id); ?>" id="enquiry_product_id">
+					<input type="hidden" name="vendor_id" value="<?php echo esc_attr($vendor_id); ?>" id="enquiry_vendor_id">
 				</p>	
 				<input type="hidden" name="wcfm_nonce" value="<?php echo wp_create_nonce( 'wcfm_enquiry' ); ?>" />
 				<div class="wcfm-clearfix"></div>

@@ -24,7 +24,8 @@ jQuery(document).ready(function($) {
 			"data"   : function( d ) {
 				d.action              = 'wcfm_ajax_controller',
 				d.controller          = 'wcfm-knowledgebase',
-				d.knowledgebase_cat   = $knowledgebase_cat
+				d.knowledgebase_cat   = $knowledgebase_cat,
+				d.wcfm_ajax_nonce     = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -60,7 +61,8 @@ jQuery(document).ready(function($) {
 				$knowledgebaseid = $(this).data('knowledgebaseid');
 				var data = {
 					action          : 'wcfm_knowledgebase_view',
-					knowledgebaseid : $knowledgebaseid
+					knowledgebaseid : $knowledgebaseid,
+					wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 				}	
 				
 				jQuery.ajax({
@@ -91,7 +93,8 @@ jQuery(document).ready(function($) {
 				});
 				var data = {
 					action          : 'archive_wcfm_knowledgebase',
-					knowledgebaseid : $(this).data('knowledgebaseid')
+					knowledgebaseid : $(this).data('knowledgebaseid'),
+					wcfm_ajax_nonce : wcfm_params.wcfm_ajax_nonce
 				}	
 				jQuery.ajax({
 					type:		'POST',
@@ -121,7 +124,8 @@ jQuery(document).ready(function($) {
 				});
 				var data = {
 					action          : 'publish_wcfm_knowledgebase',
-					knowledgebaseid : $(this).data('knowledgebaseid')
+					knowledgebaseid : $(this).data('knowledgebaseid'),
+					wcfm_ajax_nonce : wcfm_params.wcfm_ajax_nonce
 				}	
 				jQuery.ajax({
 					type:		'POST',
@@ -159,7 +163,8 @@ jQuery(document).ready(function($) {
 		});
 		var data = {
 			action          : 'delete_wcfm_knowledgebase',
-			knowledgebaseid : item.data('knowledgebaseid')
+			knowledgebaseid : item.data('knowledgebaseid'),
+			wcfm_ajax_nonce : wcfm_params.wcfm_ajax_nonce
 		}	
 		jQuery.ajax({
 			type:		'POST',

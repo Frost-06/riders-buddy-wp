@@ -22,7 +22,7 @@ class WCFM_Orders_WCFMMarketplace_Controller {
 			$this->vendor_id   =  $WCFMmp->vendor_id;
 		} else {
 			if( isset( $_POST['vendor_id'] ) && !empty( $_POST['vendor_id'] ) ) {
-				$this->vendor_id = wc_clean($_POST['vendor_id']);
+				$this->vendor_id = absint($_POST['vendor_id']);
 			}
 		}
 		
@@ -38,15 +38,15 @@ class WCFM_Orders_WCFMMarketplace_Controller {
 		$length = 10;
 		$offset = 0;
 		
-		if( isset( $_POST['length'] ) ) $length = wc_clean($_POST['length']);
-		if( isset( $_POST['start'] ) ) $offset = wc_clean($_POST['start']);
+		if( isset( $_POST['length'] ) ) $length = absint($_POST['length']);
+		if( isset( $_POST['start'] ) ) $offset = absint($_POST['start']);
 		
 		$user_id = $this->vendor_id;
 		
 		$can_view_orders = apply_filters( 'wcfm_is_allow_order_details', true );
 		$group_manager_filter = apply_filters( 'wcfm_orders_group_manager_filter', '', 'vendor_id' );
 		
-		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_text_field( $_POST['orderby'] ) : 'order_id';
+		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_sql_orderby( $_POST['orderby'] ) : 'order_id';
 		$the_order   = ( ! empty( $_POST['order'] ) && 'asc' === $_POST['order'] ) ? 'ASC' : 'DESC';
 		$allowed_status      = get_wcfm_marketplace_active_withdrwal_order_status_in_comma();
 		$allowed_status      = apply_filters( 'wcfmp_order_list_allowed_status', $allowed_status ); 
@@ -60,10 +60,13 @@ class WCFM_Orders_WCFMMarketplace_Controller {
 		if( $group_manager_filter ) {
 			$sql .= $group_manager_filter;
 		} else {
-			$sql .= " AND `vendor_id` = {$this->vendor_id}";
+			$sql .= " AND `vendor_id` = %d";
+			$sql = $wpdb->prepare( $sql, $this->vendor_id );
 		}
 		if( apply_filters( 'wcfmmp_is_allow_order_status_filter', false ) ) {
 			$sql .= " AND commission.order_status IN ({$allowed_status})";
+			//$sql .= " AND commission.order_status IN (%s)";
+			//$sql = $wpdb->prepare( $sql, $allowed_status );
 		}
 		$sql .= ' AND `is_trashed` = 0';
 		
@@ -76,29 +79,36 @@ class WCFM_Orders_WCFMMarketplace_Controller {
 			$order_id = absint( $_POST['search']['value'] );
 			if( function_exists( 'wc_sequential_order_numbers' ) ) { $order_id = wc_sequential_order_numbers()->find_order_by_order_number( $order_id ); }
 
-			$sql .= " AND `order_id` = {$order_id}";
+			$sql .= " AND `order_id` = %d";
+			$sql = $wpdb->prepare( $sql, $order_id );
 
 		} else {
 
 			if ( ! empty( $_POST['filter_date_form'] ) && ! empty( $_POST['filter_date_to'] ) ) {
 				$start_date = date( 'Y-m-d', strtotime( wc_clean($_POST['filter_date_form']) ) );
 				$end_date = date( 'Y-m-d', strtotime( wc_clean($_POST['filter_date_to']) ) );
-				$time_filter = " AND DATE( commission.created ) BETWEEN '" . $start_date . "' AND '" . $end_date . "'";
+				$time_filter = " AND DATE( commission.created ) BETWEEN %s AND %s";
 				$sql .= $time_filter;
+				$sql = $wpdb->prepare( $sql, $start_date, $end_date );
 			}
 
 			if ( ! empty( $_POST['commission_status'] ) ) {
 				$commission_status = wc_clean( $_POST['commission_status'] );
-				$status_filter = " AND `withdraw_status` = '{$commission_status}'";
+				$status_filter = " AND `withdraw_status` = %s";
 			}
 			
 			if ( ! empty( $_POST['order_status'] ) ) {
 				$order_status = wc_clean( $_POST['order_status'] );
 				if( $order_status != 'all' ) {
-					$status_filter .= " AND `commission_status` = '{$order_status}'";
+					$status_filter .= " AND `commission_status` = %s";
+				} else {
+					$order_status = 	$_POST['order_status'] = '';
 				}
 			}
 			if( $status_filter ) $sql .= $status_filter;
+			if ( ! empty( $_POST['commission_status'] ) && ! empty( $_POST['order_status'] ) ) $sql = $wpdb->prepare( $sql, $commission_status, $order_status );
+			if ( ! empty( $_POST['commission_status'] ) && empty( $_POST['order_status'] ) ) $sql = $wpdb->prepare( $sql, $commission_status );
+			if ( ! empty( $_POST['order_status'] ) && empty( $_POST['commission_status'] ) ) $sql = $wpdb->prepare( $sql, $order_status );
 		}
 		
 		$total_items = $wpdb->get_var( $sql );
@@ -112,10 +122,13 @@ class WCFM_Orders_WCFMMarketplace_Controller {
 		if( $group_manager_filter ) {
 			$sql .= $group_manager_filter;
 		} else {
-			$sql .= " AND `vendor_id` = {$this->vendor_id}";
+			$sql .= " AND `vendor_id` = %d";
+			$sql = $wpdb->prepare( $sql, $this->vendor_id );
 		}
 		if( apply_filters( 'wcfmmp_is_allow_order_status_filter', false ) ) {
 			$sql .= " AND commission.order_status IN ({$allowed_status})";
+			//$sql .= " AND commission.order_status IN (%s)";
+			//$sql = $wpdb->prepare( $sql, $allowed_status );
 		}
 		$sql .= ' AND `is_trashed` = 0';
 		
@@ -126,15 +139,20 @@ class WCFM_Orders_WCFMMarketplace_Controller {
 			$order_id = absint( $_POST['search']['value'] );
 			if( function_exists( 'wc_sequential_order_numbers' ) ) { $order_id = wc_sequential_order_numbers()->find_order_by_order_number( $order_id ); }
 
-			$sql .= " AND `order_id` = {$order_id}";
+			$sql .= " AND `order_id` = %d";
+			$sql = $wpdb->prepare( $sql, $order_id );
 
 		} else {
 
 			if ( ! empty( $_POST['filter_date_form'] ) && ! empty( $_POST['filter_date_to'] ) ) {
 				$sql .= $time_filter;
+				$sql = $wpdb->prepare( $sql, $start_date, $end_date );
 			}
 
 			if( $status_filter ) $sql .= $status_filter;
+			if ( ! empty( $_POST['commission_status'] ) && ! empty( $_POST['order_status'] ) ) $sql = $wpdb->prepare( $sql, $commission_status, $order_status );
+			if ( ! empty( $_POST['commission_status'] ) && empty( $_POST['order_status'] ) ) $sql = $wpdb->prepare( $sql, $commission_status );
+			if ( ! empty( $_POST['order_status'] ) && empty( $_POST['commission_status'] ) ) $sql = $wpdb->prepare( $sql, $order_status );
 		}
 
 		$sql .= " ORDER BY `{$the_orderby}` {$the_order}";
@@ -375,7 +393,7 @@ class WCFM_Orders_WCFMMarketplace_Controller {
 				$index++;
 			}
 		}
-		if( !empty($wcfm_orders_json_arr) ) $wcfm_orders_json .= json_encode($wcfm_orders_json_arr);
+		if( !empty($wcfm_orders_json_arr) ) $wcfm_orders_json .= json_encode( apply_filters ( 'wcfm_orders_controller_data', $wcfm_orders_json_arr, 'vendor', $this->vendor_id ) );
 		else $wcfm_orders_json .= '[]';
 		$wcfm_orders_json .= '
 													}';

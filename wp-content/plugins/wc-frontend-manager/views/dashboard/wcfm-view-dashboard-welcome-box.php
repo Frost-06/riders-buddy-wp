@@ -39,7 +39,7 @@ $previous_login = get_user_meta( $user_id, '_previous_login', true );
 				<?php if( $wcfm_is_allow_profile = apply_filters( 'wcfm_is_allow_profile', true ) ) { ?>
 					<a href="<?php echo get_wcfm_profile_url(); ?>">
 				<?php } ?>
-					<img src="<?php echo $wp_user_avatar; ?>" alt="user"/>
+					<img src="<?php echo esc_url($wp_user_avatar); ?>" alt="user"/>
 				<?php if( $wcfm_is_allow_profile = apply_filters( 'wcfm_is_allow_profile', true ) ) { ?>
 					</a>
 				<?php } ?>
@@ -75,9 +75,9 @@ $previous_login = get_user_meta( $user_id, '_previous_login', true );
 		<?php if( wcfm_is_vendor() && apply_filters( 'wcfm_is_allow_dashboard_limit_stats', true ) ) { ?>
 			<div class="vrgt wcfm_welcomebox_user_right">
 			  <?php if( apply_filters( 'wcfm_is_allow_manage_products', true ) ) { ?>
-			  	<div class="wcfm_welcomebox_user_right_box"><span class="wcfmfa fa-cube img_tip" data-tip="<?php _e( 'Product Limit Stats', 'wc-frontend-manager' ); ?>"></span><span><mark><?php echo $WCFM->wcfm_vendor_support->wcfm_vendor_product_limit_stat( $user_id ); ?></mark></span></div>
+			  	<div class="wcfm_welcomebox_user_right_box"><span class="wcfmfa fa-cube img_tip" data-tip="<?php _e( 'Product Limit Stats', 'wc-frontend-manager' ); ?>"></span><span><mark><?php echo wp_kses_post($WCFM->wcfm_vendor_support->wcfm_vendor_product_limit_stat( $user_id ) ); ?></mark></span></div>
 			  <?php } ?>
-				<div class="wcfm_welcomebox_user_right_box"><span class="wcfmfa fa-hdd img_tip" data-tip="<?php _e('Disk Space Usage Stats', 'wc-frontend-manager' ); ?>"></span><span><mark><?php echo $WCFM->wcfm_vendor_support->wcfm_vendor_space_limit_stat( $user_id ); ?></mark></span></div>
+				<div class="wcfm_welcomebox_user_right_box"><span class="wcfmfa fa-hdd img_tip" data-tip="<?php _e('Disk Space Usage Stats', 'wc-frontend-manager' ); ?>"></span><span><mark><?php echo wp_kses_post($WCFM->wcfm_vendor_support->wcfm_vendor_space_limit_stat( $user_id ) ); ?></mark></span></div>
 			</div>
 		<?php } ?>			
 	  <div class="spacer"></div>    

@@ -58,21 +58,21 @@ class WCFM_Withdrawal_Request_Controller {
 							$format = array( '%d', '%f', '%s', '%d', '%s', '%s', '%s' );
 							if ( $wpdb->insert( $wpdb->dokan_withdraw, $data, $format ) ) {
 								do_action( 'dokan_after_withdraw_request', $vendor_id, $withdraw_amount, $withdraw_method );
-								echo '{"status": true, "message": "' . __('Request successfully sent', 'wc-frontend-manager') . '", "redirect": "' . wcfm_payments_url() . '"}';
+								echo '{"status": true, "message": "' . esc_html( __('Request successfully sent', 'wc-frontend-manager') ) . '", "redirect": "' . esc_url( wcfm_payments_url() ) . '"}';
 							} else {
-								echo '{"status": false, "message": "' . __('Something went wrong please try again later', 'wc-frontend-manager') . '"}';
+								echo '{"status": false, "message": "' . esc_html( __('Something went wrong please try again later', 'wc-frontend-manager') ) . '"}';
 							}
 					} else {
-						echo '{"status": false, "message": "' . sprintf( __( 'Withdraw amount must be greater than %d', 'dokan-lite' ), $withdraw_amount ) . '"}';
+						echo '{"status": false, "message": "' . esc_html( sprintf( __( 'Withdraw amount must be greater than %d', 'dokan-lite' ), $withdraw_amount ) ) . '"}';
 					}
 				} else {
-					echo '{"status": false, "message": "' . __('You don\'t have enough balance for this request', 'dokan-lite') . $withdraw_amount .'>'. $balance . '"}';
+					echo '{"status": false, "message": "' . esc_html( __('You don\'t have enough balance for this request', 'dokan-lite') . $withdraw_amount .'>'. $balance ) . '"}';
 				}
 			} else {
-				echo '{"status": false, "message": "' . __('Withdraw method required', 'dokan-lite') . '"}';
+				echo '{"status": false, "message": "' . esc_html( __('Withdraw method required', 'dokan-lite') ) . '"}';
 			}
 	  } else {
-	  	echo '{"status": false, "message": "' . __('Withdraw amount required ', 'dokan-lite') . '"}';
+	  	echo '{"status": false, "message": "' . esc_html( __('Withdraw amount required ', 'dokan-lite') ) . '"}';
 	  }
 		
 		die;

@@ -20,24 +20,30 @@ class WCFM_Withdrawal_Requests_Controller {
 	public function processing() {
 		global $WCFM, $wpdb, $_POST;
 		
-		$length = wc_clean($_POST['length']);
-		$offset = wc_clean($_POST['start']);
+		$length = absint($_POST['length']);
+		$offset = absint($_POST['start']);
 		
-		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_text_field( $_POST['orderby'] ) : 'ID';
+		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_sql_orderby( $_POST['orderby'] ) : 'ID';
 		$the_order   = ( ! empty( $_POST['order'] ) && 'asc' === $_POST['order'] ) ? 'ASC' : 'DESC';
 		
 		$transaction_id = ! empty( $_POST['transaction_id'] ) ? sanitize_text_field( $_POST['transaction_id'] ) : '';
 		
 		$status_filter = '';
     if( isset($_POST['status_type']) && ( $_POST['status_type'] != '' ) ) {
-    	$status_filter = " AND `status` = " . wc_clean($_POST['status_type']);
+    		$status_filter = " AND `status` = %s";
     }
 
 		$sql = 'SELECT COUNT(commission.id) FROM ' . $wpdb->prefix . 'dokan_withdraw AS commission';
 		$sql .= ' WHERE 1=1';
 		$sql .= " AND commission.user_id != 0";
-		if( $transaction_id ) $sql .= " AND commission.id = $transaction_id";
-		$sql .= $status_filter;
+		if( $transaction_id ) {
+			$sql .= " AND commission.id = %d";
+			$sql = $wpdb->prepare( $sql, $transaction_id );
+		}
+		if( $status_filter ) {
+			$sql .= $status_filter;
+			$sql = $wpdb->prepare( $sql, wc_clean($_POST['status_type']) );
+		}
 		
 		$filtered_withdrawal_requests_count = $wpdb->get_var( $sql );
 		if( !$filtered_withdrawal_requests_count ) $filtered_withdrawal_requests_count = 0;
@@ -45,8 +51,14 @@ class WCFM_Withdrawal_Requests_Controller {
 		$sql = 'SELECT * FROM ' . $wpdb->prefix . 'dokan_withdraw AS commission';
 		$sql .= ' WHERE 1=1';
 		$sql .= " AND commission.user_id != 0";
-		if( $transaction_id ) $sql .= " AND commission.id = $transaction_id";
-		$sql .= $status_filter;
+		if( $transaction_id ) {
+			$sql .= " AND commission.id = %d";
+			$sql = $wpdb->prepare( $sql, $transaction_id );
+		}
+		if( $status_filter ) {
+			$sql .= $status_filter;
+			$sql = $wpdb->prepare( $sql, wc_clean($_POST['status_type']) );
+		}
 		$sql .= " ORDER BY `{$the_orderby}` {$the_order}";
 		$sql .= " LIMIT {$length}";
 		$sql .= " OFFSET {$offset}";

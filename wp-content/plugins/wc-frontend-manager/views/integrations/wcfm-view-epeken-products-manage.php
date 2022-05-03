@@ -58,7 +58,7 @@ $origins = $origins["validorigin"];
 							<?php
 								foreach($origins as $origin) {
 									?>
-									<option value=<?php echo $origin["origin_code"]; ?> <?php if ($product_origin === $origin["origin_code"]) echo " selected";?>> <?php echo $origin["kota_kabupaten"];?></option>
+									<option value=<?php echo esc_attr($origin["origin_code"]); ?> <?php if ($product_origin === $origin["origin_code"]) echo " selected";?>> <?php echo esc_html($origin["kota_kabupaten"]);?></option>
 									<?php
 								}
 							

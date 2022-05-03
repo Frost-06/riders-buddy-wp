@@ -26,7 +26,7 @@ $wcfm_reports_menus = apply_filters( 'wcfm_reports_menus', $wcfm_reports_menus )
 			if($is_first) $is_first = false;
 			else echo " | ";
 			?>
-			<a class="<?php echo isset( $wp->query_vars['wcfm-reports-' . $wcfm_reports_menu_key] ) ? 'active' : ''; ?>" href="<?php echo get_wcfm_reports_url( '', 'wcfm-reports-' . $wcfm_reports_menu_key ); ?>"><?php echo $wcfm_reports_menu; ?></a>
+			<a class="<?php echo isset( $wp->query_vars['wcfm-reports-' . $wcfm_reports_menu_key] ) ? 'active' : ''; ?>" href="<?php echo get_wcfm_reports_url( '', 'wcfm-reports-' . $wcfm_reports_menu_key ); ?>"><?php echo esc_html($wcfm_reports_menu); ?></a>
 		</li>
 		<?php
 	}

@@ -85,7 +85,7 @@ class WCFM_Library {
 	  $noloader = 0;
 	  $wcfm_options = $WCFM->wcfm_options;
 	  $noloader = isset( $wcfm_options['noloader'] ) ? $wcfm_options['noloader'] : 'no';
-	  wp_localize_script( 'wcfm_menu_js', 'wcfm_noloader', $noloader );
+	  wp_localize_script( 'wcfm_menu_js', 'wcfm_noloader', array( 'loader_stat' => $noloader ) );
 	  
 	  //$this->load_blockui_lib();
 	  
@@ -476,7 +476,7 @@ class WCFM_Library {
 						
 						$store_icon = apply_filters( 'wcfmmp_map_store_icon', $WCFMmp->plugin_url . 'assets/images/wcfmmp_map_icon.png', 0, '' );
 						
-						wp_localize_script( 'wcfm_marketplace_settings_js', 'wcfm_marketplace_setting_map_options', array( 'search_location' => __( 'Insert your address ..', 'wc-multivendor-marketplace' ), 'is_geolocate' => apply_filters( 'wcfmmp_is_allow_store_list_by_user_location', true ), 'default_lat' => $default_lat, 'default_lng' => $default_lng, 'default_zoom' => absint( $default_zoom ), 'store_icon' => $store_icon, 'icon_width' => apply_filters( 'wcfmmp_map_icon_width', 40 ), 'icon_height' => apply_filters( 'wcfmmp_map_icon_height', 57 ), 'is_rtl' => is_rtl() ) );
+						wp_localize_script( 'wcfm_marketplace_settings_js', 'wcfm_marketplace_setting_map_options', array( 'search_location' => __( 'Insert your address ..', 'wc-multivendor-marketplace' ), 'locate_svg' => $WCFMmp->plugin_url. 'assets/images/locate.svg', 'is_geolocate' => apply_filters( 'wcfmmp_is_allow_store_list_by_user_location', true ), 'default_lat' => $default_lat, 'default_lng' => $default_lng, 'default_zoom' => absint( $default_zoom ), 'store_icon' => $store_icon, 'icon_width' => apply_filters( 'wcfmmp_map_icon_width', 40 ), 'icon_height' => apply_filters( 'wcfmmp_map_icon_height', 57 ), 'is_rtl' => is_rtl() ) );
             
 						if( apply_filters( 'wcfmmp_city_select_dropdown_enabled', false ) ) {
               global $wc_city_select;
@@ -1081,7 +1081,7 @@ class WCFM_Library {
 		wp_enqueue_script( 'dataTables_responsive_js', $WCFM->plugin_url . 'includes/libs/datatable/js/dataTables.responsive.min.js', array('jquery', 'dataTables_js'), $WCFM->version, true );
 		
 		$dataTables_language = '{"processing": "' . __('Processing...', 'wc-frontend-manager' ) . '" , "search": "' . __('Search:', 'wc-frontend-manager' ) . '", "lengthMenu": "' . __('Show _MENU_ entries', 'wc-frontend-manager' ) . '", "info": " ' . __('Showing _START_ to _END_ of _TOTAL_ entries', 'wc-frontend-manager' ) . '", "infoEmpty": "' . __('Showing 0 to 0 of 0 entries', 'wc-frontend-manager' ) . '", "infoFiltered": "' . __('(filtered _MAX_ entries of total)', 'wc-frontend-manager' ) . '", "loadingRecords": "' . __('Loading...', 'wc-frontend-manager' ) . '", "zeroRecords": "' . __('No matching records found', 'wc-frontend-manager' ) . '", "emptyTable": "' . __('No data in the table', 'wc-frontend-manager' ) . '", "paginate": {"first": "' . __('First', 'wc-frontend-manager' ) . '", "previous": "' . __('Previous', 'wc-frontend-manager' ) . '", "next": "' . __('Next', 'wc-frontend-manager' ) . '", "last": "' .  __('Last', 'wc-frontend-manager') . '"}, "buttons": {"print": "' . __('Print', 'wc-frontend-manager' ) . '", "pdf": "' . __('PDF', 'wc-frontend-manager' ) . '", "excel": "' . __('Excel', 'wc-frontend-manager' ) . '", "csv": "' . __('CSV', 'wc-frontend-manager' ) . '"}}';
-		wp_localize_script( 'dataTables_js', 'dataTables_language', $dataTables_language );
+		//wp_localize_script( 'dataTables_js', 'dataTables_language', $dataTables_language );
 		
 		wp_localize_script( 'dataTables_js', 'dataTables_config', array( 'pageLength' => apply_filters( 'wcfm_datatable_page_length', 25 ), 'is_allow_hidden_export' => apply_filters( 'wcfm_is_allow_datatable_hidden_export', false ) ) );
 		
@@ -1347,7 +1347,7 @@ class WCFM_Library {
 		if( $start_date && $end_date ) $wcfm_date_range = $start_date . ' ' . __( 'to', 'wc-frontend-manager' ) . ' ' . $end_date;
 		?>
 		<div class="wcfm-date-range-field">
-			<input type="text" name="wcfm-date-range" class="wcfm-date-range" autocomplete="off" placeholder="<?php _e( 'Choose Date Range', 'wc-frontend-manager' ); ?> ..." value="<?php echo $wcfm_date_range; ?>">
+			<input type="text" name="wcfm-date-range" class="wcfm-date-range" autocomplete="off" placeholder="<?php esc_html_e( 'Choose Date Range', 'wc-frontend-manager' ); ?> ..." value="<?php echo esc_html($wcfm_date_range); ?>">
 
 			<input type="hidden" name="wcfm-date_from" autocomplete="off" value="">
 			<input type="hidden" name="wcfm-date_to" autocomplete="off" value="">
@@ -1380,7 +1380,7 @@ class WCFM_Library {
 	  
 	  $date_format = strtoupper( wcfm_wp_date_format_to_js( wc_date_format() ) );
 	  if( strpos( wc_date_format(), 'F' ) !== FALSE ) $date_format = str_replace( 'MM', 'MMMM', $date_format );
-	  wp_localize_script( 'jquery-chart_moment_js', 'wcfm_wp_date_format_to_js',  $date_format );
+	  wp_localize_script( 'jquery-chart_moment_js', 'wcfm_wp_date_format_to_js',  array( 'date_format' => $date_format ) );
 	  
 	  $wcfm_chartjs_localiztion_params = array(
 																							'monthNames'        => $this->_strip_chartjs_indices( $wp_locale->month ),
@@ -1437,7 +1437,7 @@ class WCFM_Library {
 	  if( $api_key ) {
 	  	$scheme  = is_ssl() ? 'https' : 'http';
 	  	wp_enqueue_script( 'wcfm-google-maps', apply_filters( 'wcfm_google_map_api_url', $scheme . '://maps.googleapis.com/maps/api/js?key=' . $api_key . '&libraries=places', $api_key ) );
-	  	wp_localize_script( 'wcfm-google-maps', 'wcfm_maps', array( 'lib' => 'google' ) );
+	  	wp_localize_script( 'wcfm-google-maps', 'wcfm_maps', array( 'lib' => 'google', 'map_type' => apply_filters( 'wcfm_google_map_type', 'roadmap' ) ) );
 	  }
 	}
 	
@@ -1448,7 +1448,7 @@ class WCFM_Library {
 	  global $WCFM;
 	  wp_enqueue_script( 'wcfm-leaflet-map-js', $WCFM->plugin_url . 'includes/libs/leaflet/leaflet.js', array('jquery'), $WCFM->version, true );
 	  wp_enqueue_style( 'wcfm-leaflet-map-style', $WCFM->plugin_url . 'includes/libs/leaflet/leaflet.css', array(), $WCFM->version );
-	  wp_localize_script( 'wcfm-leaflet-map-js', 'wcfm_maps', array( 'lib' => 'leaflet' ) );
+	  wp_localize_script( 'wcfm-leaflet-map-js', 'wcfm_maps', array( 'lib' => 'leaflet', 'map_type' => apply_filters( 'wcfm_google_map_type', 'roadmap' ) ) );
 	}
 	
 	/**

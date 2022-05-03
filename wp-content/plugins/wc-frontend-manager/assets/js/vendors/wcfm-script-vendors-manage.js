@@ -24,7 +24,8 @@ jQuery(document).ready( function($) {
 		$('#dropdown_vendor').on('change', function() {
 			var data = {
 				action                : 'vendor_manager_change_url',
-				vendor_manager_change : $('#dropdown_vendor').val()
+				vendor_manager_change : $('#dropdown_vendor').val(),
+				wcfm_ajax_nonce       : wcfm_params.wcfm_ajax_nonce,
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {
@@ -61,7 +62,8 @@ jQuery(document).ready( function($) {
 				action             : 'wcfm_ajax_controller',
 				controller         : 'wcfm-message-sent',
 				wcfm_messages      : wcfm_messages,
-				direct_to          : direct_to
+				direct_to          : direct_to,
+				wcfm_ajax_nonce    : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {
@@ -106,6 +108,7 @@ jQuery(document).ready( function($) {
 				action                          : 'wcfm_ajax_controller',
 				controller                      : 'wcfm-vendors-manage-profile',
 				wcfm_vendor_manage_profile_form : $('#wcfm_vendor_manage_profile_form').serialize(),
+				wcfm_ajax_nonce                 : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {
@@ -156,6 +159,7 @@ jQuery(document).ready( function($) {
 				controller                : 'wcfm-vendors-manage-marketplace-settings',
 				wcfm_settings_form        : $('#wcfm_vendor_manage_store_setting_form').serialize(),
 				profile                   : profile,
+				wcfm_ajax_nonce           : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {
@@ -196,6 +200,7 @@ jQuery(document).ready( function($) {
 				action                    : 'wcfm_ajax_controller',
 				controller                : 'wcfm-vendors-manage-marketplace-shipping-settings',
 				wcfm_settings_form        : $('#wcfm_vendor_manage_store_shipping_setting_form').serialize(),
+				wcfm_ajax_nonce           : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {
@@ -235,7 +240,8 @@ jQuery(document).ready( function($) {
 			var data = {
 				action                    : 'wcfm_ajax_controller',
 				controller                : 'wcfm-vendors-manage-marketplace-settings',
-				wcfm_settings_form        : $('#wcfm_vendor_manage_store_commission_setting_form').serialize()
+				wcfm_settings_form        : $('#wcfm_vendor_manage_store_commission_setting_form').serialize(),
+				wcfm_ajax_nonce           : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {
@@ -275,7 +281,8 @@ jQuery(document).ready( function($) {
 			var data = {
 				action                    : 'wcfm_ajax_controller',
 				controller                : 'wcfm-vendors-manage-marketplace-settings',
-				wcfm_settings_form        : $('#wcfm_vendor_manage_store_hours_setting_form').serialize()
+				wcfm_settings_form        : $('#wcfm_vendor_manage_store_hours_setting_form').serialize(),
+				wcfm_ajax_nonce           : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {
@@ -315,7 +322,8 @@ jQuery(document).ready( function($) {
 			var data = {
 				action                    : 'wcfm_ajax_controller',
 				controller                : 'wcfm-vendors-manage-marketplace-settings',
-				wcfm_settings_form        : $('#wcfm_vendor_manage_delivery_time_setting_form').serialize()
+				wcfm_settings_form        : $('#wcfm_vendor_manage_delivery_time_setting_form').serialize(),
+				wcfm_ajax_nonce           : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {
@@ -355,7 +363,8 @@ jQuery(document).ready( function($) {
 			var data = {
 				action                    : 'wcfm_ajax_controller',
 				controller                : 'wcfm-vendors-manage-marketplace-settings',
-				wcfm_settings_form        : $('#wcfm_vendor_manage_store_invoice_setting_form').serialize()
+				wcfm_settings_form        : $('#wcfm_vendor_manage_store_invoice_setting_form').serialize(),
+				wcfm_ajax_nonce           : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {
@@ -395,7 +404,8 @@ jQuery(document).ready( function($) {
 			var data = {
 				action                    : 'wcfm_ajax_controller',
 				controller                : 'wcfm-vendors-manage-marketplace-settings',
-				wcfm_settings_form        : $('#wcfm_vendor_manage_store_seo_social_setting_form').serialize()
+				wcfm_settings_form        : $('#wcfm_vendor_manage_store_seo_social_setting_form').serialize(),
+				wcfm_ajax_nonce           : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {
@@ -445,7 +455,8 @@ jQuery(document).ready( function($) {
 				wcfm_settings_form        : $('#wcfm_vendor_manage_store_policy_support_setting_form').serialize(),
 				shipping_policy           : shipping_policy,
 				refund_policy             : refund_policy,
-				cancellation_policy       : cancellation_policy
+				cancellation_policy       : cancellation_policy,
+				wcfm_ajax_nonce           : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {
@@ -476,8 +487,9 @@ jQuery(document).ready( function($) {
 			}
 		});
 		var data = {
-			action       : 'wcfm_vendor_disable',
-			memberid     : $('#wcfm_vendor_disable_button').data('memberid'),
+			action               : 'wcfm_vendor_disable',
+			memberid             : $('#wcfm_vendor_disable_button').data('memberid'),
+			wcfm_ajax_nonce      : wcfm_params.wcfm_ajax_nonce
 		}	
 		$.post(wcfm_params.ajax_url, data, function(response) {
 			if(response) {
@@ -502,8 +514,9 @@ jQuery(document).ready( function($) {
 			}
 		});
 		var data = {
-			action       : 'wcfm_vendor_enable',
-			memberid     : $('#wcfm_vendor_enable_button').data('memberid'),
+			action               : 'wcfm_vendor_enable',
+			memberid             : $('#wcfm_vendor_enable_button').data('memberid'),
+			wcfm_ajax_nonce      : wcfm_params.wcfm_ajax_nonce
 		}	
 		$.post(wcfm_params.ajax_url, data, function(response) {
 			if(response) {
@@ -537,6 +550,7 @@ jQuery(document).ready( function($) {
 			var data = {
 				action                                : 'wcfmu_vendors_manage_verification',
 				wcfm_vendor_manage_verification_form  : $('#wcfm_vendor_manage_verification_form').serialize(),
+				wcfm_ajax_nonce                       : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {
@@ -578,6 +592,7 @@ jQuery(document).ready( function($) {
 				action                          : 'wcfm_ajax_controller',
 				controller                      : 'wcfm-vendors-manage-badges',
 				wcfm_vendor_manage_badges_form  : $('#wcfm_vendor_manage_badges_form').serialize(),
+				wcfm_ajax_nonce                 : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {

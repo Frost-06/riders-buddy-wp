@@ -566,7 +566,7 @@ class WCFM_Report_Sales_By_Date extends WC_Admin_Report {
 			'highlight_series' => 4,
 		);
 
-		return $legend;
+		return apply_filters( 'wcfm_admin_sales_report_legends', $legend );
 	}
 
 	/**

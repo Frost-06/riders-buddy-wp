@@ -279,7 +279,8 @@ jQuery(document).ready( function($) {
 				profile              : profile,
 				shipping_policy      : shipping_policy,
 				refund_policy        : refund_policy,
-				cancellation_policy  : cancellation_policy
+				cancellation_policy  : cancellation_policy,
+				wcfm_ajax_nonce      : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {

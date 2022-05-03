@@ -258,10 +258,10 @@ do_action( 'before_wcfm_customers_manage' );
 			?>
 		</form>
 		<script type="text/javascript">
-			var selected_bstate = '<?php echo $bstate; ?>';
-			var input_selected_bstate = '<?php echo $bstate; ?>';
-			var selected_sstate = '<?php echo $sstate; ?>';
-			var input_selected_sstate = '<?php echo $sstate; ?>';
+			var selected_bstate = '<?php echo esc_attr($bstate); ?>';
+			var input_selected_bstate = '<?php echo esc_attr($bstate); ?>';
+			var selected_sstate = '<?php echo esc_attr($sstate); ?>';
+			var input_selected_sstate = '<?php echo esc_attr($sstate); ?>';
 		</script>
 	</div>
 </div>

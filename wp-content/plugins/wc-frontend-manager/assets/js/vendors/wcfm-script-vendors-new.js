@@ -90,7 +90,8 @@ jQuery(document).ready(function($) {
 				shipping_policy          : shipping_policy,
 				refund_policy            : refund_policy,
 				cancellation_policy      : cancellation_policy,
-				status                   : 'submit'
+				status                   : 'submit',
+				wcfm_ajax_nonce          : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {

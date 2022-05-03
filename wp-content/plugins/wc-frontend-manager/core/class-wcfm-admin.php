@@ -97,7 +97,7 @@ class WCFM_Admin {
 		}
 
 		// check if it has already been dismissed
-		$offer_key = 'wcfm_wcfmu_inactive09062020';
+		$offer_key = 'wcfm_wcfmu_inactive23112021';
 		$hide_notice = get_option( $offer_key . '_tracking_notice', 'no' );
 
 		if ( 'hide' == $hide_notice ) {
@@ -116,8 +116,8 @@ class WCFM_Admin {
 		//$offer_msg .= __( '<p>Growing is fun when we share it with you! As we mark our anniversary, celebrate with us and grab 15% discount on all our addons.</p>', 'wc-frontend-manager' );
 		?>
 			<div class="notice is-dismissible wcfm_addon_inactive_notice_box wcfm_ultimate_inactive_notice_box" id="wcfm-ultimate-notice">
-				<img class="wcfm_logo" src="<?php echo $WCFM->plugin_url; ?>assets/images/wcfm_marketplace_white_logo.png" alt="">
-				<?php echo $offer_msg; ?>
+				<img class="wcfm_logo" src="<?php echo esc_url( $WCFM->plugin_url ); ?>assets/images/wcfm_marketplace_white_logo.png" alt="">
+				<?php echo wp_kses_post($offer_msg); ?>
 				<span class="dashicons dashicons-megaphone"></span>
 				<a href="https://wclovers.com/product/woocommerce-frontend-manager-ultimate/?utm_source=wp-admin&utm_medium=banner&utm_campaign=promotion&utm_content=ultimate" class=" button-primary promo-btn" target="_blank"><?php _e( 'GET Ultimate', 'wc-multivendor-marketplace' ); ?></a>
 			</div>
@@ -127,7 +127,8 @@ class WCFM_Admin {
 					e.preventDefault();
 
 					wp.ajax.post('wcfm-dismiss-addon-inactive-notice', {
-						wcfm_wcfmu_inactive: true
+						wcfm_wcfmu_inactive: true,
+						wcfm_ajax_nonce: '<?php echo wp_create_nonce( 'wcfm_ajax_nonce' ) ?>'
 					});
 				});
 			</script>
@@ -149,7 +150,7 @@ class WCFM_Admin {
 		}
 
 		// check if it has already been dismissed
-		$offer_key = 'wcfm_wcfmvm_inactive04062019';
+		$offer_key = 'wcfm_wcfmvm_inactive23112021';
 		$hide_notice = get_option( $offer_key . '_tracking_notice', 'no' );
 
 		if ( 'hide' == $hide_notice ) {
@@ -162,8 +163,8 @@ class WCFM_Admin {
 		$offer_msg .= __( '<p>A simple membership plugin for offering FREE AND PREMIUM SUBSCRIPTION for your multi-vendor marketplace. You may set up unlimited membership levels (example: free, silver, gold etc) with different pricing plan, capabilities and commission. Also you will have Pay for Product option.</p>', 'wc-frontend-manager' );
 		?>
 			<div class="notice is-dismissible wcfm_addon_inactive_notice_box" id="wcfm-membership-notice">
-				<img src="<?php echo $WCFM->plugin_url . 'assets/images/wcfm_membership_logo.jpg'; ?>" alt="">
-				<?php echo $offer_msg; ?>
+				<img src="<?php echo esc_url( $WCFM->plugin_url ) . 'assets/images/wcfm_membership_logo.jpg'; ?>" alt="">
+				<?php echo wp_kses_post($offer_msg); ?>
 				<span class="dashicons dashicons-groups"></span>
 				<a href="https://wordpress.org/plugins/wc-multivendor-membership/" class="button button-primary promo-btn" target="_blank"><?php _e( 'View Details', 'wc-frontend-manager' ); ?></a>
 			</div>
@@ -173,7 +174,8 @@ class WCFM_Admin {
 					e.preventDefault();
 
 					wp.ajax.post('wcfm-dismiss-addon-inactive-notice', {
-						wcfm_wcfmvm_inactive: true
+						wcfm_wcfmvm_inactive: true,
+						wcfm_ajax_nonce: '<?php echo wp_create_nonce( 'wcfm_ajax_nonce' ) ?>'
 					});
 				});
 			</script>
@@ -195,7 +197,7 @@ class WCFM_Admin {
 		}
 
 		// check if it has already been dismissed
-		$offer_key = 'wcfm_wcfmgs_inactive09062020';
+		$offer_key = 'wcfm_wcfmgs_inactive23112021';
 		$hide_notice = get_option( $offer_key . '_tracking_notice', 'no' );
 
 		if ( 'hide' == $hide_notice ) {
@@ -214,8 +216,8 @@ class WCFM_Admin {
 		//$offer_msg .= __( '<p>Growing is fun when we share it with you! As we mark our anniversary, celebrate with us and grab 15% discount on all our addons.</p>', 'wc-frontend-manager' );
 		?>
 			<div class="notice is-dismissible wcfm_addon_inactive_notice_box wcfm_group_inactive_notice_box" id="wcfm-groups-sttafs-notice">
-				<img src="<?php echo $WCFM->plugin_url; ?>assets/images/wcfm_marketplace_white_logo.png" alt="">
-				<?php echo $offer_msg; ?>
+				<img src="<?php echo esc_url( $WCFM->plugin_url ); ?>assets/images/wcfm_marketplace_white_logo.png" alt="">
+				<?php echo wp_kses_post($offer_msg); ?>
 				<span class="dashicons dashicons-groups1"></span>
 				<a href="https://wclovers.com/product/woocommerce-frontend-manager-groups-staffs/?utm_source=wp-admin&utm_medium=banner&utm_campaign=promotion&utm_content=groups-staffs" class="promo-btn wcfmgs_promo_button" target="_blank"></a>
 			</div>
@@ -225,7 +227,8 @@ class WCFM_Admin {
 					e.preventDefault();
 
 					wp.ajax.post('wcfm-dismiss-addon-inactive-notice', {
-						wcfm_wcfmgs_inactive: true
+						wcfm_wcfmgs_inactive: true,
+						wcfm_ajax_nonce: '<?php echo wp_create_nonce( 'wcfm_ajax_nonce' ) ?>'
 					});
 				});
 			</script>
@@ -261,9 +264,9 @@ class WCFM_Admin {
 		}
 		</style>
 		<div class="postbox">
-			<a href="<?php echo get_wcfm_page(); ?>">
+			<a href="<?php echo esc_url(get_wcfm_page()); ?>">
 				<div id="sales-piechart"><canvas id="sales-piechart-canvas"></canvas></div>
-				<div id="wcfm-logo"><img src="<?php echo $WCFM->plugin_url; ?>/assets/images/wcfm-30x30.png" alt="WCFM Home" /></div>
+				<div id="wcfm-logo"><img src="<?php echo esc_url( $WCFM->plugin_url ); ?>/assets/images/wcfm-30x30.png" alt="WCFM Home" /></div>
 			</a>
 		</div>
     <?php
@@ -287,7 +290,7 @@ class WCFM_Admin {
 	 * WCFM View Meta Box
 	 */
 	function wcfm_view_metabox( $post ) {
-		global $WCFM;
+		global $WCFM;                                                                                            
 		
 		$wcfm_url = get_wcfm_page();
 		if( $post->ID && $post->post_type ) {
@@ -296,7 +299,7 @@ class WCFM_Admin {
 			else if( $post->post_type == 'shop_order' ) $wcfm_url = get_wcfm_view_order_url($post->ID);
 		}
 		
-		echo '<div style="text-align: center;"><a href="' . $wcfm_url . '"><img src="' . $WCFM->plugin_url . '/assets/images/wcfm-30x30.png" alt="' . __( 'WCFM Home', 'wc-frontend-manager' ) . '" /></a></div>';
+		echo '<div style="text-align: center;"><a href="' . esc_url($wcfm_url) . '"><img src="' . esc_url($WCFM->plugin_url) . '/assets/images/wcfm-30x30.png" alt="' . __( 'WCFM Home', 'wc-frontend-manager' ) . '" /></a></div>';
 	}
 	
 	/**
@@ -306,11 +309,11 @@ class WCFM_Admin {
 		global $WCFM, $typenow;
 
 		if ( in_array( $typenow, wc_get_order_types( 'order-meta-boxes' ) ) ) {
-			echo '<a style="float: right;" href="' . get_wcfm_orders_url() . '"><img src="' . $WCFM->plugin_url . '/assets/images/wcfm-30x30.png" alt="' . __( 'WCFM Home', 'wc-frontend-manager' ) . '" /></a>';
+			echo '<a style="float: right;" href="' . esc_url(get_wcfm_orders_url()) . '"><img src="' . esc_url($WCFM->plugin_url) . '/assets/images/wcfm-30x30.png" alt="' . __( 'WCFM Home', 'wc-frontend-manager' ) . '" /></a>';
 		} elseif ( 'product' == $typenow ) {
-			echo '<a style="float: right;" href="' . get_wcfm_products_url() . '"><img src="' . $WCFM->plugin_url . '/assets/images/wcfm-30x30.png" alt="' . __( 'WCFM Home', 'wc-frontend-manager' ) . '" /></a>';
+			echo '<a style="float: right;" href="' . esc_url(get_wcfm_products_url()) . '"><img src="' . esc_url($WCFM->plugin_url) . '/assets/images/wcfm-30x30.png" alt="' . __( 'WCFM Home', 'wc-frontend-manager' ) . '" /></a>';
 		} elseif ( 'shop_coupon' == $typenow ) {
-			echo '<a style="float: right;" href="' . get_wcfm_coupons_url() . '"><img src="' . $WCFM->plugin_url . '/assets/images/wcfm-30x30.png" alt="' . __( 'WCFM Home', 'wc-frontend-manager' ) . '" /></a>';
+			echo '<a style="float: right;" href="' . esc_url(get_wcfm_coupons_url()) . '"><img src="' . esc_url($WCFM->plugin_url) . '/assets/images/wcfm-30x30.png" alt="' . __( 'WCFM Home', 'wc-frontend-manager' ) . '" /></a>';
 		}
 	}
 	
@@ -386,7 +389,7 @@ class WCFM_Admin {
 	 <?php
 	   foreach($pages_array as $p_id => $p_name) {
 	   	 ?>
-	   	 <option value="<?php echo $p_id; ?>" <?php echo isset( $options[ $args['label_for'] ] ) ? ( selected( $options[ $args['label_for'] ], $p_id, false ) ) : ( '' ); ?>>
+	   	 <option value="<?php echo esc_attr($p_id); ?>" <?php echo isset( $options[ $args['label_for'] ] ) ? ( selected( $options[ $args['label_for'] ], $p_id, false ) ) : ( '' ); ?>>
 	   	 <?php esc_html_e( $p_name, $WCFM->text_domain ); ?>
 	   	 </option>
 	   	 <?php
@@ -394,7 +397,7 @@ class WCFM_Admin {
 	 ?>
 	 </select>
 	 <div class="wcfm_setting_warning_box">
-		<p><?php _e( 'DO NOT USE WCFM DASHBOARD PAGE FOR OTHER PAGE SETTINGS, you will break your site if you do.', 'wc-frontend-manager' ); ?></p>
+		<p><?php esc_html_e( 'DO NOT USE WCFM DASHBOARD PAGE FOR OTHER PAGE SETTINGS, you will break your site if you do.', 'wc-frontend-manager' ); ?></p>
 	</div>
 	 <?php
 	}
@@ -436,7 +439,7 @@ class WCFM_Admin {
 		settings_errors( 'wcfm_messages' );
 		?>
 		<div class="wrap">
-		<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
+		<h1><?php echo wp_kses_post( get_admin_page_title() ); ?></h1>
 		<form action="options.php" method="post">
 			<div style="float: left; display: inline-block; width: 60%;">
 				 <?php  

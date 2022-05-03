@@ -119,7 +119,7 @@ class WCFM_Settings_Marketplace_Controller {
 						$store_slug_user = get_user_by( 'slug', $store_slug );
 						if ( !$store_slug_user || ( $store_slug_user && ( $store_slug_user->ID == $user_id ) )  ) {
 							if( apply_filters( 'wcfm_is_allow_store_slug_direct_update', true ) ) {
-								$wpdb->query( "UPDATE {$wpdb->prefix}users SET `user_nicename` = '{$store_slug}' WHERE ID =  $user_id" );
+								$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->prefix}users SET `user_nicename` = %s WHERE ID = %d", $store_slug, $user_id ) );
 							} else {
 								wp_update_user( array( 'ID' => $user_id, 'user_nicename' => wc_clean( $store_slug ) ) );
 							}
@@ -133,6 +133,7 @@ class WCFM_Settings_Marketplace_Controller {
 							}
 						} else {
 							echo '{"status": false, "message": "' . __( 'Shop Slug already exists.', 'wc-frontend-manager' ) . '"}';
+							$has_error = true;
 						}
 					} else {
 						echo '{"status": false, "message": "' . __( 'Shop Slug already exists.', 'wc-frontend-manager' ) . '"}';
@@ -145,7 +146,7 @@ class WCFM_Settings_Marketplace_Controller {
 		// sanitize html editor content
 		if( apply_filters( 'wcfm_is_allow_store_description', true ) ) {
 			if( isset( $_POST['profile'] ) && !empty( $_POST['profile'] ) ) {
-				$wcfm_settings_form['shop_description'] = ! empty( $_POST['profile'] ) ? stripslashes( html_entity_decode( $_POST['profile'], ENT_QUOTES, 'UTF-8' ) ) : '';
+				$wcfm_settings_form['shop_description'] = ! empty( $_POST['profile'] ) ? wp_filter_post_kses( stripslashes( html_entity_decode( $_POST['profile'], ENT_QUOTES, 'UTF-8' ) ) ) : '';
 				wcfm_update_user_meta( $user_id, '_store_description', apply_filters( 'wcfm_editor_content_before_save', $wcfm_settings_form['shop_description'] ) );
 			}
 		}
@@ -229,6 +230,9 @@ class WCFM_Settings_Marketplace_Controller {
 				update_user_meta( $user_id, '_wcfm_' . $address_field, $address_val );
 			}
 		}
+		
+		do_action( 'wcfm_vendor_settings_before_update', $user_id, $wcfm_settings_form );
+		do_action( 'wcfm_wcfmmp_settings_before_update', $user_id, $wcfm_settings_form );
 		
 		// Merge the changes with existing settings
 		$wcfm_settings_form = array_merge( $vendor_data, $wcfm_settings_form );

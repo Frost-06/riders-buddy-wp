@@ -78,7 +78,7 @@ class WCFM_Vendors_Manage_Badges_Controller {
 	  	do_action( 'wcfm_vendor_manage_badges_update', $vendor_id, $wcfm_vendor_manage_badges_form_data );
 	  }
 		
-		echo '{"status": true, "message": "' . __( 'Badges saved successfully', 'wc-frontend-manager' ) . '"}';
+		echo '{"status": true, "message": "' . esc_html( __( 'Badges saved successfully', 'wc-frontend-manager' ) ) . '"}';
 		 
 		die;
 	}

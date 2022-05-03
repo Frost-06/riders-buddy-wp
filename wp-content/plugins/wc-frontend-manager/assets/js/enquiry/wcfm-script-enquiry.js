@@ -40,7 +40,8 @@ jQuery(document).ready(function($) {
 				d.enquiry_product   = $enquiry_product,
 				d.enquiry_vendor    = $enquiry_vendor,
 				d.filter_date_form  = $filter_date_form,
-				d.filter_date_to    = $filter_date_to
+				d.filter_date_to    = $filter_date_to,
+				d.wcfm_ajax_nonce   = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -98,7 +99,8 @@ jQuery(document).ready(function($) {
 		});
 		var data = {
 			action   : 'delete_wcfm_enquiry',
-			enquiryid : item.data('enquiryid')
+			enquiryid : item.data('enquiryid'),
+			wcfm_ajax_nonce : wcfm_params.wcfm_ajax_nonce
 		}	
 		jQuery.ajax({
 			type:		'POST',

@@ -33,7 +33,7 @@ class WCFM_Withdrawal_Reverse_Approve_Controller {
 			if(isset($custom_validation_results['has_error']) && !empty($custom_validation_results['has_error'])) {
 				$custom_validation_error = __( 'There has some error in submitted data.', 'wc-frontend-manager' );
 				if( isset( $custom_validation_results['message'] ) && !empty( $custom_validation_results['message'] ) ) { $custom_validation_error = $custom_validation_results['message']; }
-				echo '{"status": false, "message": "' . $custom_validation_error . '"}';
+				echo '{"status": false, "message": "' . esc_html( $custom_validation_error ) . '"}';
 				die;
 			}
 	  	
@@ -43,9 +43,9 @@ class WCFM_Withdrawal_Reverse_Approve_Controller {
 				
 				do_action( 'wcfmmp_reverse_withdrawal_request_completed', $withdrawal_id );
 			}
-			echo '{"status": true, "message": "' . __('Reverse Withdrawal Requests successfully approveed.', 'wc-frontend-manager') . '"}';
+			echo '{"status": true, "message": "' . esc_html( __('Reverse Withdrawal Requests successfully approveed.', 'wc-frontend-manager') ) . '"}';
 	  } else {
-	  	echo '{"status": false, "message": "' . __('No reverse withdrawals selected for approve.', 'wc-frontend-manager') . '"}';
+	  	echo '{"status": false, "message": "' . esc_html( __('No reverse withdrawals selected for approve.', 'wc-frontend-manager') ) . '"}';
 	  }
 		
 		die;

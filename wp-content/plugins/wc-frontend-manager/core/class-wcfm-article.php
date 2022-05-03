@@ -217,6 +217,11 @@ class WCFM_Article {
   public function wcfm_articles_ajax_controller() {
   	global $WCFM, $WCFMu;
   	
+		if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+			wp_die();
+		}
+  	
   	$controllers_path = $WCFM->plugin_path . 'controllers/articles/';
   	
   	$controller = '';
@@ -225,11 +230,21 @@ class WCFM_Article {
   		
   		switch( $controller ) {
   			case 'wcfm-articles':
+  				if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+		
 					include_once( $controllers_path . 'wcfm-controller-articles.php' );
 					new WCFM_Articles_Controller();
 				break;
 				
 				case 'wcfm-articles-manage':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+		
 					include_once( $controllers_path . 'wcfm-controller-articles-manage.php' );
 					new WCFM_Articles_Manage_Controller();
 				break;
@@ -243,18 +258,28 @@ class WCFM_Article {
   public function delete_wcfm_article() {
   	global $WCFM;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( __( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	$articleid = absint( $_POST['articleid'] );
 		
 		if( $articleid ) {
 			do_action( 'wcfm_before_article_delete', $articleid );
 			if( apply_filters( 'wcfm_is_allow_article_delete' , false ) ) {
 				if(wp_delete_post($articleid)) {
-					echo 'success';
+					echo esc_html('success');
 					die;
 				}
 			} else {
 				if(wp_trash_post($articleid)) {
-					echo 'success';
+					echo esc_html('success');
 					die;
 				}
 			}

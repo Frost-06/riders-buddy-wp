@@ -631,11 +631,12 @@ if(!function_exists('is_wcfm_analytics')) {
 }
 
 if(!function_exists('get_wcfm_products_url')) {
-	function get_wcfm_products_url( $product_status = '' ) {
+	function get_wcfm_products_url( $product_status = '', $product_vendor = '' ) {
 		global $WCFM;
 		$wcfm_page = get_wcfm_page();
 		$wcfm_products_url = wcfm_get_endpoint_url( 'wcfm-products', '', $wcfm_page );
 		if($product_status) $wcfm_products_url = add_query_arg( 'product_status', $product_status, $wcfm_products_url );
+		if($product_vendor) $wcfm_products_url = add_query_arg( 'product_vendor', $product_vendor, $wcfm_products_url );
 		return apply_filters( 'wcfm_products_url', $wcfm_products_url, $product_status );
 	}
 }
@@ -697,11 +698,12 @@ if(!function_exists('get_wcfm_coupons_manage_url')) {
 }
 
 if(!function_exists('get_wcfm_orders_url')) {
-	function get_wcfm_orders_url( $order_status = '') {
+	function get_wcfm_orders_url( $order_status = '', $order_vendor = '' ) {
 		global $WCFM;
 		$wcfm_page = get_wcfm_page();
 		$wcfm_orders_url = wcfm_get_endpoint_url( 'wcfm-orders', '', $wcfm_page );
 		if( $order_status ) $wcfm_orders_url = add_query_arg( 'order_status', $order_status, $wcfm_orders_url );
+		if( $order_vendor ) $wcfm_orders_url = add_query_arg( 'order_vendor', $order_vendor, $wcfm_orders_url );
 		return apply_filters( 'wcfm_orders_url',  $wcfm_orders_url, $order_status );
 	}
 }
@@ -1120,7 +1122,7 @@ if(!function_exists('get_wcfm_products_manager_messages')) {
 		
 		$messages = apply_filters( 'wcfm_validation_messages_product_manager', array(
 																																								'no_title' => __('Please insert Product Title before submit.', 'wc-frontend-manager'),
-																																								'no_excerpt' => __('Please insert Product Excerpt before submit.', 'wc-frontend-manager'),
+																																								'no_excerpt' => __('Please insert Product Short Description before submit.', 'wc-frontend-manager'),
 																																								'no_description' => __('Please insert Product Description before submit.', 'wc-frontend-manager'),
 																																								'sku_unique' => __('Product SKU must be unique.', 'wc-frontend-manager'),
 																																								'variation_sku_unique' => __('Variation SKU must be unique.', 'wc-frontend-manager'),
@@ -1423,11 +1425,26 @@ function wcfm_query_time_range_filter( $sql, $time, $interval = '7day', $start_d
 			break;
 
 		case 'last_month' :
-			$sql .= " AND MONTH( {$table_handler}.{$time} ) = MONTH( NOW() ) - 1";
+			//$sql .= " AND MONTH( {$table_handler}.{$time} ) = MONTH( NOW() ) - 1";
+			
+			$first_day_current_month = strtotime( date( 'Y-m-01', current_time( 'timestamp' ) ) );
+			$start_date              = date( 'Y-m-01', strtotime( '-1 DAY', $first_day_current_month ) );
+			$end_date                = date( 'Y-m-t', strtotime( '-1 DAY', $first_day_current_month ) );
+			if( $start_date ) $start_date = wcfm_standard_date( $start_date );
+			if( $end_date ) $end_date = wcfm_standard_date( $end_date );
+			
+			$sql .= " AND DATE( {$table_handler}.{$time} ) BETWEEN '" . $start_date . "' AND '" . $end_date . "'";
 			break;
 
 		case 'month' :
-			$sql .= " AND MONTH( {$table_handler}.{$time} ) = MONTH( NOW() )";
+			//$sql .= " AND MONTH( {$table_handler}.{$time} ) = MONTH( NOW() )";
+			
+			$start_date    = date( 'Y-m-01', current_time( 'timestamp' ) );
+			$end_date      = date( 'Y-m-t', strtotime( 'midnight', current_time( 'timestamp' ) ) );
+			if( $start_date ) $start_date = wcfm_standard_date( $start_date );
+			if( $end_date ) $end_date = wcfm_standard_date( $end_date );
+			
+			$sql .= " AND DATE( {$table_handler}.{$time} ) BETWEEN '" . $start_date . "' AND '" . $end_date . "'";
 			break;
 
 		case 'custom' :
@@ -1631,7 +1648,7 @@ function wcfm_wp_date_format_to_js( $date_format ) {
 	switch( $date_format ) {
 		//Predefined WP date formats
 		case 'jS F Y':
-		  $date_format = 'd MM, YYYY';
+		  $date_format = 'd MM, yy';
 		break;
 		
 	  case 'F j, Y':
@@ -1974,7 +1991,7 @@ function wcfm_video_tutorial( $video_url ) {
 	if( !apply_filters( 'wcfm_is_allow_video_tutorial', true ) ) return;
 	?>
 	<p class="wcfm_tutorials_wrapper">
-	  <a class="wcfm_tutorials" href="<?php echo $video_url; ?>">
+	  <a class="wcfm_tutorials" href="<?php echo esc_url($video_url); ?>">
 	    <span class="wcfm_tutorials_icon wcfmfa fa-video"></span>
 	    <span class='wcfm_tutorials_label'><?php _e( 'Tutorial', 'wc-frontend-manager' ); ?></span>
 	  </a>
@@ -2093,23 +2110,31 @@ function wcfm_standard_date( $date_string ) {
 		$date_string = strtotime( $date_string );
 		$date_string = date( 'Y-m-d', $date_string );
 	}
-	return $date_string;
+	return apply_filters( 'wcfm_standard_date', $date_string );
 }
 
 function wcfm_filter_content_email_phone( $content ) {
 	$patterns = array();
 	$patterns[0] = '/([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)/';
 	$patterns[1] = '/(?:(?:\+?([1-9]|[0-9][0-9]|[0-9][0-9][0-9])\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([0-9][1-9]|[0-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?/';
+	//$patterns[2] = '/(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/';
 
 	$replacements = array();
 	$replacements[0] = '';
 	$replacements[1] = '';
+	//$replacements[2] = '';
 
 	// should use just one call of preg_replace for perfomance issues
 	$content = preg_replace( $patterns, $replacements, $content );	
 	
 	return $content;
 }
+
+add_filter( 'wcfm_editor_content_before_save', function( $content ) {
+	$content = str_replace( '<script>', '', $content );
+	$content = str_replace( '</script>', '', $content );
+	return $content;
+}, 750 );
 
 /**
  * WCFM Hide Field
@@ -2265,7 +2290,7 @@ if(!function_exists('wcfm_log')) {
 	global $_SESSION;
 	if( !is_admin() ) {
 		if( isset( $_SESSION['wcfm_my_locale'] ) && !empty( $_SESSION['wcfm_my_locale'] ) ) {
-			$locale = $_SESSION['wcfm_my_locale'];
+			$locale = wc_clean($_SESSION['wcfm_my_locale']);
 		}
 	}
 	return $locale;

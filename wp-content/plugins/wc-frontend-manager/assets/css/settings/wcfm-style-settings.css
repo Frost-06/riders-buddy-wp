@@ -362,6 +362,18 @@ ul.wcfm_wcmp_template_list {
 	float: right;
 }
 
+.store_location_wrap{position:relative;}
+.store_location_wrap i.wcfmmmp_locate_icon {
+	position: absolute;
+	top: 20px;
+	right: 30px;
+	width: 20px;
+	height: 20px;
+	margin-top: -12px;
+	cursor: pointer;
+	background-size: contain;
+}
+
 #wcfm-main-contentainer fieldset {
 	margin-left: 35%;
 	border:0px!important;

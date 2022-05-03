@@ -74,8 +74,8 @@ class WCFM_Products_Manage_Controller {
 																																						'post_title'   => wc_clean( $wcfm_products_manage_form_data['pro_title'] ),
 																																						'post_status'  => $product_status,
 																																						'post_type'    => 'product',
-																																						'post_excerpt' => apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['excerpt'], ENT_QUOTES, 'UTF-8' ) ) ),
-																																						'post_content' => apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['description'], ENT_QUOTES, 'UTF-8' ) ) ),
+																																						'post_excerpt' => wp_filter_post_kses( apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['excerpt'], ENT_QUOTES, 'UTF-8' ) ) ) ),
+																																						'post_content' => wp_filter_post_kses( apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['description'], ENT_QUOTES, 'UTF-8' ) ) ) ),
 																																						'post_author'  => $current_user_id,
 																																						'post_name'    => sanitize_title($wcfm_products_manage_form_data['pro_title'])
 																																					), $wcfm_products_manage_form_data );
@@ -130,9 +130,9 @@ class WCFM_Products_Manage_Controller {
 								wp_update_post( $update_product, true );
 							}
 							if( defined('WCFM_REST_API_CALL') ) {
-                return '{"status": false, "message": "' . $wcfm_products_manage_messages['sku_unique'] . '", "id": "' . $new_product_id . '", "redirect": "' . get_permalink( $new_product_id ) . '"}';
+                return '{"status": false, "message": "' . esc_html( $wcfm_products_manage_messages['sku_unique'] ) . '", "id": "' . $new_product_id . '", "redirect": "' . esc_url( get_permalink( $new_product_id ) ) . '"}';
               } else {
-                echo '{"status": false, "message": "' . $wcfm_products_manage_messages['sku_unique'] . '", "id": "' . $new_product_id . '", "redirect": "' . get_permalink( $new_product_id ) . '"}';
+                echo '{"status": false, "message": "' . esc_html( $wcfm_products_manage_messages['sku_unique'] ) . '", "id": "' . $new_product_id . '", "redirect": "' . esc_url( get_permalink( $new_product_id ) ) . '"}';
               }
 							$has_error = true;
 						}
@@ -296,9 +296,9 @@ class WCFM_Products_Manage_Controller {
 				if ( is_wp_error( $errors ) ) {
 					if( !$has_error ) {
 						if( defined('WCFM_REST_API_CALL') ) {
-              return '{"status": false, "message": "' . $errors->get_error_message() . '", "id": "' . $new_product_id . '", "redirect": "' . get_permalink( $new_product_id ) . '"}';
+              return '{"status": false, "message": "' . esc_html( $errors->get_error_message() ) . '", "id": "' . $new_product_id . '", "redirect": "' . esc_url( get_permalink( $new_product_id ) ) . '"}';
             } else {
-              echo '{"status": false, "message": "' . $errors->get_error_message() . '", "id": "' . $new_product_id . '", "redirect": "' . get_permalink( $new_product_id ) . '"}';
+              echo '{"status": false, "message": "' . esc_html( $errors->get_error_message() ) . '", "id": "' . $new_product_id . '", "redirect": "' . esc_url( get_permalink( $new_product_id ) ) . '"}';
             }
           }
 					$has_error = true;
@@ -565,9 +565,9 @@ class WCFM_Products_Manage_Controller {
 								if ( is_wp_error( $errors ) ) {
 									if( !$has_error ) {
 										if( defined('WCFM_REST_API_CALL') ) {
-											return '{"status": false, "message": "' . $errors->get_error_message() . '", "id": "' . $new_product_id . '", "redirect": "' . get_permalink( $new_product_id ) . '"}';
+											return '{"status": false, "message": "' . esc_html( $errors->get_error_message() ) . '", "id": "' . $new_product_id . '", "redirect": "' . esc_url( get_permalink( $new_product_id ) ) . '"}';
 										} else {
-											echo '{"status": false, "message": "' . $errors->get_error_message() . '", "id": "' . $new_product_id . '", "redirect": "' . get_permalink( $new_product_id ) . '"}';
+											echo '{"status": false, "message": "' . esc_html( $errors->get_error_message() ) . '", "id": "' . $new_product_id . '", "redirect": "' . esc_url( get_permalink( $new_product_id ) ) . '"}';
 										}
 									}
 									$has_error = true;
@@ -628,9 +628,9 @@ class WCFM_Products_Manage_Controller {
 					if( isset( $_POST['product_manage_from_popup'] ) && $_POST['product_manage_from_popup'] ) {
 						if(!$has_error) {
               if( defined('WCFM_REST_API_CALL') ) {
-                return '{"status": true, "message": "' . apply_filters( 'product_saved_message', $wcfm_products_manage_messages['product_saved'], $new_product_id ) . '", "redirect": "' . apply_filters( 'wcfm_product_save_pending_redirect', get_wcfm_products_url(), $new_product_id ) . '", "id": "' . $new_product_id . '"}';
+                return '{"status": true, "message": "' . esc_html( apply_filters( 'product_saved_message', $wcfm_products_manage_messages['product_saved'], $new_product_id ) ) . '", "redirect": "' . esc_url( apply_filters( 'wcfm_product_save_pending_redirect', get_wcfm_products_url(), $new_product_id ) ) . '", "id": "' . $new_product_id . '"}';
               } else {
-                echo '{"status": true, "message": "' . apply_filters( 'product_saved_message', $wcfm_products_manage_messages['product_saved'], $new_product_id ) . '", "redirect": "' . apply_filters( 'wcfm_product_save_pending_redirect', get_wcfm_products_url(), $new_product_id ) . '", "id": "' . $new_product_id . '"}';
+                echo '{"status": true, "message": "' . esc_html( apply_filters( 'product_saved_message', $wcfm_products_manage_messages['product_saved'], $new_product_id ) ) . '", "redirect": "' . esc_url( apply_filters( 'wcfm_product_save_pending_redirect', get_wcfm_products_url(), $new_product_id ) ) . '", "id": "' . $new_product_id . '"}';
               }                
             }
 					} else {
@@ -638,32 +638,32 @@ class WCFM_Products_Manage_Controller {
 							if(!$has_error) { 
                 if( defined('WCFM_REST_API_CALL') ) {
                   //echo "aaaddd";
-                  return '{"status": true, "message": "' . apply_filters( 'product_published_message', $wcfm_products_manage_messages['product_published'], $new_product_id ) . '", "redirect": "' . apply_filters( 'wcfm_product_save_publish_redirect', get_wcfm_edit_product_url( $new_product_id ), $new_product_id ) . '", "id": "' . $new_product_id . '", "title": "' . get_the_title( $new_product_id ) . '"}';	
+                  return '{"status": true, "message": "' . esc_html( apply_filters( 'product_published_message', $wcfm_products_manage_messages['product_published'], $new_product_id ) ) . '", "redirect": "' . esc_url( apply_filters( 'wcfm_product_save_publish_redirect', get_wcfm_edit_product_url( $new_product_id ), $new_product_id ) ) . '", "id": "' . $new_product_id . '", "title": "' . esc_html( get_the_title( $new_product_id ) ) . '"}';	
                 } else {
                 	if( !apply_filters( 'wcfm_is_allow_edit_products', true ) ) {
-                		echo '{"status": true, "message": "' . apply_filters( 'product_published_message', $wcfm_products_manage_messages['product_published'], $new_product_id ) . '", "redirect": "' . apply_filters( 'wcfm_product_save_publish_redirect', get_permalink( $new_product_id ), $new_product_id ) . '", "id": "' . $new_product_id . '", "title": "' . get_the_title( $new_product_id ) . '"}';
+                		echo '{"status": true, "message": "' . esc_html( apply_filters( 'product_published_message', $wcfm_products_manage_messages['product_published'], $new_product_id ) ) . '", "redirect": "' . esc_url( apply_filters( 'wcfm_product_save_publish_redirect', get_permalink( $new_product_id ), $new_product_id ) ) . '", "id": "' . $new_product_id . '", "title": "' . esc_html( get_the_title( $new_product_id ) ) . '"}';
                 	} else {
-                		echo '{"status": true, "message": "' . apply_filters( 'product_published_message', $wcfm_products_manage_messages['product_published'], $new_product_id ) . '", "redirect": "' . apply_filters( 'wcfm_product_save_publish_redirect', get_wcfm_edit_product_url( $new_product_id ), $new_product_id ) . '", "id": "' . $new_product_id . '", "title": "' . get_the_title( $new_product_id ) . '"}';
+                		echo '{"status": true, "message": "' . esc_html( apply_filters( 'product_published_message', $wcfm_products_manage_messages['product_published'], $new_product_id ) ) . '", "redirect": "' . esc_url( apply_filters( 'wcfm_product_save_publish_redirect', get_wcfm_edit_product_url( $new_product_id ), $new_product_id ) ) . '", "id": "' . $new_product_id . '", "title": "' . esc_html( get_the_title( $new_product_id ) ) . '"}';
                 	}
                 }
               }	
 						} elseif( get_post_status( $new_product_id ) == 'pending' ) {
 							if(!$has_error) { 
                 if( defined('WCFM_REST_API_CALL') ) {
-                  return '{"status": true, "message": "' . apply_filters( 'product_pending_message', $wcfm_products_manage_messages['product_pending'], $new_product_id ) . '", "redirect": "' . apply_filters( 'wcfm_product_save_pending_redirect', get_wcfm_edit_product_url( $new_product_id ), $new_product_id ) . '", "id": "' . $new_product_id . '", "title": "' . get_the_title( $new_product_id ) . '"}';
+                  return '{"status": true, "message": "' . esc_html( apply_filters( 'product_pending_message', $wcfm_products_manage_messages['product_pending'], $new_product_id ) ) . '", "redirect": "' . esc_url( apply_filters( 'wcfm_product_save_pending_redirect', get_wcfm_edit_product_url( $new_product_id ), $new_product_id ) ) . '", "id": "' . $new_product_id . '", "title": "' . esc_html( get_the_title( $new_product_id ) ) . '"}';
                 } else {
-                  echo '{"status": true, "message": "' . apply_filters( 'product_pending_message', $wcfm_products_manage_messages['product_pending'], $new_product_id ) . '", "redirect": "' . apply_filters( 'wcfm_product_save_pending_redirect', get_wcfm_edit_product_url( $new_product_id ), $new_product_id ) . '", "id": "' . $new_product_id . '", "title": "' . get_the_title( $new_product_id ) . '"}';
+                  echo '{"status": true, "message": "' . esc_html( apply_filters( 'product_pending_message', $wcfm_products_manage_messages['product_pending'], $new_product_id ) ) . '", "redirect": "' . esc_url( apply_filters( 'wcfm_product_save_pending_redirect', get_wcfm_edit_product_url( $new_product_id ), $new_product_id ) ) . '", "id": "' . $new_product_id . '", "title": "' . esc_html( get_the_title( $new_product_id ) ) . '"}';
                 }
               }
 						} else {
 							if(!$has_error) {
                 if( defined('WCFM_REST_API_CALL') ) {
-                  return '{"status": true, "message": "' . apply_filters( 'product_pending_message', $wcfm_products_manage_messages['product_pending'], $new_product_id ) . '", "redirect": "' . apply_filters( 'wcfm_product_save_pending_redirect', get_wcfm_edit_product_url( $new_product_id ), $new_product_id ) . '", "id": "' . $new_product_id . '", "title": "' . get_the_title( $new_product_id ) . '"}';
+                  return '{"status": true, "message": "' . esc_html( apply_filters( 'product_pending_message', $wcfm_products_manage_messages['product_pending'], $new_product_id ) ) . '", "redirect": "' . esc_url( apply_filters( 'wcfm_product_save_pending_redirect', get_wcfm_edit_product_url( $new_product_id ), $new_product_id ) ) . '", "id": "' . $new_product_id . '", "title": "' . esc_html( get_the_title( $new_product_id ) ) . '"}';
                 } else {
                 	if( isset( $_POST['variation_auto_generate'] ) && $_POST['variation_auto_generate'] ) {
-                		echo '{"status": true, "message": "' . apply_filters( 'product_saved_message', $wcfm_products_manage_messages['product_saved'], $new_product_id ) . '", "redirect": "' . apply_filters( 'wcfm_product_save_draft_redirect', get_wcfm_edit_product_url( $new_product_id ).'#wcfm_products_manage_form_variations_head', $new_product_id ) . '", "id": "' . $new_product_id . '"}';
+                		echo '{"status": true, "message": "' . esc_html( apply_filters( 'product_saved_message', $wcfm_products_manage_messages['product_saved'], $new_product_id ) ) . '", "redirect": "' . esc_url( apply_filters( 'wcfm_product_save_draft_redirect', get_wcfm_edit_product_url( $new_product_id ).'#wcfm_products_manage_form_variations_head', $new_product_id ) ) . '", "id": "' . $new_product_id . '"}';
                 	} else {
-                		echo '{"status": true, "message": "' . apply_filters( 'product_saved_message', $wcfm_products_manage_messages['product_saved'], $new_product_id ) . '", "redirect": "' . apply_filters( 'wcfm_product_save_draft_redirect', get_wcfm_edit_product_url( $new_product_id ), $new_product_id ) . '", "id": "' . $new_product_id . '"}';
+                		echo '{"status": true, "message": "' . esc_html( apply_filters( 'product_saved_message', $wcfm_products_manage_messages['product_saved'], $new_product_id ) ) . '", "redirect": "' . esc_url( apply_filters( 'wcfm_product_save_draft_redirect', get_wcfm_edit_product_url( $new_product_id ), $new_product_id ) ) . '", "id": "' . $new_product_id . '"}';
                 	}
                 }
               }
@@ -674,9 +674,9 @@ class WCFM_Products_Manage_Controller {
 			}
 		} else {
 			if( defined('WCFM_REST_API_CALL') ) {
-        return '{"status": false, "message": "' . $wcfm_products_manage_messages['no_title'] . '"}';
+        return '{"status": false, "message": "' . esc_html( $wcfm_products_manage_messages['no_title'] ) . '"}';
       } else {
-        echo '{"status": false, "message": "' . $wcfm_products_manage_messages['no_title'] . '"}';
+        echo '{"status": false, "message": "' . esc_html( $wcfm_products_manage_messages['no_title'] ) . '"}';
       }
 		}
 	  die;

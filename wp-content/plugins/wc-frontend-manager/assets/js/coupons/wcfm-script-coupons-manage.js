@@ -77,7 +77,8 @@ jQuery(document).ready( function($) {
 				action                   : 'wcfm_ajax_controller',
 				controller               : 'wcfm-coupons-manage',
 				wcfm_coupons_manage_form : $('#wcfm_coupons_manage_form').serialize(),
-				status                   : 'draft'
+				status                   : 'draft',
+				wcfm_ajax_nonce          : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {
@@ -126,7 +127,8 @@ jQuery(document).ready( function($) {
 				action                   : 'wcfm_ajax_controller',
 				controller               : 'wcfm-coupons-manage',
 				wcfm_coupons_manage_form : $('#wcfm_coupons_manage_form').serialize(),
-				status                   : 'submit'
+				status                   : 'submit',
+				wcfm_ajax_nonce          : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {

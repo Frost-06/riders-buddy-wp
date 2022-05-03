@@ -33,28 +33,28 @@ class WCFM_Withdrawal_Controller {
 			$withdrawal_mode = 'by_manual';
 		}
 		
-		$length = wc_clean($_POST['length']);
-		$offset = wc_clean($_POST['start']);
+		$length = absint($_POST['length']);
+		$offset = absint($_POST['start']);
 		
 		$start_date = '';
     $end_date = '';
     
     if( isset($_POST['start_date']) && !empty($_POST['start_date']) ) {
-    	$start_date = date('Y-m-d', strtotime(wc_clean($_POST['start_date'])) );
+    		$start_date = date('Y-m-d', strtotime(wc_clean($_POST['start_date'])) );
     }
     
     if( isset($_POST['end_date']) && !empty($_POST['end_date']) ) {
-    	$end_date = date('Y-m-d', strtotime(wc_clean($_POST['end_date'])) );
+    		$end_date = date('Y-m-d', strtotime(wc_clean($_POST['end_date'])) );
     }
 		
-		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_text_field( $_POST['orderby'] ) : 'order_id';
+		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_sql_orderby( $_POST['orderby'] ) : 'order_id';
 		$the_order   = ( ! empty( $_POST['order'] ) && 'asc' === $_POST['order'] ) ? 'ASC' : 'DESC';
 
 		$withdrawal_thresold = $WCFMmp->wcfmmp_withdraw->get_withdrawal_thresold( $this->vendor_id );
 
 		$sql = 'SELECT COUNT(commission.ID) FROM ' . $wpdb->prefix . 'wcfm_marketplace_orders AS commission';
 		$sql .= ' WHERE 1=1';
-		$sql .= " AND `vendor_id` = {$this->vendor_id}";
+		$sql .= " AND `vendor_id` = %d";
 		$sql .= apply_filters( 'wcfm_order_status_condition', '', 'commission' );
 		$sql .= " AND commission.withdraw_status IN ('pending', 'cancelled')";
 		$sql .= " AND commission.refund_status != 'requested'";
@@ -64,12 +64,12 @@ class WCFM_Withdrawal_Controller {
 			$sql .= " AND DATE( commission.created ) BETWEEN '" . $start_date . "' AND '" . $end_date . "'";
 		}
 		
-		$filtered_withdrawal_count = $wpdb->get_var( $sql );
+		$filtered_withdrawal_count = $wpdb->get_var( $wpdb->prepare( $sql, $this->vendor_id ) );
 		if( !$filtered_withdrawal_count ) $filtered_withdrawal_count = 0;
 
 		$sql = 'SELECT * FROM ' . $wpdb->prefix . 'wcfm_marketplace_orders AS commission';
 		$sql .= ' WHERE 1=1';
-		$sql .= " AND `vendor_id` = {$this->vendor_id}";
+		$sql .= " AND `vendor_id` = %d";
 		$sql .= apply_filters( 'wcfm_order_status_condition', '', 'commission' );
 		$sql .= " AND commission.withdraw_status IN ('pending', 'cancelled')";
 		$sql .= " AND commission.refund_status != 'requested'";
@@ -82,7 +82,7 @@ class WCFM_Withdrawal_Controller {
 		$sql .= " LIMIT {$length}";
 		$sql .= " OFFSET {$offset}";
 		
-		$wcfm_withdrawals_array = $wpdb->get_results( $sql );
+		$wcfm_withdrawals_array = $wpdb->get_results( $wpdb->prepare( $sql, $this->vendor_id ) );
 		
 		// Generate Withdrawals JSON
 		$wcfm_withdrawals_json = '';

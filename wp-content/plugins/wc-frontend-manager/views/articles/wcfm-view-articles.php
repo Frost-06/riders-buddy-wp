@@ -47,7 +47,7 @@ $count_articles['any']     = $count_articles['publish'] + $count_articles['pendi
 						if($is_first) $is_first = false;
 						else echo " | ";
 						?>
-						<a class="<?php echo ( $wcfmu_articles_menu_key == $article_status ) ? 'active' : ''; ?>" href="<?php echo get_wcfm_articles_url( $wcfmu_articles_menu_key ); ?>"><?php echo $wcfmu_articles_menu . ' ('. $count_articles[$wcfmu_articles_menu_key] .')'; ?></a>
+						<a class="<?php echo ( $wcfmu_articles_menu_key == $article_status ) ? 'active' : ''; ?>" href="<?php echo get_wcfm_articles_url( $wcfmu_articles_menu_key ); ?>"><?php echo esc_html($wcfmu_articles_menu . ' ('. $count_articles[$wcfmu_articles_menu_key] .')' ); ?></a>
 					</li>
 					<?php
 				}

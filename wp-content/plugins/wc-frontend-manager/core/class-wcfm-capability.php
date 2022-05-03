@@ -34,6 +34,7 @@ class WCFM_Capability {
 		add_filter( 'wcfm_is_allow_space_limit', array( &$this, 'wcfmcap_is_allow_space_limit' ), 500 );
 		add_filter( 'wcfm_is_allow_product_limit', array( &$this, 'wcfmcap_is_allow_product_limit' ), 500 );
 		add_filter( 'wcfm_products_limit_label', array( &$this, 'wcfmcap_products_limit_label' ), 50 );
+		add_filter( 'wcfm_is_allow_verification_product_limit', array( &$this, 'wcfmcap_is_allow_verificaton_product_limit' ), 500 );
 		add_filter( 'wcfm_product_types', array( &$this, 'wcfmcap_is_allow_product_types'), 500 );
 		add_filter( 'product_type_selector', array( &$this, 'wcfmcap_is_allow_product_types'), 500 ); // WC Product Types
 		add_filter( 'wcfm_is_allow_job_package', array( &$this, 'wcfmcap_is_allow_job_package'), 500 );
@@ -349,6 +350,31 @@ class WCFM_Capability {
   	$label = '<span class="wcfm_products_limit_label">' . $label . '</span>';
   	
   	return $label;
+  }
+  
+  // WCFM wcfmcap Add Products by Verification Product Limit
+  function wcfmcap_is_allow_verificaton_product_limit( $allow ) {
+  	$manage_products = ( isset( $this->wcfm_capability_options['submit_products'] ) ) ? $this->wcfm_capability_options['submit_products'] : 'no';
+  	$manage_products = ( isset( $this->wcfm_capability_options['manage_products'] ) ) ? $this->wcfm_capability_options['manage_products'] : $manage_products;
+  	if( $manage_products == 'yes' ) return false;
+  	$add_products = ( isset( $this->wcfm_capability_options['add_products'] ) ) ? $this->wcfm_capability_options['add_products'] : 'no';
+  	if( $add_products == 'yes' ) return false;
+  	
+  	// Limit Restriction
+  	$current_user_id = apply_filters( 'wcfm_current_vendor_id', get_current_user_id() );
+  	$productlimit = '';
+  	$productlimit = apply_filters( 'wcfm_vendor_verification_product_limit', $productlimit, $current_user_id );
+  	if( ( $productlimit == -1 ) || ( $productlimit == '-1' ) ) {
+  		return false;
+  	} else {
+			if( $productlimit ) $productlimit = absint($productlimit);
+			if( $productlimit && ( $productlimit >= 0 ) ) {
+				if( $productlimit == 1989 ) return false;
+				$count_products  = wcfm_get_user_posts_count( $current_user_id, 'product', apply_filters( 'wcfm_limit_check_status', 'any' ), array( 'suppress_filters' => 1 ) );
+				if( $productlimit <= $count_products ) return false;
+			}
+		}
+  	return $allow;
   }
 	
   // Product Types

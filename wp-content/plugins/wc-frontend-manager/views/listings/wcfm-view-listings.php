@@ -62,7 +62,7 @@ $post_a_job = get_permalink ( get_option( 'job_manager_submit_job_form_page_id' 
 						if($is_first) $is_first = false;
 						else echo " | ";
 						?>
-						<a class="<?php echo ( $wcfm_listings_menus_key == $listing_status ) ? 'active' : ''; ?>" href="<?php echo get_wcfm_listings_url( $wcfm_listings_menus_key ); ?>"><?php echo $wcfm_listings_menu . ' ('. $count_listings[$wcfm_listings_menus_key] .')'; ?></a>
+						<a class="<?php echo ( $wcfm_listings_menus_key == $listing_status ) ? 'active' : ''; ?>" href="<?php echo get_wcfm_listings_url( $wcfm_listings_menus_key ); ?>"><?php echo esc_html($wcfm_listings_menu . ' ('. $count_listings[$wcfm_listings_menus_key] .')'); ?></a>
 					</li>
 					<?php
 				}

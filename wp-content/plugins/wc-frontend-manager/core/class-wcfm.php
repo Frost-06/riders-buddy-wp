@@ -124,7 +124,7 @@ class WCFM {
 			'wcfm_knowledgebase_category',
 			array( 'wcfm_knowledgebase' ),
 			apply_filters(
-				'wcfm_taxonomy_args_knowledgebase_category', array(
+				'wcfm_knowledgebase_category_taxonomy_args', array(
 					'hierarchical'      => true,
 					'show_ui'           => false,
 					'show_in_nav_menus' => false,
@@ -139,14 +139,17 @@ class WCFM {
 		register_post_type( 'wcfm_notice', array( 'public' => false ) );
 		
 		// Register Custom Post Status for Products - 6.2.5
-		register_post_status('archived', array(
-        'label'                     => _x( 'Archived', 'wc-frontend-manager' ),
-        'public'                    => true,
-        'exclude_from_search'       => false,
-        'show_in_admin_all_list'    => true,
-        'show_in_admin_status_list' => true,
-        'label_count'               => _n_noop( 'Archived <span class="count">(%s)</span>', 'Archived <span class="count">(%s)</span>' ),
-    ) );
+		register_post_status('archived', apply_filters(
+				'wcfm_product_archive_post_status_args', array(
+					'label'                     => _x( 'Archived', 'wc-frontend-manager' ),
+					'public'                    => true,
+					'exclude_from_search'       => false,
+					'show_in_admin_all_list'    => true,
+					'show_in_admin_status_list' => true,
+					'label_count'               => _n_noop( 'Archived <span class="count">(%s)</span>', 'Archived <span class="count">(%s)</span>' )
+				)
+			) 
+		);
 		
 		// Vendor wp-admin restrict
 		if( is_admin() && wcfm_is_vendor() && !defined('DOING_AJAX') ) {
@@ -459,7 +462,7 @@ class WCFM {
 		//load_plugin_textdomain( 'wc-frontend-manager' );
 		//load_textdomain( 'wc-frontend-manager', WP_LANG_DIR . "/wc-frontend-manager/wc-frontend-manager-$locale.mo");
 		load_textdomain( 'wc-frontend-manager', $this->plugin_path . "lang/wc-frontend-manager-$locale.mo");
-		load_textdomain( 'wc-frontend-manager', ABSPATH . "wp-content/languages/plugins/wc-frontend-manager-$locale.mo");
+		load_textdomain( 'wc-frontend-manager', WP_LANG_DIR . "/plugins/wc-frontend-manager-$locale.mo");
 	}
 
 	public function load_class($class_name = '') {
@@ -479,9 +482,9 @@ class WCFM {
 			$is_setup  = false;
 			$is_export = false;
 			$is_import = false;
-			if( isset($_GET['page']) && ( $_GET['page'] == 'product_exporter' ) ) { $is_export = true; }
-			if( isset($_GET['page']) && ( $_GET['page'] == 'product_importer' ) ) { $is_import = true; }
-			if( isset($_GET['page']) && ( $_GET['page'] == 'store-setup' ) ) { $is_setup = true; }
+			if( isset($_GET['page']) && ( wc_clean($_GET['page']) == 'product_exporter' ) ) { $is_export = true; }
+			if( isset($_GET['page']) && ( wc_clean($_GET['page']) == 'product_importer' ) ) { $is_import = true; }
+			if( isset($_GET['page']) && ( wc_clean($_GET['page']) == 'store-setup' ) ) { $is_setup = true; }
 			
 			if( ( 'yes' == $wcfm_vnd_wpadmin ) && !$is_export && !$is_import && !$is_setup ) {
 				if( isset( $_GET['wc_gcal_oauth'] ) || isset( $_GET['wc_gcal_logout'] ) ) {
@@ -522,6 +525,7 @@ class WCFM {
 		
 		update_option( 'wcfm_disable_vendor_installed', 1 );
 		update_option( 'wcfm_updated_6_5_2', 1 );
+		update_option( 'wcfm_updated_6_5_5', 1 );
 		update_option( 'wcfm_installed', 1 );
 	}
 	
@@ -539,6 +543,13 @@ class WCFM {
 			$options['module_options']['shipstation'] = 'yes';
 			update_option( 'wcfm_options', $options );
 			update_option( 'wcfm_updated_6_5_2', 1 );
+		}
+		
+		if( !get_option( 'wcfm_updated_6_5_5' ) ) {
+			$options = get_option( 'wcfm_options', array() );
+			$options['module_options']['facebook_marketplace'] = 'yes';
+			update_option( 'wcfm_options', $options );
+			update_option( 'wcfm_updated_6_5_5', 1 );
 		}
 		
 		$wcfm_tables = $wpdb->query( "SHOW tables like '{$wpdb->prefix}wcfm_fbc_chat_rows'");

@@ -50,8 +50,8 @@ class WCFM_Withdrawal_Request_Controller {
 						
 						$sql = 'SELECT order_id, item_id, total_commission, withdraw_charges  FROM ' . $wpdb->prefix . 'wcfm_marketplace_orders';
 						$sql .= ' WHERE 1=1';
-						$sql .= " AND ID = " . $commission_id;
-						$commission_infos = $wpdb->get_results( $sql );
+						$sql .= " AND ID = %d";
+						$commission_infos = $wpdb->get_results( $wpdb->prepare( $sql, $commission_id ) );
 						if( !empty( $commission_infos ) ) {
 							foreach( $commission_infos as $commission_info ) {
 								$order = wc_get_order( $commission_info->order_id );

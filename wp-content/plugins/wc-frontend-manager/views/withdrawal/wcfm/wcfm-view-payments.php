@@ -38,9 +38,9 @@ $withdrawal_mode = isset( $WCFMmp->wcfmmp_withdrawal_options['withdrawal_mode'] 
 	  <div class="wcfm-container wcfm-top-element-container">
 			<h2>
 				<?php _e( 'Transactions for: ', 'wc-frontend-manager' ); ?> 
-				<span class="trans_start_date"><?php echo $start_date; ?></span>
+				<span class="trans_start_date"><?php echo esc_attr($start_date); ?></span>
 				<?php echo ' - '; ?>
-				<span class="trans_end_date"><?php echo $end_date; ?>
+				<span class="trans_end_date"><?php echo esc_attr($end_date); ?>
 			</h2>
 			
 			<?php

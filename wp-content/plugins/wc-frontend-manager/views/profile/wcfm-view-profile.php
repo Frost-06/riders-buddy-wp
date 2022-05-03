@@ -333,14 +333,14 @@ if( wcfm_is_vendor() && apply_filters( 'wcfm_is_allow_email_verification', true 
 						<div id="wcfm_profile_form_social_expander" class="wcfm-content">
 							<?php
 								$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_profile_fields_social', array(  
-																																							"twitter" => array('label' => __('Twitter', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $twitter ),
-																																							"facebook" => array('label' => __('Facebook', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $facebook ),
-																																							"instagram" => array('label' => __('Instagram', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $instagram ),
-																																							"youtube" => array('label' => __('Youtube', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $youtube ),
-																																							"linkdin" => array('label' => __('Linkedin', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $linkdin ),
-																																							"google_plus" => array('label' => __('Google Plus', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $google_plus ),
-																																							"snapchat" => array('label' => __('Snapchat', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $snapchat ),
-																																							"pinterest" => array('label' => __('Pinterest', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $pinterest ),
+																																							"twitter" => array('label' => __('Twitter', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $twitter, 'placeholder' => __('Twitter Handler', 'wc-frontend-manager') ),
+																																							"facebook" => array('label' => __('Facebook', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $facebook, 'placeholder' => __('Facebook Handler', 'wc-frontend-manager') ),
+																																							"instagram" => array('label' => __('Instagram', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $instagram, 'placeholder' => __('Instagram Username', 'wc-frontend-manager') ),
+																																							"youtube" => array('label' => __('Youtube', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $youtube, 'placeholder' => __('YouTube Channel Name', 'wc-frontend-manager') ),
+																																							"linkdin" => array('label' => __('Linkedin', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $linkdin, 'placeholder' => __('Linkdin Username', 'wc-frontend-manager') ),
+																																							"google_plus" => array('label' => __('Google Plus', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $google_plus, 'placeholder' => __('Google Plus Profile ID', 'wc-frontend-manager') ),
+																																							"snapchat" => array('label' => __('Snapchat', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $snapchat, 'placeholder' => __('Snapchat ID', 'wc-frontend-manager') ),
+																																							"pinterest" => array('label' => __('Pinterest', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $pinterest, 'placeholder' => __('Pinterest Username', 'wc-frontend-manager') ),
 																																							), $user_id ) );
 							?>
 						</div>
@@ -361,10 +361,10 @@ if( wcfm_is_vendor() && apply_filters( 'wcfm_is_allow_email_verification', true 
 			<input type="hidden" name="wcfm_nonce" value="<?php echo wp_create_nonce( 'wcfm_profile' ); ?>" />
 		</form>
 		<script type="text/javascript">
-			var selected_bstate = '<?php echo $bstate; ?>';
-			var input_selected_bstate = '<?php echo $bstate; ?>';
-			var selected_sstate = '<?php echo $sstate; ?>';
-			var input_selected_sstate = '<?php echo $sstate; ?>';
+			var selected_bstate = '<?php echo esc_attr($bstate); ?>';
+			var input_selected_bstate = '<?php echo esc_attr($bstate); ?>';
+			var selected_sstate = '<?php echo esc_attr($sstate); ?>';
+			var input_selected_sstate = '<?php echo esc_attr($sstate); ?>';
 		</script>
 		<?php
 		do_action( 'after_wcfm_wcvendors_profile' );

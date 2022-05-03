@@ -57,7 +57,7 @@ foreach ( $payment_methods as $method_name ) {
 	  <div id="wcfm_page_load"></div>
 	  
 		<div class="wcfm-container wcfm-top-element-container">
-			<h2 style="text-align: left;"><?php echo $message; ?></h2>
+			<h2 style="text-align: left;"><?php echo esc_html($message); ?></h2>
 			
 			<?php
 			if( $wcfm_is_allow_payments = apply_filters( 'wcfm_is_allow_payments', true ) ) {

@@ -20,8 +20,8 @@ class WCFM_Customers_Controller {
 	public function processing() {
 		global $WCFM, $wpdb, $_POST;
 		
-		$length = wc_clean($_POST['length']);
-		$offset = wc_clean($_POST['start']);
+		$length = absint($_POST['length']);
+		$offset = absint($_POST['start']);
 		
 		$customer_user_role = apply_filters( 'wcfm_customer_user_role', array( 'customer', 'subscriber', 'client', 'bbp_participant', 'wholesale_customer' ) );
 		
@@ -149,7 +149,7 @@ class WCFM_Customers_Controller {
 					$customer_name = $wcfm_customers_single->display_name;
 				}
 				if( apply_filters( 'wcfm_is_allow_view_customer', true ) ) {
-					$wcfm_customers_json_arr[$index][] =  '<a href="' . get_wcfm_customers_details_url($wcfm_customers_single->ID) . '" class="wcfm_dashboard_item_title">' . apply_filters( 'wcfm_customers_display_name_data', $customer_name, $wcfm_customers_single->ID ) . '</a>';
+					$wcfm_customers_json_arr[$index][] =  '<a href="' . esc_url(get_wcfm_customers_details_url($wcfm_customers_single->ID)) . '" class="wcfm_dashboard_item_title">' . apply_filters( 'wcfm_customers_display_name_data', $customer_name, $wcfm_customers_single->ID ) . '</a>';
 				} else {
 					$wcfm_customers_json_arr[$index][] =  apply_filters( 'wcfm_customers_display_name_data', $customer_name, $wcfm_customers_single->ID );
 				}
@@ -219,7 +219,7 @@ class WCFM_Customers_Controller {
 				if ( ! empty( $orders ) ) {
 					$order = $orders[0];
 					if( apply_filters( 'wcfm_is_allow_order_details', true ) && $WCFM->wcfm_vendor_support->wcfm_is_order_for_vendor( $order->get_id() ) ) {
-						$wcfm_customers_json_arr[$index][] = '<span class="customer-orderno"><a href="' . get_wcfm_view_order_url( $order->get_id(), $order ) . '">' . _x( '#', 'hash before order number', 'woocommerce' ) . $order->get_order_number() . '</a></span><br />' . wc_format_datetime( $order->get_date_created() );
+						$wcfm_customers_json_arr[$index][] = '<span class="customer-orderno"><a href="' . esc_url(get_wcfm_view_order_url( $order->get_id(), $order )) . '">' . _x( '#', 'hash before order number', 'woocommerce' ) . $order->get_order_number() . '</a></span><br />' . wc_format_datetime( $order->get_date_created() );
 					} else {
 						$wcfm_customers_json_arr[$index][] = '<span class="customer-orderno">' . _x( '#', 'hash before order number', 'woocommerce' ) . $order->get_order_number() . '</span><br />' . wc_format_datetime( $order->get_date_created() );
 					}
@@ -231,9 +231,9 @@ class WCFM_Customers_Controller {
 				$wcfm_customers_json_arr[$index][] = apply_filters( 'wcfm_customers_additonal_data', '&ndash;', $wcfm_customers_single->ID );
 				
 				// Action
-				$actions = '<a class="wcfm-action-icon" href="' . get_wcfm_customers_details_url( $wcfm_customers_single->ID ) . '"><span class="wcfmfa fa-eye text_tip" data-tip="' . esc_attr__( 'Manage Customer', 'wc-frontend-manager' ) . '"></span></a>';
+				$actions = '<a class="wcfm-action-icon" href="' . esc_url(get_wcfm_customers_details_url( $wcfm_customers_single->ID )) . '"><span class="wcfmfa fa-eye text_tip" data-tip="' . esc_attr__( 'Manage Customer', 'wc-frontend-manager' ) . '"></span></a>';
 				if( apply_filters( 'wcfm_is_allow_edit_customer', true ) && apply_filters( 'wcfm_is_vendor_customer', true, $wcfm_customers_single->ID ) ) {
-					$actions .= '<a class="wcfm-action-icon" href="' . get_wcfm_customers_manage_url( $wcfm_customers_single->ID ) . '"><span class="wcfmfa fa-edit text_tip" data-tip="' . esc_attr__( 'Edit Customer', 'wc-frontend-manager' ) . '"></span></a>';
+					$actions .= '<a class="wcfm-action-icon" href="' . esc_url(get_wcfm_customers_manage_url( $wcfm_customers_single->ID )) . '"><span class="wcfmfa fa-edit text_tip" data-tip="' . esc_attr__( 'Edit Customer', 'wc-frontend-manager' ) . '"></span></a>';
 				}
 				if ( empty( $orders ) && apply_filters( 'wcfm_is_allow_edit_customer', true ) && apply_filters( 'wcfm_is_allow_delete_customer', true ) && ( !wcfm_is_vendor() || apply_filters( 'wcfm_is_vendor_customer', true, $wcfm_customers_single->ID ) ) ) {
 					$actions .= '<a class="wcfm_customer_delete wcfm-action-icon" href="#" data-customerid="' . $wcfm_customers_single->ID . '"><span class="wcfmfa fa-trash-alt text_tip" data-tip="' . esc_attr__( 'Delete', 'wc-frontend-manager' ) . '"></span></a>';

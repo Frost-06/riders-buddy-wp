@@ -10,7 +10,8 @@ jQuery(document).ready(function($) {
 		$('#dropdown_customer').on('change', function() {
 			var data = {
 				action                  : 'customer_details_change_url',
-				customer_details_change : $('#dropdown_customer').val()
+				customer_details_change : $('#dropdown_customer').val(),
+				wcfm_ajax_nonce         : wcfm_params.wcfm_ajax_nonce,
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {
@@ -53,7 +54,8 @@ jQuery(document).ready(function($) {
 			"data"   : function( d ) {
 				d.action       = 'wcfm_ajax_controller',
 				d.controller   = 'wcfm-customers-details-orders',
-				d.customer_id  = customer_id
+				d.customer_id  = customer_id,
+				d.wcfm_ajax_nonce = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -86,7 +88,8 @@ jQuery(document).ready(function($) {
 		});
 		var data = {
 			action : 'wcfm_order_mark_complete',
-			orderid : item.data('orderid')
+			orderid : item.data('orderid'),
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 		}	
 		$.ajax({
 			type:		'POST',
@@ -185,7 +188,8 @@ jQuery(document).ready(function($) {
 			"data"   : function( d ) {
 				d.action       = 'wcfm_ajax_controller',
 				d.controller   = 'wcfm-customers-details-bookings',
-				d.customer_id  = customer_id
+				d.customer_id  = customer_id,
+				d.wcfm_ajax_nonce = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -218,7 +222,8 @@ jQuery(document).ready(function($) {
 		});
 		var data = {
 			action : 'wcfm_booking_mark_confirm',
-			bookingid : item.data('bookingid')
+			bookingid : item.data('bookingid'),
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 		}	
 		$.ajax({
 			type:		'POST',
@@ -265,7 +270,8 @@ jQuery(document).ready(function($) {
 			"data"   : function( d ) {
 				d.action       = 'wcfm_ajax_controller',
 				d.controller   = 'wcfm-customers-details-appointments',
-				d.customer_id  = customer_id
+				d.customer_id  = customer_id,
+				d.wcfm_ajax_nonce = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -298,7 +304,8 @@ jQuery(document).ready(function($) {
 		});
 		var data = {
 			action : 'wcfm_appointment_mark_confirm',
-			appointmentid : item.data('appointmentid')
+			appointmentid : item.data('appointmentid'),
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 		}	
 		$.ajax({
 			type:		'POST',

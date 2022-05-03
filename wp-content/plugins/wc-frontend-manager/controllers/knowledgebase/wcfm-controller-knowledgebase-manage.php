@@ -47,7 +47,7 @@ class wcfm_Knowledgebase_Manage_Controller {
 				'post_title'   => wc_clean( $wcfm_knowledgebase_manager_form_data['title'] ),
 				'post_status'  => $knowledgebase_status,
 				'post_type'    => 'wcfm_knowledgebase',
-				'post_content' => stripslashes( html_entity_decode( $_POST['content'], ENT_QUOTES, 'UTF-8' ) ),
+				'post_content' => wp_filter_post_kses( stripslashes( html_entity_decode( $_POST['content'], ENT_QUOTES, 'UTF-8' ) ) ),
 				'post_author'  => $current_user_id
 			);
 			
@@ -76,13 +76,13 @@ class wcfm_Knowledgebase_Manage_Controller {
 					}
 				}
 				
-				echo '{"status": true, "message": "' . $wcfm_knowledgebase_messages['knowledgebase_saved'] . '", "redirect": "' . get_wcfm_knowledgebase_manage_url($new_knowledgebase_id) . '"}';
+				echo '{"status": true, "message": "' . esc_html( $wcfm_knowledgebase_messages['knowledgebase_saved'] ) . '", "redirect": "' . esc_url( get_wcfm_knowledgebase_manage_url($new_knowledgebase_id) ) . '"}';
 				die;
 			} else {
-				echo '{"status": false, "message": "' . $wcfm_knowledgebase_messages['knowledgebase_failed'] . '"}';
+				echo '{"status": false, "message": "' . esc_html( $wcfm_knowledgebase_messages['knowledgebase_failed'] ) . '"}';
 			}
 		} else {
-			echo '{"status": false, "message": "' . $wcfm_knowledgebase_messages['no_title'] . '"}';
+			echo '{"status": false, "message": "' . esc_html( $wcfm_knowledgebase_messages['no_title'] ) . '"}';
 		}
 		
 		die;

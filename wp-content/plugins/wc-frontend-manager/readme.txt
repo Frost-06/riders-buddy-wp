@@ -3,11 +3,11 @@ Contributors: wclovers
 Tags: woocommerce marketplace, multivendor marketplace, multi vendor, product vendors, wp user frontend, product vendor dashboard, ecommerce, vendor shop manager, woocommerce frontend shop manager, wcvendors, woocommerce frontend manager, wc frontend manager, woocommerce frontend shop manager, shop manager, ecommerce, e-commerce, woocommerce live manager
 Donate link: https://www.paypal.me/wclovers/25usd
 Requires at least: 4.4
-Tested up to: 5.5
+Tested up to: 5.9
 WC requires at least: 3.0
-WC tested up to: 4.4.0
+WC tested up to: 6.4.0
 Requires PHP: 5.6
-Stable tag: 6.5.4
+Stable tag: 6.6.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -220,6 +220,97 @@ Fully compatible with all major multi-vendor marketplace plugins - <strong>WCFM 
 25. WCFM Dashboard - Mobile view
 
 == Changelog ==
+
+= 6.6.3 =
+*Updated - 16/04/2022*
+
+* Enhance - WooCommerce 6.4+ compatibility check added
+* Fixed   - WCFM APP store list not visible issue resolved
+
+= 6.6.2 =
+*Updated - 19/02/2022*
+
+* Enhance - WordPress 5.9+ compatibility check added
+* Enhance - WooCommerce 6.2+ compatibility check added
+* Enhance - Some queries modified to prevent SQL Injection
+
+= 6.6.1 =
+*Updated - 21/11/2021*
+
+* Fixed   - Membership subscription payment processing issue resolved
+
+= 6.6.0 =
+*Updated - 19/11/2021*
+
+* Enhance - Ajax functions nonce check and user permission check added
+* Fixed   - Admin area PHP error issue resolved
+
+= 6.5.13 =
+*Updated - 14/11/2021*
+
+* Enhance - WooCommerce 5.9+ compatibility check added
+* Fixed   - Some security issues resolved
+
+= 6.5.12 =
+*Updated - 10/10/2021*
+
+* Enhance - Some new filters added
+* Fixed   - Vendor reports "last month" and "current mmonth" query issue resolved
+* Fixed   - Few security issues resolved
+
+= 6.5.11 =
+*Updated - 26/09/2021*
+
+* Enhance - WordPress 5.8+ compatibility check added
+* Enhance - WooCommerce 5.7+ compatibility check added
+* Fixed   - Enquiry/Inquiry not deleting issue resolved
+
+= 6.5.10 =
+*Updated - 24/07/2021*
+
+* Enhance - WordPress 5.8+ compatibility check added
+* Enhance - WooCommerce 5.5+ compatibility check added
+* Enhance - Many security check improved
+
+= 6.5.9 =
+*Updated - 13/06/2021*
+
+* Enhance - WooCommerce 5.4+ compatibility check added
+* Enhance - Dashboard setting form security check improved
+
+= 6.5.8 =
+*Updated - 24/04/2021*
+
+* Enhance - WooCommerce 5.2+ compatibility check added
+* Fixed   - wcfm-script-core.js "file" undefined issue resolved
+* Fixed   - Store setting dulicate slug error not showing issue resolved 
+* Fixed   - Product Custom attributes with "double quotes" variation not properly saving issue resolved
+* Fixed   - Downloadable product multiple file upload issue resolved 
+
+= 6.5.7 =
+*Updated - 28/03/2021*
+
+* Enhance - WordPress 5.7+ compatibility check added
+* Enhance - WooCommerce 5.1+ compatibility check added
+
+= 6.5.6 =
+*Updated - 06/01/2021*
+
+* Enhance - WordPress 5.6+ compatibility check added
+* Enhance - WooCommerce 4.8+ compatibility check added
+* Enhance - Facebook for WooCommerce 2.2+ compatibility added
+
+= 6.5.5 =
+*Updated - 08/11/2020*
+
+* Feature - Facebook store sync with vendor store option added - [Documentation](https://docs.wclovers.com/facebook-for-marketplace/)
+* Enhance - WooCommerce 4.6+ compatibility check added
+* Enhance - WCFM login popup credential check improved
+* Enhance - Vendor store location setting current location detect option added
+* Enhance - Add product "Verification Product Limit" reached message display improved
+* Fixed   - Variation stock status not properly sync with main product stock ststus issue resolved 
+* Fixed   - Vendor shipping setting auto-reset issue resolved
+* Fixed   - Product "Menu Order" not properly saving issue resolved
 
 = 6.5.4 =
 *Updated - 28/08/2020*
@@ -2443,18 +2534,6 @@ Fully compatible with all major multi-vendor marketplace plugins - <strong>WCFM 
 
 == Upgrade Notice ==
 
-= 6.5.4 =
-* Enhance - WooCommerce 4.4+ compatibility check added
-* Enhance - Country Based Restrictions for WooCommerce compatibility added
-* Enhance - Product custom fields "Multi Select" field type support added
-* Enhance - Booking list data export option added
-* Tweak   - Dashboard pages setting drop-downs changed to choosen for better performance
-* Fixed   - Store Followers capability not working issue resolved
-* Fixed   - WooCommerce Appointments calendar display issue resolved
-* Fixed   - ShipStation order sync Tax, Shipping cost not working as per vendor issue resolved
-* Fixed   - ShipStation order sync order note and status not properly updating issue resolved
-* Fixed   - "Category wise attributes" previously selected attributes not reset on category change issue resolved
-* Fixed   - WooCommerce - PDF Vouchers "Generate Code" not working from "Popup Add Product" issue resolved 
-* Fixed   - During add product WooCommerce Product Add-ons and WooCommerce Tab Manager conflict issue resolved
-* Fixed   - Vendor coupon "Exclude Products" not saving issue resolved
-* Fixed   - Notice/Announcement notification not triggering issue resolved
+= 6.6.3 =
+* Enhance - WooCommerce 6.4+ compatibility check added
+* Fixed   - WCFM APP store list not visible issue resolved

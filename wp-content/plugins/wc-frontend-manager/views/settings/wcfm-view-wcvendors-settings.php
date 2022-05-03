@@ -472,7 +472,7 @@ $is_marketplace = wcfm_is_marketplace();
 			  
 				<input type="submit" name="save-data" value="<?php _e( 'Save', 'wc-frontend-manager' ); ?>" id="wcfm_settings_save_button" class="wcfm_submit_button" />
 			</div>
-			
+			<input type="hidden" name="wcfm_nonce" value="<?php echo wp_create_nonce( 'wcfm_settings' ); ?>" />
 		</form>
 		<?php
 		do_action( 'after_wcfm_wcvendors_settings' );

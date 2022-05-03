@@ -117,13 +117,13 @@ $wcfm_report_sales_by_date->calculate_current_range( $current_range );
 	  	  $vendor_store = wcfm_get_vendor_store_name( $WCFMmp->vendor_id );
 				$store_logo = $WCFM->wcfm_vendor_support->wcfm_get_vendor_logo_by_vendor( $WCFMmp->vendor_id );
 				if( !$store_logo ) {
-					$store_logo = apply_filters( 'wcfmmp_store_default_logo', $WCFM->plugin_url . 'assets/images/wcfmmp.png' );
+					$store_logo = apply_filters( 'wcfmmp_store_default_logo', esc_url($WCFM->plugin_url) . 'assets/images/wcfmmp.png' );
 				}
 	  	  ?>
-				<img class="vendor_store_logo" src="<?php echo $store_logo; ?>" alt="Store Logo" />
+				<img class="vendor_store_logo" src="<?php echo esc_url($store_logo); ?>" alt="Store Logo" />
 				<h2>
 					<?php 
-						echo $vendor_store;
+						echo wp_kses_post($vendor_store);
 					?>
 				</h2>
 				

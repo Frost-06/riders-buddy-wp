@@ -20,8 +20,8 @@ class WCFM_Knowledgebase_Controller {
 	public function processing() {
 		global $WCFM, $wpdb, $_POST;
 		
-		$length = wc_clean($_POST['length']);
-		$offset = wc_clean($_POST['start']);
+		$length = absint($_POST['length']);
+		$offset = absint($_POST['start']);
 		
 		$allowed_post_status = array('draft', 'pending', 'publish');
 		if( wcfm_is_vendor() ) $allowed_post_status = array( 'publish' );
@@ -97,7 +97,7 @@ class WCFM_Knowledgebase_Controller {
 				
 				// Knowledgebase
 				if( !wcfm_is_vendor() ) {
-					$wcfm_knowledgebases_json_arr[$index][] =  '<a href="' . get_wcfm_knowledgebase_manage_url($wcfm_knowledgebases_single->ID) . '" class="wcfm_dashboard_item_title">' . $wcfm_knowledgebases_single->post_title . '</a>';
+					$wcfm_knowledgebases_json_arr[$index][] =  '<a href="' . esc_url(get_wcfm_knowledgebase_manage_url($wcfm_knowledgebases_single->ID)) . '" class="wcfm_dashboard_item_title">' . $wcfm_knowledgebases_single->post_title . '</a>';
 				} else {
 					$wcfm_knowledgebases_json_arr[$index][] =  '<span class="wcfm_dashboard_item_title">' . $wcfm_knowledgebases_single->post_title . '</span>';
 				}
@@ -117,8 +117,8 @@ class WCFM_Knowledgebase_Controller {
 				
 				// Action
 				$actions = '<a class="wcfm-action-icon wcfm_knowledgebase_view" href="#" data-knowledgebaseid="' . $wcfm_knowledgebases_single->ID . '"><span class="wcfmfa fa-eye text_tip" data-tip="' . esc_attr__( 'View', 'wc-frontend-manager' ) . '"></span></a>';
-				if( !wcfm_is_vendor() ) {
-					$actions .= '<a class="wcfm-action-icon" href="' . get_wcfm_knowledgebase_manage_url($wcfm_knowledgebases_single->ID) . '"><span class="wcfmfa fa-edit text_tip" data-tip="' . esc_attr__( 'Edit', 'wc-frontend-manager' ) . '"></span></a>';
+				if( !wcfm_is_vendor() && apply_filters( 'wcfm_is_allow_edit_knowledgebase', true ) ) {
+					$actions .= '<a class="wcfm-action-icon" href="' . esc_url(get_wcfm_knowledgebase_manage_url($wcfm_knowledgebases_single->ID)) . '"><span class="wcfmfa fa-edit text_tip" data-tip="' . esc_attr__( 'Edit', 'wc-frontend-manager' ) . '"></span></a>';
 					if( $wcfm_knowledgebases_single->post_status != 'publish' ) {
 						$actions .= '<a class="wcfm_knowledgebase_publish wcfm-action-icon" href="#" data-knowledgebaseid="' . $wcfm_knowledgebases_single->ID . '"><span class="wcfmfa fa-check-circle text_tip" data-tip="' . esc_attr__( 'Publish - on line this now', 'wc-frontend-manager' ) . '"></span></a>';
 					} else {

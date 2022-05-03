@@ -46,8 +46,9 @@ jQuery(document).ready(function($) {
 				d.controller        = 'wcfm-payments',
 				d.transaction_id    = GetURLParameter( 'transaction_id' )
 				d.start_date        = $filter_date_form,
-				d.end_date          = $filter_date_to
-				d.status_type       = $status_type
+				d.end_date          = $filter_date_to,
+				d.status_type       = $status_type,
+				d.wcfm_ajax_nonce   = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();

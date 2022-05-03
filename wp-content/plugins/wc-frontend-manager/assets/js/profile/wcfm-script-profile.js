@@ -83,7 +83,8 @@ jQuery(document).ready( function($) {
 		if( $is_valid ) {
 			var data = {
 				action                             : 'wcfm_email_verification_code',
-				user_email                         : $('#email').val()
+				user_email                         : $('#email').val(),
+				wcfm_ajax_nonce                    : wcfm_params.wcfm_ajax_nonce,
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {
@@ -379,7 +380,8 @@ jQuery(document).ready( function($) {
 				controller         : 'wcfm-profile',
 				wcfm_profile_form  : $('#wcfm_profile_form').serialize(),
 				user_email         : $('#email').val(),
-				about              : about
+				about              : about,
+				wcfm_ajax_nonce    : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {

@@ -20,8 +20,8 @@ class WCFM_Withdrawal_Controller {
 	public function processing() {
 		global $WCFM, $wpdb, $_POST, $WCMp;
 		
-		$length = wc_clean($_POST['length']);
-		$offset = wc_clean($_POST['start']);
+		$length = absint($_POST['length']);
+		$offset = absint($_POST['start']);
 		
 		$args = array(
                 'post_type' => 'dc_commission',

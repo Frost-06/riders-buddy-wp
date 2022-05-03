@@ -384,7 +384,7 @@
         LTS  : 'h:mm:ss A',
         LT   : 'h:mm A',
         L    : 'MM/DD/YYYY',
-        LL   : wcfm_wp_date_format_to_js,
+        LL   : wcfm_wp_date_format_to_js.date_format,
         LLL  : 'MMMM D, YYYY h:mm A',
         LLLL : 'dddd, MMMM D, YYYY h:mm A',
     };

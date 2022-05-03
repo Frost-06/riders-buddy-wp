@@ -196,7 +196,7 @@ $is_marketplace = wcfm_is_marketplace();
 												$secret_key = $testmode ? $stripe_settings['test_secret_key'] : $stripe_settings['secret_key'];
 												if (isset($client_id) && isset($secret_key)) {
 													if (isset($_GET['code'])) {
-														$code = $_GET['code'];
+														$code = wc_clean($_GET['code']);
 														if (!is_user_logged_in()) {
 															if (isset($_GET['state'])) {
 																$user_id = wc_clean($_GET['state']);
@@ -419,7 +419,7 @@ $is_marketplace = wcfm_is_marketplace();
 																		<tr>
 																			<th></th>
 																			<td>
-																				<a href=<?php echo $url; ?> target="_self"><img src="<?php echo $stripe_connect_url; ?>" /></a>
+																				<a href=<?php echo esc_url($url); ?> target="_self"><img src="<?php echo esc_url($stripe_connect_url); ?>" /></a>
 																			</td>
 																		</tr>
 																	</tbody>
@@ -441,7 +441,7 @@ $is_marketplace = wcfm_is_marketplace();
 																			<tr>
 																				<th></th>
 																				<td>
-																						<a href=<?php echo $url; ?> target="_self"><img src="<?php echo $stripe_connect_url; ?>" /></a>
+																						<a href=<?php echo esc_url($url); ?> target="_self"><img src="<?php echo esc_url($stripe_connect_url); ?>" /></a>
 																				</td>
 																			</tr>
 																		</tbody>
@@ -474,7 +474,7 @@ $is_marketplace = wcfm_is_marketplace();
 			  
 				<input type="submit" name="save-data" value="<?php _e( 'Save', 'wc-frontend-manager' ); ?>" id="wcfm_settings_save_button" class="wcfm_submit_button" />
 			</div>
-			
+			<input type="hidden" name="wcfm_nonce" value="<?php echo wp_create_nonce( 'wcfm_settings' ); ?>" />
 		
 		</form>
 		<?php

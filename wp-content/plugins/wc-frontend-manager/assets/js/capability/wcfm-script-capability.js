@@ -55,7 +55,8 @@ jQuery(document).ready( function($) {
 		var data = {
 			action             : 'wcfm_ajax_controller',
 			controller         : 'wcfm-capability',
-			wcfm_capability_form : $('#wcfm_capability_form').serialize()
+			wcfm_capability_form : $('#wcfm_capability_form').serialize(),
+			wcfm_ajax_nonce    : wcfm_params.wcfm_ajax_nonce
 		}	
 		$.post(wcfm_params.ajax_url, data, function(response) {
 			if(response) {

@@ -20,7 +20,7 @@ class WCFM_Message_Sent_Controller {
 	public function processing() {
 		global $WCFM, $wpdb, $_POST;
 		
-		$wcfm_messages = ! empty( $_POST['wcfm_messages'] ) ? apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['wcfm_messages'], ENT_QUOTES, 'UTF-8' ) ) ) : '';
+		$wcfm_messages = ! empty( $_POST['wcfm_messages'] ) ? wp_filter_post_kses( apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['wcfm_messages'], ENT_QUOTES, 'UTF-8' ) ) ) ) : '';
 		$author_id = apply_filters( 'wcfm_message_author', get_current_user_id() );
 		
 		if( wcfm_is_vendor() ) { 
@@ -48,7 +48,7 @@ class WCFM_Message_Sent_Controller {
 		
 		do_action( 'wcfm_messages_update', $wcfm_messages );
 		
-		echo '{"status": true, "message": "' . __( 'Message sent successfully', 'wc-frontend-manager' ) . '"}';
+		echo '{"status": true, "message": "' . esc_html( __( 'Message sent successfully', 'wc-frontend-manager' ) ) . '"}';
 		 
 		die;
 	}

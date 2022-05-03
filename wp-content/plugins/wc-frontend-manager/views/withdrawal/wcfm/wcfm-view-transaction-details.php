@@ -34,8 +34,8 @@ $pay_currency = get_woocommerce_currency();
 
 $sql = 'SELECT * FROM ' . $wpdb->prefix . 'wcfm_marketplace_withdraw_request';
 $sql .= ' WHERE 1=1';
-$sql .= " AND ID = " . $transaction_id;
-$withdrawal_infos = $wpdb->get_results( $sql );
+$sql .= " AND ID = %d";
+$withdrawal_infos = $wpdb->get_results( $wpdb->prepare( $sql, $transaction_id ) );
 if( !empty( $withdrawal_infos ) ) {
 	foreach( $withdrawal_infos as $withdrawal_info ) {
 		$transaction = $withdrawal_info;
@@ -51,8 +51,8 @@ $paid_amount = (float)$transaction->withdraw_amount - (float)$transaction->withd
 
 $sql = 'SELECT * FROM ' . $wpdb->prefix . 'wcfm_marketplace_withdraw_request_meta';
 $sql .= ' WHERE 1=1';
-$sql .= " AND `withdraw_id` = " . $transaction_id;
-$withdrawal_metas = $wpdb->get_results( $sql );
+$sql .= " AND `withdraw_id` = %d";
+$withdrawal_metas = $wpdb->get_results( $wpdb->prepare( $sql, $transaction_id ) );
 if( !empty( $withdrawal_metas ) ) {
 	foreach( $withdrawal_metas as $withdrawal_meta ) {
 		if( in_array( $withdrawal_meta->key, array('sender_batch_id') ) ) continue;

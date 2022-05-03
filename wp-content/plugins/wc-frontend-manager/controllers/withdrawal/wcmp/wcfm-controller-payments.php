@@ -20,8 +20,8 @@ class WCFM_Payments_Controller {
 	public function processing() {
 		global $WCFM, $wpdb, $_POST, $WCMp;
 		
-		$length = wc_clean($_POST['length']);
-		$offset = wc_clean($_POST['start']);
+		$length = absint($_POST['length']);
+		$offset = absint($_POST['start']);
 		
 		$start_date = date('01-m-Y');
     $end_date = date('t-m-Y');

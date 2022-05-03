@@ -178,7 +178,8 @@ class WCFM_Customers_Manage_Controller {
 																			 __( 'Password', 'wc-frontend-manager' ) . ': {password}' .
 																			 '<br /><br/>Thank You' .
 																			 '<br/><br/>';
-																			 
+							$notification_mail_body = apply_filters( 'wcfm_notification_mail_content', $new_account_mail_body, 'customer_new_account_created', $wcfm_customer_form_data, $customer_id );
+							
 							$subject = str_replace( '{site_name}', get_bloginfo( 'name' ), $new_account_mail_subject );
 							$subject = apply_filters( 'wcfm_email_subject_wrapper', $subject );
 							$message = str_replace( '{site_url}', get_bloginfo( 'url' ), $new_account_mail_body );
@@ -197,7 +198,7 @@ class WCFM_Customers_Manage_Controller {
 							$author_is_admin = 0;
 							$author_is_vendor = 1;
 							$message_to = 0;
-							$wcfm_messages = sprintf( __( 'A new customer <b>%s</b> added to the store by <b>%s</b>', 'wc-frontend-manager' ), '<a class="wcfm_dashboard_item_title" href="' . get_wcfm_customers_details_url( $customer_id ) . '">' . $wcfm_customer_form_data['first_name'] . ' ' . $wcfm_customer_form_data['last_name'] . '</a>', get_user_by( 'id', $author_id )->display_name );
+							$wcfm_messages = sprintf( __( 'A new customer <b>%s</b> added to the store by <b>%s</b>', 'wc-frontend-manager' ), '<a class="wcfm_dashboard_item_title" href="' . esc_url(get_wcfm_customers_details_url( $customer_id )) . '">' . $wcfm_customer_form_data['first_name'] . ' ' . $wcfm_customer_form_data['last_name'] . '</a>', get_user_by( 'id', $author_id )->display_name );
 							$WCFM->wcfm_notification->wcfm_send_direct_message( $author_id, $message_to, $author_is_admin, $author_is_vendor, $wcfm_messages, 'new_customer' );
 						}
 						
@@ -212,15 +213,15 @@ class WCFM_Customers_Manage_Controller {
 						do_action( 'wcfm_customers_manage', $customer_id, $wcfm_customer_form_data );
 					}
 					
-					if(!$has_error) { echo '{"status": true, "message": "' . $wcfm_customer_messages['customer_saved'] . '", "redirect": "' . apply_filters( 'wcfm_customer_manage_redirect', get_wcfm_customers_manage_url($customer_id), $customer_id ) . '"}'; }
-					else { echo '{"status": false, "message": "' . $wcfm_customer_messages['customer_failed'] . '"}'; }
+					if(!$has_error) { echo '{"status": true, "message": "' . esc_html( $wcfm_customer_messages['customer_saved'] ) . '", "redirect": "' . esc_url( apply_filters( 'wcfm_customer_manage_redirect', get_wcfm_customers_manage_url($customer_id), $customer_id ) ) . '"}'; }
+					else { echo '{"status": false, "message": "' . esc_html( $wcfm_customer_messages['customer_failed'] ) . '"}'; }
 				}
 			} else {
-				echo '{"status": false, "message": "' . $wcfm_customer_messages['no_email'] . '"}';
+				echo '{"status": false, "message": "' . esc_html( $wcfm_customer_messages['no_email'] ) . '"}';
 			}
 	  	
 	  } else {
-			echo '{"status": false, "message": "' . $wcfm_customer_messages['no_username'] . '"}';
+			echo '{"status": false, "message": "' . esc_html( $wcfm_customer_messages['no_username'] ) . '"}';
 		}
 		
 		die;

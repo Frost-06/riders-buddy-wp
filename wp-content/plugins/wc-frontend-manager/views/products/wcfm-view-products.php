@@ -14,6 +14,7 @@ $wcfmu_products_menus = apply_filters( 'wcfmu_products_menus', array( 'any' => _
 																																		) );
 
 $product_status = ! empty( $_GET['product_status'] ) ? sanitize_text_field( $_GET['product_status'] ) : 'any';
+$product_vendor = ! empty( $_GET['product_vendor'] ) ? sanitize_text_field( $_GET['product_vendor'] ) : '';
 
 $current_user_id = apply_filters( 'wcfm_current_vendor_id', get_current_user_id() );
 if( !wcfm_is_vendor() ) $current_user_id = 0;
@@ -58,7 +59,7 @@ if( apply_filters( 'wcfm_is_allow_archive_product', true ) ) {
 						if($is_first) $is_first = false;
 						else echo " | ";
 						?>
-						<a class="<?php echo ( $wcfmu_products_menu_key == $product_status ) ? 'active' : ''; ?>" href="<?php echo get_wcfm_products_url( $wcfmu_products_menu_key ); ?>"><?php echo $wcfmu_products_menu . ' ('. $count_products[$wcfmu_products_menu_key] .')'; ?></a>
+						<a class="<?php echo ( $wcfmu_products_menu_key == $product_status ) ? 'active' : ''; ?>" href="<?php echo esc_url(get_wcfm_products_url( $wcfmu_products_menu_key )); ?>"><?php echo esc_html( $wcfmu_products_menu . ' ('. $count_products[$wcfmu_products_menu_key] .')' ); ?></a>
 					</li>
 					<?php
 				}
@@ -205,8 +206,9 @@ if( apply_filters( 'wcfm_is_allow_archive_product', true ) ) {
 				if( $is_marketplace ) {
 					if( !wcfm_is_vendor() ) {
 						$vendor_arr = array(); //$WCFM->wcfm_vendor_support->wcfm_get_vendor_list();
+						if( $product_vendor ) $vendor_arr = array( $product_vendor => wcfm_get_vendor_store_name($product_vendor) );
 						$WCFM->wcfm_fields->wcfm_generate_form_field( array(
-																											"dropdown_vendor" => array( 'type' => 'select', 'options' => $vendor_arr, 'attributes' => array( 'style' => 'width: 150px;' ) )
+																											"dropdown_vendor" => array( 'type' => 'select', 'options' => $vendor_arr, 'value' => $product_vendor, 'attributes' => array( 'style' => 'width: 150px;' ) )
 																											 ) );
 					}
 				}

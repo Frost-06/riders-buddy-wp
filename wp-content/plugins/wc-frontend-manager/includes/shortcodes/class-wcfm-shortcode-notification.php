@@ -48,15 +48,15 @@ class WCFM_Notification_Shortcode {
 		?>
 		<div class="wcfm_sc_notifications">
 			<?php if( $message && apply_filters( 'wcfm_is_pref_direct_message', true ) && apply_filters( 'wcfm_is_allow_notifications', true ) && apply_filters( 'wcfm_is_allow_sc_notifications', true ) ) { ?>
-				<a href="<?php echo get_wcfm_messages_url( ); ?>" class="wcfmfa fa-bell text_tip" data-tip="<?php _e( 'Notification Board', 'wc-frontend-manager' ); ?>"><span class="unread_notification_count message_count"><?php echo $unread_message; ?></span></a>
+				<a href="<?php echo esc_url(get_wcfm_messages_url( )); ?>" class="wcfmfa fa-bell text_tip" data-tip="<?php _e( 'Notification Board', 'wc-frontend-manager' ); ?>"><span class="unread_notification_count message_count"><?php echo esc_attr($unread_message); ?></span></a>
 			<?php } ?>
 			
 			<?php if( $enquiry && apply_filters( 'wcfm_is_pref_enquiry', true ) && apply_filters( 'wcfm_is_allow_enquiry', true ) && apply_filters( 'wcfm_is_allow_sc_enquiry_notifications', true ) ) { ?>
-				<a href="<?php echo get_wcfm_enquiry_url(); ?>" class="wcfmfa fa-question-circle text_tip" data-tip="<?php _e( 'Enquiry Board', 'wc-frontend-manager' ); ?>"><span class="unread_notification_count enquiry_count"><?php echo $unread_enquiry; ?></span></a>
+				<a href="<?php echo esc_url(get_wcfm_enquiry_url()); ?>" class="wcfmfa fa-question-circle text_tip" data-tip="<?php _e( 'Enquiry Board', 'wc-frontend-manager' ); ?>"><span class="unread_notification_count enquiry_count"><?php echo esc_attr($unread_enquiry); ?></span></a>
 			<?php } ?>
 			
 			<?php if( $notice && apply_filters( 'wcfm_is_pref_notice', true ) && apply_filters( 'wcfm_is_allow_notice', true ) && apply_filters( 'wcfm_is_allow_sc_notice_notifications', true ) ) { ?>
-				<a href="<?php echo get_wcfm_notices_url( ); ?>" class="wcfmfa fa-bullhorn text_tip" data-tip="<?php _e( 'Notice Board', 'wc-frontend-manager' ); ?>"><?php if( wcfm_is_vendor() ) { ?><span class="unread_notification_count notice_count"><?php echo $unread_notice; ?></span><?php } ?></a>
+				<a href="<?php echo esc_url(get_wcfm_notices_url( )); ?>" class="wcfmfa fa-bullhorn text_tip" data-tip="<?php _e( 'Notice Board', 'wc-frontend-manager' ); ?>"><?php if( wcfm_is_vendor() ) { ?><span class="unread_notification_count notice_count"><?php echo esc_attr($unread_notice); ?></span><?php } ?></a>
 			<?php } ?>
 		</div>
 		<?php

@@ -41,7 +41,8 @@ jQuery(document).ready(function($) {
 				d.booking_status = GetURLParameter( 'booking_status' ),
 				d.booking_filter = $booking_filter,
 				d.filter_date_form  = $filter_date_form,
-				d.filter_date_to    = $filter_date_to
+				d.filter_date_to    = $filter_date_to,
+				d.wcfm_ajax_nonce   = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -85,7 +86,8 @@ jQuery(document).ready(function($) {
 		});
 		var data = {
 			action : 'wcfm_booking_mark_confirm',
-			bookingid : item.data('bookingid')
+			bookingid : item.data('bookingid'),
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 		}	
 		$.ajax({
 			type:		'POST',

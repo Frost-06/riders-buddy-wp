@@ -315,8 +315,8 @@ class WCFM_Frontend {
 		$allowed_roles = apply_filters( 'wcfm_allwoed_user_roles',  array( 'administrator', 'shop_manager' ) );
 		if ( !array_intersect( $allowed_roles, (array) $user->roles ) )  return;
 		
-		$quick_access_image_url = isset( $wcfm_options['wcfm_quick_access_icon'] ) ? wcfm_get_attachment_url( $wcfm_options['wcfm_quick_access_icon'] ) : $WCFM->plugin_url . '/assets/images/wcfm-30x30.png';
- 		echo '<a href="' . get_wcfm_page() . '"><img class="text_tip" data-tip="' . __( 'Dashboard', 'wc-frontend-manager' ) . '" id="wcfm_home" src="' . $quick_access_image_url . '" width="30" alt="' . __( 'Dashboard', 'wc-frontend-manager' ) . '" /></a>';
+		$quick_access_image_url = isset( $wcfm_options['wcfm_quick_access_icon'] ) ? wcfm_get_attachment_url( $wcfm_options['wcfm_quick_access_icon'] ) : esc_url($WCFM->plugin_url) . '/assets/images/wcfm-30x30.png';
+ 		echo '<a href="' . esc_url(get_wcfm_page()) . '"><img class="text_tip" data-tip="' . esc_html__( 'Dashboard', 'wc-frontend-manager' ) . '" id="wcfm_home" src="' . esc_url($quick_access_image_url) . '" width="30" alt="' . esc_html__( 'Dashboard', 'wc-frontend-manager' ) . '" /></a>';
  	}
 	
 	/**
@@ -351,11 +351,11 @@ class WCFM_Frontend {
 		<div class="wcfm_buttons">
 		  <?php do_action( 'wcfm_product_manage', $pro_id, $_product ); ?>
 		  <?php if( apply_filters( 'wcfm_is_allow_edit_products', true ) && apply_filters( 'wcfm_is_allow_edit_specific_products', true, $pro_id ) ) { ?>
-				<a class="wcfm_button" href="<?php echo get_wcfm_edit_product_url( $pro_id, $_product ); ?>"> <span class="wcfmfa fa-edit text_tip" data-tip="<?php echo esc_attr__( 'Edit', 'wc-frontend-manager' ); ?>"></span> </a>
+				<a class="wcfm_button" href="<?php echo esc_url(get_wcfm_edit_product_url( $pro_id, $_product )); ?>"> <span class="wcfmfa fa-edit text_tip" data-tip="<?php echo esc_html__( 'Edit', 'wc-frontend-manager' ); ?>"></span> </a>
 		  <?php } ?>
 		  <?php if( apply_filters( 'wcfm_is_allow_delete_products', true ) && apply_filters( 'wcfm_is_allow_delete_specific_products', true, $pro_id ) ) { ?>
 		  	<span class="wcfm_button_separator">|</span>
-		  	<a class="wcfm_button wcfm_delete_product" href="#" data-proid="<?php echo $pro_id; ?>"><span class="wcfmfa fa-trash-alt text_tip" data-tip="<?php echo esc_attr__( 'Delete', 'wc-frontend-manager' ); ?>"></span> </a>
+		  	<a class="wcfm_button wcfm_delete_product" href="#" data-proid="<?php echo esc_attr($pro_id); ?>"><span class="wcfmfa fa-trash-alt text_tip" data-tip="<?php echo esc_html__( 'Delete', 'wc-frontend-manager' ); ?>"></span> </a>
 		  <?php } ?>
 		</div>
 		<?php
@@ -434,18 +434,35 @@ class WCFM_Frontend {
 		
 		if( !isset( $_SESSION['location'] ) || !isset( $_SESSION['location']['country'] ) || !isset( $_SESSION['location']['state'] ) || !isset( $_SESSION['location']['city'] ) ) {
 			if( apply_filters( 'wcfm_is_allow_geo_lookup', true ) && ( is_user_logged_in() || WCFM_Dependencies::wcfma_plugin_active_check() ) ) {
-				$target_url = 'http://getcitydetails.geobytes.com/GetCityDetails?fqcn='. $ip_address;
+				//$target_url = 'https://getcitydetails.geobytes.com/GetCityDetails?fqcn='. $ip_address;
+				//$target_url = apply_filters( 'wcfm_geo_locate_url', 'https://secure.geobytes.com/GetCityDetails?key=7c756203dbb38590a66e01a5a3e1ad96&fqcn='. $ip_address, $ip_address );
+				$target_url = apply_filters( 'wcfm_geo_locate_url', 'http://ip-api.com/php/'. $ip_address, $ip_address );
 				$request    = wp_remote_get( $target_url );
 				if( !is_wp_error( $request ) && wp_remote_retrieve_response_code( $request ) == 200 ) {
-					$data = json_decode( wp_remote_retrieve_body( $request ) );
+					$data = wp_remote_retrieve_body( $request );
+					if( is_serialized( $data ) ) {
+						$data = unserialize( wp_remote_retrieve_body( $request ) );
+					} else {
+						$data = json_decode( wp_remote_retrieve_body( $request ) );
+					}
 					if( $data && is_object( $data ) ) {
-						$_SESSION['location']['country'] = $data->geobytesinternet;
-						$_SESSION['location']['state'] = $data->geobytescode;
-						$_SESSION['location']['city'] = $data->geobytescity;
+						if( isset( $data->geobytesinternet ) ) $_SESSION['location']['country'] = $data->geobytesinternet;
+						if( isset( $data->geobytescode ) ) $_SESSION['location']['state'] = $data->geobytescode;
+						if( isset( $data->geobytescity ) ) $_SESSION['location']['city'] = $data->geobytescity;
 						
 						// Save Users Location for Future
-						if( is_user_logged_in() ) {
+						if( is_user_logged_in() && isset( $data->geobytesinternet ) ) {
 							$user_location = array( 'country' => $data->geobytesinternet, 'state' => $data->geobytescode, 'city' => $data->geobytescity );
+							update_user_meta( get_current_user_id(), 'wcfm_user_location', $user_location );
+						}
+					} elseif( $data && is_array( $data ) ) {
+						if( isset( $data['countryCode'] ) ) $_SESSION['location']['country'] = $data['countryCode'];
+						if( isset( $data['region'] ) ) $_SESSION['location']['state'] = $data['region'];
+						if( isset( $data['city'] ) ) $_SESSION['location']['city'] = $data['city'];
+						
+						// Save Users Location for Future
+						if( is_user_logged_in() && isset( $data['countryCode'] ) ) {
+							$user_location = array( 'country' => $data['countryCode'], 'state' => $data['region'], 'city' => $data['city'] );
 							update_user_meta( get_current_user_id(), 'wcfm_user_location', $user_location );
 						}
 					} else {
@@ -466,6 +483,12 @@ class WCFM_Frontend {
 			}
 		}
 		
+		$ip_address   = wc_clean( $ip_address );
+		$HTTP_REFERER = wc_clean($_SERVER['HTTP_REFERER']);
+		$_SCOUNTRY    = $_SESSION['location']['country'] = wc_clean( $_SESSION['location']['country'] );
+		$_SSTATE      = $_SESSION['location']['state'] = wc_clean( $_SESSION['location']['state'] );
+		$_SCITY       = $_SESSION['location']['city'] = wc_clean( $_SESSION['location']['city'] );
+		
 		// vendor store
 		$is_marketplace = wcfm_is_marketplace();
 		
@@ -475,22 +498,24 @@ class WCFM_Frontend {
 		  	if ( WCV_Vendors::is_vendor_page() ) {
 		  		$wc_shop = false;
 		  		$vendor_shop 		= urldecode( get_query_var( 'vendor_shop' ) );
-		  		$vendor_id   		= WCV_Vendors::get_vendor_id( $vendor_shop );
+		  		$vendor_id   		= absint( WCV_Vendors::get_vendor_id( $vendor_shop ) );
 		  		if( !isset( $_SESSION['wcfm_pages'] ) || !isset( $_SESSION['wcfm_pages']['stores'] ) || ( isset( $_SESSION['wcfm_pages'] ) && isset( $_SESSION['wcfm_pages']['stores'] ) && !in_array( $vendor_id, $_SESSION['wcfm_pages']['stores'] ) ) ) {
 						// wcfm_detailed_analysis Query
-						$wcfm_detailed_analysis = "INSERT into {$wpdb->prefix}wcfm_detailed_analysis 
+						$wcfm_detailed_analysis = $wpdb->prepare( "INSERT into {$wpdb->prefix}wcfm_detailed_analysis 
 																			(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `referer`, `ip_address`, `country`, `state`, `city`)
 																			VALUES
-																			(0, 1, 0, 0, {$vendor_id}, '{$_SERVER['HTTP_REFERER']}', '{$ip_address}', '{$_SESSION['location']['country']}', '{$_SESSION['location']['state']}', '{$_SESSION['location']['city']}')";
+																			(%d, %d, %d, %d, %d, %s, %s, %s, %s, %s)",
+																			0, 1, 0, 0, $vendor_id, $HTTP_REFERER, $ip_address, $_SCOUNTRY, $_SSTATE, $_SCITY);
 						$wpdb->query($wcfm_detailed_analysis);
 						
 						// wcfm_daily_analysis Query
-						$wcfm_daily_analysis = "INSERT into {$wpdb->prefix}wcfm_daily_analysis 
+						$wcfm_daily_analysis = $wpdb->prepare( "INSERT into {$wpdb->prefix}wcfm_daily_analysis 
 																			(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `count`, `visited`)
 																			VALUES
-																			(0, 1, 0, 0, {$vendor_id}, 1, '{$todate}')
+																			(%d, %d, %d, %d, %d, %d, %s)
 																			ON DUPLICATE KEY UPDATE
-																			count = count+1";
+																			count = count+1", 
+																			0, 1, 0, 0, $vendor_id, 1, $todate);
 						$wpdb->query($wcfm_daily_analysis);
 						
 						// Session store
@@ -498,7 +523,7 @@ class WCFM_Frontend {
 					}
 		  	}
 		  } elseif( $is_marketplace == 'wcfmmarketplace' ) {
-				if( wcfm_is_store_page() ) {
+				if( function_exists( 'wcfm_is_store_page' ) && wcfm_is_store_page() ) {
 					$wc_shop = false;
 					$custom_store_url = get_option( 'wcfm_store_url', 'store' );
 					$store_name = get_query_var( $custom_store_url );
@@ -507,24 +532,26 @@ class WCFM_Frontend {
 						$store_user = get_user_by( 'slug', $store_name );
 					}
 					if( $store_user ) {
-						$vendor_id   		= $store_user->ID;
+						$vendor_id   		= absint($store_user->ID);
 					}
 					if( $vendor_id ) {
 						if( !isset( $_SESSION['wcfm_pages'] ) || !isset( $_SESSION['wcfm_pages']['stores'] ) || ( isset( $_SESSION['wcfm_pages'] ) && isset( $_SESSION['wcfm_pages']['stores'] ) && !in_array( $vendor_id, $_SESSION['wcfm_pages']['stores'] ) ) ) {
 							// wcfm_detailed_analysis Query
-							$wcfm_detailed_analysis = "INSERT into {$wpdb->prefix}wcfm_detailed_analysis 
+							$wcfm_detailed_analysis = $wpdb->prepare("INSERT into {$wpdb->prefix}wcfm_detailed_analysis 
 																				(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `referer`, `ip_address`, `country`, `state`, `city`)
 																				VALUES
-																				(0, 1, 0, 0, {$vendor_id}, '{$_SERVER['HTTP_REFERER']}', '{$ip_address}', '{$_SESSION['location']['country']}', '{$_SESSION['location']['state']}', '{$_SESSION['location']['city']}')";
+																				(%d, %d, %d, %d, %d, %s, %s, %s, %s, %s)",
+																				0, 1, 0, 0, $vendor_id, $HTTP_REFERER, $ip_address, $_SCOUNTRY, $_SSTATE, $_SCITY);
 							$wpdb->query($wcfm_detailed_analysis);
 							
 							// wcfm_daily_analysis Query
-							$wcfm_daily_analysis = "INSERT into {$wpdb->prefix}wcfm_daily_analysis 
+							$wcfm_daily_analysis = $wpdb->prepare("INSERT into {$wpdb->prefix}wcfm_daily_analysis 
 																				(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `count`, `visited`)
 																				VALUES
-																				(0, 1, 0, 0, {$vendor_id}, 1, '{$todate}')
+																				(%d, %d, %d, %d, %d, %d, %s)
 																				ON DUPLICATE KEY UPDATE
-																				count = count+1";
+																				count = count+1",
+																				0, 1, 0, 0, $vendor_id, 1, $todate);
 							$wpdb->query($wcfm_daily_analysis);
 							
 							// Session store
@@ -536,22 +563,24 @@ class WCFM_Frontend {
 		  
 		  if( $wc_shop && $post ) {
 		  	if( !isset( $_SESSION['wcfm_pages'] ) || !isset( $_SESSION['wcfm_pages']['shop'] ) || ( isset( $_SESSION['wcfm_pages'] ) && isset( $_SESSION['wcfm_pages']['shop'] ) && ( 'no' == $_SESSION['wcfm_pages']['shop'] ) ) ) {
-		  		$post_author = $post->post_author;
+		  		$post_author = absint($post->post_author);
 		  		if( !$post_author ) $post_author = 1;
 					// wcfm_detailed_analysis Query
-					$wcfm_detailed_analysis = "INSERT into {$wpdb->prefix}wcfm_detailed_analysis 
+					$wcfm_detailed_analysis = $wpdb->prepare( "INSERT into {$wpdb->prefix}wcfm_detailed_analysis 
 																		(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `referer`, `ip_address`, `country`, `state`, `city`)
 																		VALUES
-																		(1, 0, 0, 0, {$post_author}, '{$_SERVER['HTTP_REFERER']}', '{$ip_address}', '{$_SESSION['location']['country']}', '{$_SESSION['location']['state']}', '{$_SESSION['location']['city']}')";
+																		(%d, %d, %d, %d, %d, %s, %s, %s, %s, %s)",
+																		1, 0, 0, 0, $post_author, $HTTP_REFERER, $ip_address, $_SCOUNTRY, $_SSTATE, $_SCITY);
 					$wpdb->query($wcfm_detailed_analysis);
 					
 					// wcfm_daily_analysis Query
-					$wcfm_daily_analysis = "INSERT into {$wpdb->prefix}wcfm_daily_analysis 
+					$wcfm_daily_analysis = $wpdb->prepare( "INSERT into {$wpdb->prefix}wcfm_daily_analysis 
 																		(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `count`, `visited`)
 																		VALUES
-																		(1, 0, 0, 0, {$post_author}, 1, '{$todate}')
+																		(%d, %d, %d, %d, %d, %d, %s)
 																		ON DUPLICATE KEY UPDATE
-																		count = count+1";
+																		count = count+1",
+																		1, 0, 0, 0, $post_author, 1, $todate);
 					$wpdb->query($wcfm_daily_analysis);
 					
 					// Session store
@@ -559,25 +588,27 @@ class WCFM_Frontend {
 				}
 			}
 		} elseif( is_product_category() || ( is_tax() && !is_tax('dc_vendor_shop') && !is_tax('wcpv_product_vendors') ) ) {
-			$product_category = get_queried_object()->term_id;
+			$product_category = absint(get_queried_object()->term_id);
 			//echo get_query_var( 'taxonomy' );
 			//echo get_query_var( 'term' );
 			//echo "aaa:::" . $product_category;
 			if( !isset( $_SESSION['wcfm_pages'] ) || !isset( $_SESSION['wcfm_pages']['product_category'] ) || ( isset( $_SESSION['wcfm_pages'] ) && isset( $_SESSION['wcfm_pages']['product_category'] ) && !in_array( $product_category, $_SESSION['wcfm_pages']['product_category'] ) ) ) {
 				// wcfm_detailed_analysis Query
-				$wcfm_detailed_analysis = "INSERT into {$wpdb->prefix}wcfm_detailed_analysis 
+				$wcfm_detailed_analysis = $wpdb->prepare( "INSERT into {$wpdb->prefix}wcfm_detailed_analysis 
 																	(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `referer`, `ip_address`, `country`, `state`, `city`)
 																	VALUES
-																	(9, 0, 0, {$product_category}, 1, '{$_SERVER['HTTP_REFERER']}', '{$ip_address}', '{$_SESSION['location']['country']}', '{$_SESSION['location']['state']}', '{$_SESSION['location']['city']}')";
+																	(%d, %d, %d, %d, %d, %s, %s, %s, %s, %s)",
+																	9, 0, 0, $product_category, 1, $HTTP_REFERER, $ip_address, $_SCOUNTRY, $_SSTATE, $_SCITY);
 				$wpdb->query($wcfm_detailed_analysis);
 				
 				// wcfm_daily_analysis Query
-				$wcfm_daily_analysis = "INSERT into {$wpdb->prefix}wcfm_daily_analysis 
+				$wcfm_daily_analysis = $wpdb->prepare( "INSERT into {$wpdb->prefix}wcfm_daily_analysis 
 																	(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `count`, `visited`)
 																	VALUES
-																	(9, 0, 0, {$product_category}, 1, 1, '{$todate}')
+																	(%d, %d, %d, %d, %d, %d, %s)
 																	ON DUPLICATE KEY UPDATE
-																	count = count+1";
+																	count = count+1",
+																	9, 0, 0, $product_category, 1, 1, $todate);
 				$wpdb->query($wcfm_daily_analysis);
 				
 				// Session store
@@ -585,31 +616,34 @@ class WCFM_Frontend {
 			}
 		} elseif( is_product() ) {
 			if( !isset( $_SESSION['wcfm_pages'] ) || !isset( $_SESSION['wcfm_pages']['products'] ) || ( isset( $_SESSION['wcfm_pages'] ) && isset( $_SESSION['wcfm_pages']['products'] ) && !in_array( $post->ID, $_SESSION['wcfm_pages']['products'] ) ) ) {
-				$post_author = $post->post_author;
+				$post_author = absint($post->post_author);
 		  	if( !$post_author ) $post_author = 1;
+		  	$post_id = absint( $post->ID );
 				// wcfm_detailed_analysis Query
-				$wcfm_detailed_analysis = "INSERT into {$wpdb->prefix}wcfm_detailed_analysis 
+				$wcfm_detailed_analysis = $wpdb->prepare("INSERT into {$wpdb->prefix}wcfm_detailed_analysis 
 																	(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `referer`, `ip_address`, `country`, `state`, `city`)
 																	VALUES
-																	(0, 0, 1, {$post->ID}, {$post_author}, '{$_SERVER['HTTP_REFERER']}', '{$ip_address}', '{$_SESSION['location']['country']}', '{$_SESSION['location']['state']}', '{$_SESSION['location']['city']}')";
+																	(%d, %d, %d, %d, %d, %s, %s, %s, %s, %s)",
+																	0, 0, 1, $post_id, $post_author, $HTTP_REFERER, $ip_address, $_SCOUNTRY, $_SSTATE, $_SCITY);
 				$wpdb->query($wcfm_detailed_analysis);
 				
 				// wcfm_daily_analysis Query
-				$wcfm_daily_analysis = "INSERT into {$wpdb->prefix}wcfm_daily_analysis 
+				$wcfm_daily_analysis = $wpdb->prepare("INSERT into {$wpdb->prefix}wcfm_daily_analysis 
 																	(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `count`, `visited`)
 																	VALUES
-																	(0, 0, 1, {$post->ID}, {$post_author}, 1, '{$todate}')
+																	(%d, %d, %d, %d, %d, %d, %s)
 																	ON DUPLICATE KEY UPDATE
-																	count = count+1";
+																	count = count+1",
+																	0, 0, 1, $post_id, $post_author, 1, $todate);
 				$wpdb->query($wcfm_daily_analysis);
 				
-				$wcfm_product_views = (int) get_post_meta( $post->ID, '_wcfm_product_views', true );
+				$wcfm_product_views = (int) get_post_meta( $post_id, '_wcfm_product_views', true );
 				if( !$wcfm_product_views ) $wcfm_product_views = 1;
 				else $wcfm_product_views += 1;
-				update_post_meta( $post->ID, '_wcfm_product_views', $wcfm_product_views );
+				update_post_meta( $post_id, '_wcfm_product_views', $wcfm_product_views );
 				
 				// Session store
-				$_SESSION['wcfm_pages']['products'][] = $post->ID;
+				$_SESSION['wcfm_pages']['products'][] = $post_id;
 			}
 		} elseif( is_singular( 'job_listing' ) ) {
 			if( !isset( $_SESSION['wcfm_pages'] ) || !isset( $_SESSION['wcfm_pages']['listings'] ) || ( isset( $_SESSION['wcfm_pages'] ) && isset( $_SESSION['wcfm_pages']['listings'] ) && !in_array( $post->ID, $_SESSION['wcfm_pages']['listings'] ) ) ) {
@@ -635,49 +669,55 @@ class WCFM_Frontend {
 		  if( $is_marketplace == 'wcmarketplace' ) {
 		  	if (is_tax('dc_vendor_shop')) {
 		  		$vendor = get_wcmp_vendor_by_term(get_queried_object()->term_id);
+		  		$vendor_id   		= absint( $vendor->id );
 		  		if( !isset( $_SESSION['wcfm_pages'] ) || !isset( $_SESSION['wcfm_pages']['stores'] ) || ( isset( $_SESSION['wcfm_pages'] ) && isset( $_SESSION['wcfm_pages']['stores'] ) && !in_array( $vendor->id, $_SESSION['wcfm_pages']['stores'] ) ) ) {
 						// wcfm_detailed_analysis Query
-						$wcfm_detailed_analysis = "INSERT into {$wpdb->prefix}wcfm_detailed_analysis 
+						$wcfm_detailed_analysis = $wpdb->prepare( "INSERT into {$wpdb->prefix}wcfm_detailed_analysis 
 																			(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `referer`, `ip_address`, `country`, `state`, `city`)
 																			VALUES
-																			(0, 1, 0, 0, {$vendor->id}, '{$_SERVER['HTTP_REFERER']}', '{$ip_address}', '{$_SESSION['location']['country']}', '{$_SESSION['location']['state']}', '{$_SESSION['location']['city']}')";
+																			(%d, %d, %d, %d, %d, %s, %s, %s, %s, %s)",
+																			0, 1, 0, 0, $vendor_id, $HTTP_REFERER, $ip_address, $_SCOUNTRY, $_SSTATE, $_SCITY);
 						$wpdb->query($wcfm_detailed_analysis);
 						
 						// wcfm_daily_analysis Query
-						$wcfm_daily_analysis = "INSERT into {$wpdb->prefix}wcfm_daily_analysis 
+						$wcfm_daily_analysis = $wpdb->prepare( "INSERT into {$wpdb->prefix}wcfm_daily_analysis 
 																			(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `count`, `visited`)
 																			VALUES
-																			(0, 1, 0, 0, {$vendor->id}, 1, '{$todate}')
+																			(%d, %d, %d, %d, %d, %d, %s)
 																			ON DUPLICATE KEY UPDATE
-																			count = count+1";
+																			count = count+1",
+																			0, 1, 0, 0, $vendor_id, 1, $todate);
 						$wpdb->query($wcfm_daily_analysis);
 						
 						// Session store
-						$_SESSION['wcfm_pages']['stores'][] = $vendor->id;
+						$_SESSION['wcfm_pages']['stores'][] = $vendor_id;
 					}
 		  	}
 		  } elseif( $is_marketplace == 'wcpvendors' ) {
 		  	if (is_tax('wcpv_product_vendors')) {
 		  		$vendor_shop = get_queried_object()->term_id;
+		  		$vendor_id   		= absint( $vendor_shop );
 		  		if( !isset( $_SESSION['wcfm_pages'] ) || !isset( $_SESSION['wcfm_pages']['stores'] ) || ( isset( $_SESSION['wcfm_pages'] ) && isset( $_SESSION['wcfm_pages']['stores'] ) && !in_array( $vendor_shop, $_SESSION['wcfm_pages']['stores'] ) ) ) {
 						// wcfm_detailed_analysis Query
-						$wcfm_detailed_analysis = "INSERT into {$wpdb->prefix}wcfm_detailed_analysis 
+						$wcfm_detailed_analysis = $wpdb->prepare( "INSERT into {$wpdb->prefix}wcfm_detailed_analysis 
 																			(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `referer`, `ip_address`, `country`, `state`, `city`)
 																			VALUES
-																			(0, 1, 0, 0, {$vendor_shop}, '{$_SERVER['HTTP_REFERER']}', '{$ip_address}', '{$_SESSION['location']['country']}', '{$_SESSION['location']['state']}', '{$_SESSION['location']['city']}')";
+																			(%d, %d, %d, %d, %d, %s, %s, %s, %s, %s)",
+																			0, 1, 0, 0, $vendor_id, $HTTP_REFERER, $ip_address, $_SCOUNTRY, $_SSTATE, $_SCITY);
 						$wpdb->query($wcfm_detailed_analysis);
 						
 						// wcfm_daily_analysis Query
-						$wcfm_daily_analysis = "INSERT into {$wpdb->prefix}wcfm_daily_analysis 
+						$wcfm_daily_analysis = $wpdb->prepare( "INSERT into {$wpdb->prefix}wcfm_daily_analysis 
 																			(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `count`, `visited`)
 																			VALUES
-																			(0, 1, 0, 0, {$vendor_shop}, 1, '{$todate}')
+																			(%d, %d, %d, %d, %d, %d, %s)
 																			ON DUPLICATE KEY UPDATE
-																			count = count+1";
+																			count = count+1",
+																			0, 1, 0, 0, $vendor_id, 1, $todate);
 						$wpdb->query($wcfm_daily_analysis);
 						
 						// Session store
-						$_SESSION['wcfm_pages']['stores'][] = $vendor_shop;
+						$_SESSION['wcfm_pages']['stores'][] = $vendor_id;
 					}
 		  	}
 		  } elseif( $is_marketplace == 'dokan' ) {
@@ -688,22 +728,24 @@ class WCFM_Frontend {
 		  		if ( !empty( $store_name ) ) {
             $store_user = get_user_by( 'slug', $store_name );
           }
-		  		$vendor_id   		= $store_user->ID;
+		  		$vendor_id   		= absint( $store_user->ID );
 		  		if( !isset( $_SESSION['wcfm_pages'] ) || !isset( $_SESSION['wcfm_pages']['stores'] ) || ( isset( $_SESSION['wcfm_pages'] ) && isset( $_SESSION['wcfm_pages']['stores'] ) && !in_array( $vendor_id, $_SESSION['wcfm_pages']['stores'] ) ) ) {
 						// wcfm_detailed_analysis Query
-						$wcfm_detailed_analysis = "INSERT into {$wpdb->prefix}wcfm_detailed_analysis 
+						$wcfm_detailed_analysis = $wpdb->prepare( "INSERT into {$wpdb->prefix}wcfm_detailed_analysis 
 																			(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `referer`, `ip_address`, `country`, `state`, `city`)
 																			VALUES
-																			(0, 1, 0, 0, {$vendor_id}, '{$_SERVER['HTTP_REFERER']}', '{$ip_address}', '{$_SESSION['location']['country']}', '{$_SESSION['location']['state']}', '{$_SESSION['location']['city']}')";
+																			(%d, %d, %d, %d, %d, %s, %s, %s, %s, %s)",
+																			0, 1, 0, 0, $vendor_id, $HTTP_REFERER, $ip_address, $_SCOUNTRY, $_SSTATE, $_SCITY);
 						$wpdb->query($wcfm_detailed_analysis);
 						
 						// wcfm_daily_analysis Query
-						$wcfm_daily_analysis = "INSERT into {$wpdb->prefix}wcfm_daily_analysis 
+						$wcfm_daily_analysis = $wpdb->prepare( "INSERT into {$wpdb->prefix}wcfm_daily_analysis 
 																			(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `count`, `visited`)
 																			VALUES
-																			(0, 1, 0, 0, {$vendor_id}, 1, '{$todate}')
+																			(%d, %d, %d, %d, %d, %d, %s)
 																			ON DUPLICATE KEY UPDATE
-																			count = count+1";
+																			count = count+1",
+																			0, 1, 0, 0, $vendor_id, 1, $todate);
 						$wpdb->query($wcfm_daily_analysis);
 						
 						// Session store
@@ -719,24 +761,26 @@ class WCFM_Frontend {
 						$store_user = get_user_by( 'slug', $store_name );
 					}
 					if( $store_user ) {
-						$vendor_id   		= $store_user->ID;
+						$vendor_id   		= absint( $store_user->ID );
 					}
 					if( $vendor_id ) {
 						if( !isset( $_SESSION['wcfm_pages'] ) || !isset( $_SESSION['wcfm_pages']['stores'] ) || ( isset( $_SESSION['wcfm_pages'] ) && isset( $_SESSION['wcfm_pages']['stores'] ) && !in_array( $vendor_id, $_SESSION['wcfm_pages']['stores'] ) ) ) {
 							// wcfm_detailed_analysis Query
-							$wcfm_detailed_analysis = "INSERT into {$wpdb->prefix}wcfm_detailed_analysis 
+							$wcfm_detailed_analysis = $wpdb->prepare( "INSERT into {$wpdb->prefix}wcfm_detailed_analysis 
 																				(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `referer`, `ip_address`, `country`, `state`, `city`)
 																				VALUES
-																				(0, 1, 0, 0, {$vendor_id}, '{$_SERVER['HTTP_REFERER']}', '{$ip_address}', '{$_SESSION['location']['country']}', '{$_SESSION['location']['state']}', '{$_SESSION['location']['city']}')";
+																				(%d, %d, %d, %d, %d, %s, %s, %s, %s, %s)",
+																				0, 1, 0, 0, $vendor_id, $HTTP_REFERER, $ip_address, $_SCOUNTRY, $_SSTATE, $_SCITY);
 							$wpdb->query($wcfm_detailed_analysis);
 							
 							// wcfm_daily_analysis Query
-							$wcfm_daily_analysis = "INSERT into {$wpdb->prefix}wcfm_daily_analysis 
+							$wcfm_daily_analysis = $wpdb->prepare( "INSERT into {$wpdb->prefix}wcfm_daily_analysis 
 																				(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `count`, `visited`)
 																				VALUES
-																				(0, 1, 0, 0, {$vendor_id}, 1, '{$todate}')
+																				(%d, %d, %d, %d, %d, %d, %s)
 																				ON DUPLICATE KEY UPDATE
-																				count = count+1";
+																				count = count+1",
+																				0, 1, 0, 0, $vendor_id, 1, $todate);
 							$wpdb->query($wcfm_daily_analysis);
 							
 							// Session store
@@ -793,7 +837,7 @@ class WCFM_Frontend {
 		}
 		
 		if( apply_filters( 'wcfm_is_force_category_attributes_mapping', false ) ) {
-			echo '<p class="wcfm_category_attributes_mapping_msg description instructions">' . __( 'First choose product category to get associated attributes.', 'wc-frontend-manager' ) . '</p>';
+			echo '<p class="wcfm_category_attributes_mapping_msg description instructions">' . esc_html__( 'First choose product category to get associated attributes.', 'wc-frontend-manager' ) . '</p>';
 		}
 		
 		$attribute_taxonomies = wc_get_attribute_taxonomies();
@@ -918,12 +962,12 @@ class WCFM_Frontend {
 	  // Localized Script
 	  if( apply_filters( 'wcfm_is_allow_sound', true ) ) {
 			if( apply_filters( 'wcfm_is_allow_notification_sound', true ) ) {
-				wp_localize_script( 'wcfm_core_js', 'wcfm_notification_sound', apply_filters( 'wcfm_notification_sound', $WCFM->library->lib_url . 'sounds/notification.mp3' ) );
+				wp_localize_script( 'wcfm_core_js', 'wcfm_notification_sound', array( 'file' => apply_filters( 'wcfm_notification_sound', $WCFM->library->lib_url . 'sounds/notification.mp3' ) ) );
 			} else {
 				//wp_localize_script( 'wcfm_core_js', 'wcfm_notification_sound', $WCFM->library->lib_url . 'sounds/empty_audio.mp3' );
 			}
 			if( apply_filters( 'wcfm_is_allow_new_message_check', false ) && apply_filters( 'wcfm_is_allow_desktop_notification', true ) && apply_filters( 'wcfm_is_allow_desktop_notification_sound', true ) ) {
-				wp_localize_script( 'wcfm_core_js', 'wcfm_desktop_notification_sound', apply_filters( 'wcfm_desktop_notification_sound', $WCFM->library->lib_url . 'sounds/desktop_notification.mp3' ) );
+				wp_localize_script( 'wcfm_core_js', 'wcfm_desktop_notification_sound', array( 'file' => apply_filters( 'wcfm_desktop_notification_sound', $WCFM->library->lib_url . 'sounds/desktop_notification.mp3' ) ) );
 			} else {
 				//wp_localize_script( 'wcfm_core_js', 'wcfm_desktop_notification_sound', $WCFM->library->lib_url . 'sounds/empty_audio.mp3' );
 			}
@@ -966,7 +1010,8 @@ class WCFM_Frontend {
 	  	                                                        'is_mobile_desktop_notification'           => apply_filters( 'wcfm_is_allow_mobile_desktop_notification', false ),
 	  	                                                        'wcfm_is_allow_external_product_analytics' => apply_filters( 'wcfm_is_allow_external_product_analytics', false ),
 	  	                                                        'is_mobile'                                => wcfm_is_mobile(),
-	  	                                                        'is_tablet'                                => wcfm_is_tablet()
+	  	                                                        'is_tablet'                                => wcfm_is_tablet(),
+	  	                                                        'wcfm_ajax_nonce'                          => wp_create_nonce( 'wcfm_ajax_nonce' )
 	  	                                                       ) );
 	  
 	  // Inquery Localized Script

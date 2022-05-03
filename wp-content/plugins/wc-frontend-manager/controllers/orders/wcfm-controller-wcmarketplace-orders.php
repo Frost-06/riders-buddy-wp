@@ -29,15 +29,15 @@ class WCFM_Orders_WCMarketplace_Controller {
 		$length = 10;
 		$offset = 0;
 		
-		if( isset( $_POST['length'] ) ) $length = wc_clean($_POST['length']);
-		if( isset( $_POST['start'] ) ) $offset = wc_clean($_POST['start']);
+		if( isset( $_POST['length'] ) ) $length = absint($_POST['length']);
+		if( isset( $_POST['start'] ) ) $offset = absint($_POST['start']);
 		
 		$user_id = $this->vendor_id;
 		
 		$can_view_orders = apply_filters( 'wcfm_is_allow_order_details', true );
 		$group_manager_filter = apply_filters( 'wcfm_orders_group_manager_filter', '', 'vendor_id' );
 		
-		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_text_field( $_POST['orderby'] ) : 'order_id';
+		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_sql_orderby( $_POST['orderby'] ) : 'order_id';
 		$the_order   = ( ! empty( $_POST['order'] ) && 'asc' === $_POST['order'] ) ? 'ASC' : 'DESC';
 
 		$items_per_page = $length;
@@ -49,7 +49,8 @@ class WCFM_Orders_WCMarketplace_Controller {
 		if( $group_manager_filter ) {
 			$sql .= $group_manager_filter;
 		} else {
-			$sql .= " AND `vendor_id` = {$this->vendor_id}";
+			$sql .= " AND `vendor_id` = %d";
+			$sql = $wpdb->prepare( $sql, $this->vendor_id );
 		}
 		$sql .= ' AND `is_trashed` != 1';
 		
@@ -60,23 +61,25 @@ class WCFM_Orders_WCMarketplace_Controller {
 			$order_id = absint( $_POST['search']['value'] );
 			if( function_exists( 'wc_sequential_order_numbers' ) ) { $order_id = wc_sequential_order_numbers()->find_order_by_order_number( $order_id ); }
 
-			$sql .= " AND `order_id` = {$order_id}";
+			$sql .= " AND `order_id` = %d";
+			$sql = $wpdb->prepare( $sql, $order_id );
 
 		} else {
 
 			if ( ! empty( $_POST['filter_date_form'] ) && ! empty( $_POST['filter_date_to'] ) ) {
 				$start_date = date( 'Y-m-d', strtotime( wc_clean($_POST['filter_date_form']) ) );
 				$end_date = date( 'Y-m-d', strtotime( wc_clean($_POST['filter_date_to']) ) );
-				$time_filter = " AND DATE( commission.created ) BETWEEN '" . $start_date . "' AND '" . $end_date . "'";
+				$time_filter = " AND DATE( commission.created ) BETWEEN %s AND %s";
 				$sql .= $time_filter;
+				$sql = $wpdb->prepare( $sql, $start_date, $end_date );
 			}
 
 			if ( ! empty( $_POST['commission_status'] ) ) {
 				$commission_status = wc_clean( $_POST['commission_status'] );
-
-				$status_filter = " AND `commission_id` != '' AND `commission_id` != 0 AND `commission_status` = '{$commission_status}'";
-
+				$status_filter = " AND `commission_id` != '' AND `commission_id` != 0 AND `commission_status` = %s";
 				$sql .= $status_filter;
+				$sql = $wpdb->prepare( $sql, $commission_status );
+				
 			}
 		}
 		
@@ -91,7 +94,8 @@ class WCFM_Orders_WCMarketplace_Controller {
 		if( $group_manager_filter ) {
 			$sql .= $group_manager_filter;
 		} else {
-			$sql .= " AND `vendor_id` = {$this->vendor_id}";
+			$sql .= " AND `vendor_id` = %d";
+			$sql = $wpdb->prepare( $sql, $this->vendor_id );
 		}
 		$sql .= ' AND `is_trashed` != 1';
 		
@@ -102,16 +106,19 @@ class WCFM_Orders_WCMarketplace_Controller {
 			$order_id = absint( $_POST['search']['value'] );
 			if( function_exists( 'wc_sequential_order_numbers' ) ) { $order_id = wc_sequential_order_numbers()->find_order_by_order_number( $order_id ); }
 
-			$sql .= " AND `order_id` = {$order_id}";
+			$sql .= " AND `order_id` = %d";
+			$sql = $wpdb->prepare( $sql, $order_id );
 
 		} else {
 
 			if ( ! empty( $_POST['filter_date_form'] ) && ! empty( $_POST['filter_date_to'] ) ) {
 				$sql .= $time_filter;
+				$sql = $wpdb->prepare( $sql, $start_date, $end_date );
 			}
 
 			if ( ! empty( $_POST['commission_status'] ) ) {
 				$sql .= $status_filter;
+				$sql = $wpdb->prepare( $sql, $commission_status );
 			}
 		}
 

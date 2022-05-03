@@ -58,12 +58,12 @@ do_action( 'before_wcfm_notice_manage' );
 	  <div id="wcfm_page_load"></div>
 		
 		<div class="wcfm-container wcfm-top-element-container">
-			<h2><?php echo $topic_title; ?></h2>
+			<h2><?php echo wp_kses_post($topic_title); ?></h2>
 			
 			<?php
 			echo '<a id="add_new_notice_dashboard" class="add_new_wcfm_ele_dashboard text_tip" href="'.get_wcfm_notices_url().'" data-tip="' . __('Topics', 'wc-frontend-manager') . '"><span class="wcfmfa fa-bullhorn"></span><span class="text">' . __( 'Topics', 'wc-frontend-manager') . '</span></a>';
 			if( current_user_can('administrator') ) {
-				echo '<a class="add_new_wcfm_ele_dashboard text_tip" href="'.get_wcfm_notice_manage_url($notice_id).'" data-tip="' . __('Edit Topic', 'wc-frontend-manager') . '"><span class="wcfmfa fa-edit"></span><span class="text">' . __( 'Edit', 'wc-frontend-manager') . '</span></a>';
+				echo '<a class="add_new_wcfm_ele_dashboard text_tip" href="'.esc_url(get_wcfm_notice_manage_url($notice_id)).'" data-tip="' . __('Edit Topic', 'wc-frontend-manager') . '"><span class="wcfmfa fa-edit"></span><span class="text">' . __( 'Edit', 'wc-frontend-manager') . '</span></a>';
 			}
 			?>
 			<div class="wcfm-clearfix"></div>
@@ -75,7 +75,7 @@ do_action( 'before_wcfm_notice_manage' );
 		<!-- collapsible -->
 		<div class="wcfm-container">
 			<div id="notice_manage_general_expander" class="wcfm-content">
-				<?php echo $topic_content; ?>
+				<?php echo wp_kses_post($topic_content); ?>
 				<div class="topic_date"><span class="wcfmfa fa-clock"></span>&nbsp;<?php echo date_i18n( wc_date_format()  . ' ' . wc_time_format(), strtotime( $notice_post->date_created ) ); ?></div>
 			</div>
 		</div>
@@ -115,32 +115,32 @@ do_action( 'before_wcfm_notice_manage' );
 					?>
 					<!-- collapsible -->
 					<div class="wcfm-container">
-						<div id="topic_reply_<?php echo $wcfm_notice_reply->ID; ?>" class="topic_reply wcfm-content">
+						<div id="topic_reply_<?php echo esc_attr($wcfm_notice_reply->ID); ?>" class="topic_reply wcfm-content">
 						  <div class="topic_reply_author">
 						    <?php
 						    $author_id = $wcfm_notice_reply->post_author;
 								$wp_user_avatar_id = get_user_meta( $author_id, $wpdb->get_blog_prefix($blog_id).'user_avatar', true );
 								$wp_user_avatar = wp_get_attachment_url( $wp_user_avatar_id );
 								if ( !$wp_user_avatar ) {
-									$wp_user_avatar = $WCFM->plugin_url . 'assets/images/user.png';
+									$wp_user_avatar = esc_url( $WCFM->plugin_url . 'assets/images/user.png' );
 								}
 								?>
-								<img src="<?php echo $wp_user_avatar; ?>" /><br />
+								<img src="<?php echo esc_url($wp_user_avatar); ?>" /><br />
 								<?php
 								$userdata = get_userdata( $author_id );
 								$first_name = $userdata->first_name;
 								$last_name  = $userdata->last_name;
 								$display_name  = $userdata->display_name;
 								if( $first_name ) {
-									echo $first_name . ' ' . $last_name;
+									echo esc_html($first_name . ' ' . $last_name);
 								} else {
-									echo $display_name;
+									echo esc_html($display_name);
 								}
 						    ?>
 						    <br /><?php echo date_i18n( wc_date_format() . ' ' . wc_time_format(), strtotime( $wcfm_notice_reply->date_created ) ); ?>
 						  </div>
 						  <div class="topic_reply_content">
-								<?php echo $wcfm_notice_reply->post_content; ?>
+								<?php echo wp_kses_post($wcfm_notice_reply->post_content); ?>
 							</div>
 						</div>
 					</div>

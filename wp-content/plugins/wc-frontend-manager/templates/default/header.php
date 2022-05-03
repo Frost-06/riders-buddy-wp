@@ -23,7 +23,7 @@ if( !apply_filters( 'wcfm_is_allow_template_header', true ) ) return;
 			?>
 			<div class="wcfm-site-name">
 			  <?php do_action( 'wcfm_dasboard_header_before' ); ?>
-				<a href="<?php echo $blog_link; ?>"><?php echo $blog_title; ?></a>
+				<a href="<?php echo esc_url($blog_link); ?>"><?php echo wp_kses_post($blog_title); ?></a>
 				<?php do_action( 'wcfm_dasboard_header_after' ); ?>
 			</div>
 		</div>

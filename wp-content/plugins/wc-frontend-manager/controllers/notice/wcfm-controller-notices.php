@@ -20,8 +20,8 @@ class WCFM_Notices_Controller {
 	public function processing() {
 		global $WCFM, $wpdb, $_POST;
 		
-		$length = wc_clean($_POST['length']);
-		$offset = wc_clean($_POST['start']);
+		$length = absint($_POST['length']);
+		$offset = absint($_POST['start']);
 		
 		$allowed_post_status = array('draft', 'pending', 'publish');
 		if( wcfm_is_vendor() ) $allowed_post_status = array( 'publish' );

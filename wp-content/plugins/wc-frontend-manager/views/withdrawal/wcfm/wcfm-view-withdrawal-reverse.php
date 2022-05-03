@@ -80,7 +80,7 @@ if( wcfm_is_vendor() ) {
 					<table id="wcfm-reverse-withdrawal-requests" class="display" cellspacing="0" width="100%">
 						<thead>
 							<tr>
-								<th><span class="wcicon-status-processing text_tip" data-tip="<?php _e( 'Requests', 'wc-frontend-manager' ); ?>"></span></th>
+								<th><input type="checkbox" class="wcfm-checkbox bulk_action_checkbox_all text_tip" name="bulk_action_checkbox_all_top" value="yes" data-tip="<?php _e( 'Select all to approve or cancel', 'wc-frontend-manager' ); ?>" /></th>
 								<th><?php _e( 'Order ID', 'wc-frontend-manager' ); ?></th>
 								<th><?php echo apply_filters( 'wcfm_sold_by_label', '', __( 'Store', 'wc-frontend-manager' ) ); ?></th>
 								<th><?php _e( 'Gross Total', 'wc-frontend-manager' ); ?></th>
@@ -93,7 +93,7 @@ if( wcfm_is_vendor() ) {
 						</thead>
 						<tfoot>
 							<tr>
-								<th><span class="wcicon-status-processing text_tip" data-tip="<?php _e( 'Requests', 'wc-frontend-manager' ); ?>"></span></th>
+								<th><input type="checkbox" class="wcfm-checkbox bulk_action_checkbox_all text_tip" name="bulk_action_checkbox_all_top" value="yes" data-tip="<?php _e( 'Select all to approve or cancel', 'wc-frontend-manager' ); ?>" /></th>
 								<th><?php _e( 'Order ID', 'wc-frontend-manager' ); ?></th>
 								<th><?php echo apply_filters( 'wcfm_sold_by_label', '', __( 'Store', 'wc-frontend-manager' ) ); ?></th>
 								<th><?php _e( 'Gross Total', 'wc-frontend-manager' ); ?></th>

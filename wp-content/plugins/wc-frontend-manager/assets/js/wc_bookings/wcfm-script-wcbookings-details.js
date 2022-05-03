@@ -41,7 +41,8 @@ jQuery(document).ready(function($) {
 		var data = {
 			action         : 'wcfm_modify_booking_status',
 			booking_status : $('#wcfm_booking_status').val(),
-			booking_id     : $('#wcfm_modify_booking_status').data('bookingid')
+			booking_id     : $('#wcfm_modify_booking_status').data('bookingid'),
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 		}	
 		$.ajax({
 			type:		'POST',
@@ -82,6 +83,7 @@ jQuery(document).ready(function($) {
 				action                                : 'wcfm_ajax_controller',
 				controller                            : 'wcfm-booking-schedule-manage',
 				wcfm_wcb_schedule_update_form         : $('#wcfm_wcb_schedule_update_form').serialize(),
+				wcfm_ajax_nonce                       : wcfm_params.wcfm_ajax_nonce,
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {

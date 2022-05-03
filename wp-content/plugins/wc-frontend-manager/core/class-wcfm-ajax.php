@@ -125,6 +125,11 @@ class WCFM_Ajax {
   	
   	do_action( 'after_wcfm_ajax_controller' );
   	
+		if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+			wp_die();
+		}
+  	
   	$controller = '';
   	if( isset( $_POST['controller'] ) ) {
   		$controller = wc_clean($_POST['controller']);
@@ -133,11 +138,21 @@ class WCFM_Ajax {
 	  	
 				case 'wc-products':
 				case 'wcfm-products':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'products/wcfm-controller-products.php' );
 					new WCFM_Products_Controller();
 			  break;
 			  
 			  case 'wcfm-products-manage':
+			  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 			  	if( wcfm_is_booking() ) {
 						include_once( $this->controllers_path . 'wc_bookings/wcfm-controller-wcbookings-products-manage.php' );
 						new WCFM_WCBookings_Products_Manage_Controller();
@@ -152,8 +167,8 @@ class WCFM_Ajax {
 					
 					include_once( $this->controllers_path . 'products-manager/wcfm-controller-products-manage.php' );
 					if( defined('WCFM_REST_API_CALL') ) {
-           $product_manage_object = new WCFM_Products_Manage_Controller();
-           return $product_manage_object->processing();
+						 $product_manage_object = new WCFM_Products_Manage_Controller();
+						 return $product_manage_object->processing();
           } else {
             new WCFM_Products_Manage_Controller();
           }
@@ -161,16 +176,31 @@ class WCFM_Ajax {
 			  break;
 					
 			  case 'wcfm-coupons':
+			  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'coupons/wcfm-controller-coupons.php' );
 					new WCFM_Coupons_Controller();
 				break;
 				
 				case 'wcfm-coupons-manage':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'coupons/wcfm-controller-coupons-manage.php' );
 					new WCFM_Coupons_Manage_Controller();
 				break;
 				
 				case 'wcfm-orders':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					if( $WCFM->is_marketplace && ( wcfm_is_vendor() || apply_filters( 'wcfm_is_show_marketplace_orders', false ) ) ) {
 						if( apply_filters( 'wcfm_is_show_marketplace_itemwise_orders', false ) ) {
 							include_once( $this->controllers_path . 'orders/wcfm-controller-' . $WCFM->is_marketplace . '-itemized-orders.php' );
@@ -201,6 +231,11 @@ class WCFM_Ajax {
 				break;
 				
 				case 'wcfm-vendor-orders':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					if( $WCFM->is_marketplace && !wcfm_is_vendor() ) {
 						include_once( $this->controllers_path . 'orders/wcfm-controller-wcfmmarketplace-orders.php' );
 						new WCFM_Orders_WCFMMarketplace_Controller();
@@ -208,26 +243,51 @@ class WCFM_Ajax {
 				break;
 				
 				case 'wcfm-listings':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'listings/wcfm-controller-listings.php' );
 					new WCFM_Listings_Controller();
 				break;
 				
 				case 'wcfm-applications':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'listings/wcfm-controller-applications.php' );
 					new WCFM_Applications_Controller();
 				break;
 				
 				case 'wcfm-reports-out-of-stock':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'reports/wcfm-controller-reports-out-of-stock.php' );
 					new WCFM_Reports_Out_Of_Stock_Controller();
 				break;
 				
 				case 'wcfm-profile':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) && !current_user_can( 'wcfm_affiliate' ) && !current_user_can( 'wcfm_delivery_boy' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'profile/wcfm-controller-profile.php' );
 					new WCFM_Profile_Controller();
 				break;
 					
 				case 'wcfm-settings':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					if( $WCFM->is_marketplace && wcfm_is_vendor() ) {
 						include_once( $this->controllers_path . 'settings/wcfm-controller-' . $WCFM->is_marketplace . '-settings.php' );
 						if( $WCFM->is_marketplace == 'wcvendors' ) new WCFM_Settings_WCVendors_Controller();
@@ -242,46 +302,86 @@ class WCFM_Ajax {
 				break;
 				
 				case 'wcfm-capability':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'capability/wcfm-controller-capability.php' );
 					new WCFM_Capability_Controller();
 				break;
 				
 				case 'wcfm-knowledgebase':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) && !current_user_can( 'wcfm_affiliate' ) && !current_user_can( 'wcfm_delivery_boy' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'knowledgebase/wcfm-controller-knowledgebase.php' );
 					new WCFM_Knowledgebase_Controller();
 				break;
 				
 				case 'wcfm-knowledgebase-manage':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'knowledgebase/wcfm-controller-knowledgebase-manage.php' );
 					new wcfm_Knowledgebase_Manage_Controller();
 				break;
 				
 				case 'wcfm-notices':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) && !current_user_can( 'wcfm_affiliate' ) && !current_user_can( 'wcfm_delivery_boy' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'notice/wcfm-controller-notices.php' );
 					new WCFM_Notices_Controller();
 				break;
 				
 				case 'wcfm-notice-manage':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'notice/wcfm-controller-notice-manage.php' );
 					new wcfm_Notice_Manage_Controller();
 				break;
 				
 				case 'wcfm-notice-reply':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) && !current_user_can( 'wcfm_affiliate' ) && !current_user_can( 'wcfm_delivery_boy' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'notice/wcfm-controller-notice-reply.php' );
 					new WCFM_Notice_Reply_Controller();
 				break;
 				
 				case 'wcfm-messages':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) && !current_user_can( 'wcfm_affiliate' ) && !current_user_can( 'wcfm_delivery_boy' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'messages/wcfm-controller-messages.php' );
           if( defined('WCFM_REST_API_CALL') ) {
             $notification_manage_object = new WCFM_Messages_Controller();
             return $notification_manage_object->processing();
           } else {
-             new WCFM_Messages_Controller();
+            new WCFM_Messages_Controller();
           }
 				break;
 				
 				case 'wcfm-message-sent':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) && !current_user_can( 'wcfm_affiliate' ) && !current_user_can( 'wcfm_delivery_boy' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'messages/wcfm-controller-message-sent.php' );
 					new WCFM_Message_Sent_Controller();
 				break;
@@ -292,41 +392,81 @@ class WCFM_Ajax {
             $vendor_list_object = new WCFM_Vendors_Controller();
             return $vendor_list_object->processing();
           } else {
+          	  if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+							wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+							wp_die();
+						}
+					
             new WCFM_Vendors_Controller();
           }
 				break;
 				
 				case 'wcfm-vendors-new':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'vendors/wcfm-controller-vendors-new.php' );
 					new WCFM_Vendors_New_Controller();
 				break;
 				
 				case 'wcfm-vendors-manage':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'vendors/wcfm-controller-vendors-manage.php' );
 					new WCFM_Vendors_Manage_Controller();
 				break;
 				
 				case 'wcfm-vendors-manage-profile':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'vendors/wcfm-controller-vendors-manage.php' );
 					new WCFM_Vendors_Manage_Profile_Controller();
 				break;
 				
 				case 'wcfm-vendors-manage-marketplace-settings':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'settings/wcfm-controller-wcfmmarketplace-settings.php' );
 					new WCFM_Settings_Marketplace_Controller();
 				break;
 				
 				case 'wcfm-vendors-manage-marketplace-shipping-settings':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'vendors/wcfm-controller-wcfmmarketplace-shipping-settings.php' );
 					new WCFM_Shipping_Settings_Marketplace_Controller();
 				break;
 				
 				case 'wcfm-vendors-manage-badges':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'vendors/wcfm-controller-vendors-manage.php' );
 					new WCFM_Vendors_Manage_Badges_Controller();
 				break;
 				
 				case 'wcfm-vendors-commission':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+					
 					include_once( $this->controllers_path . 'vendors/wcfm-controller-vendors-commission.php' );
 					new WCFM_Vendors_Commission_Controller();
 				break;
@@ -343,7 +483,17 @@ class WCFM_Ajax {
 	function wcfm_add_taxonomy_new_term() {
 		global $WCFM, $WCFMu, $_POST;
 		
-		$taxonomy     = esc_attr( $_POST['taxonomy'] );
+		if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+			wp_die();
+		}
+		
+		if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+		
+		$taxonomy     = wc_clean( $_POST['taxonomy'] );
 		$new_term     = wc_clean( $_POST['new_term'] );
 		$parent_term  = wc_clean( $_POST['parent_term'] );
 		$nbsp         = '&nbsp;';
@@ -389,6 +539,16 @@ class WCFM_Ajax {
   
   public function wcfm_generate_variation_attributes() {
 		global $wpdb, $WCFM;
+		
+		if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+			wp_die();
+		}
+		
+		if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
 	  
 	  $wcfm_products_manage_form_data = array();
 	  parse_str($_POST['wcfm_products_manage_form'], $wcfm_products_manage_form_data);
@@ -455,12 +615,22 @@ class WCFM_Ajax {
   public function delete_wcfm_product() {
   	global $WCFM, $WCFMu;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( __( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	$product_id = absint($_POST['proid']);
 		
 		if( $product_id ) {
 			$product = wc_get_product( $product_id );
 			if( !$product || !is_object( $product ) ) {
-				echo 'failed';
+				echo esc_html('failed');
 				die;
 			}
 			
@@ -471,12 +641,12 @@ class WCFM_Ajax {
 			
 			if( apply_filters( 'wcfm_is_allow_product_delete' , false ) ) {
 				if(wp_delete_post($product_id)) {
-					echo 'success';
+					echo esc_html('success');
 					die;
 				}
 			} else {
 				if(wp_trash_post($product_id)) {
-					echo 'success';
+					echo esc_html('success');
 					die;
 				}
 			}
@@ -489,6 +659,16 @@ class WCFM_Ajax {
    */
   function wcfm_product_approve() {
   	global $WCFM;
+  	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( __( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
   	
   	if( isset( $_POST['proid'] ) && !empty( $_POST['proid'] ) ) {
   		$product_id = absint( $_POST['proid'] );
@@ -512,6 +692,16 @@ class WCFM_Ajax {
    */
   function wcfm_product_reject() {
   	global $WCFM;
+  	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( __( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
   	
   	if( isset( $_POST['proid'] ) && !empty( $_POST['proid'] ) ) {
   		$product_id = absint( $_POST['proid'] );
@@ -537,6 +727,16 @@ class WCFM_Ajax {
   function wcfm_product_archive() {
   	global $WCFM;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( __( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	if( isset( $_POST['proid'] ) && !empty( $_POST['proid'] ) ) {
   		$product_id = absint( $_POST['proid'] );
   		do_action( 'wcfm_before_product_archived', $product_id );
@@ -560,6 +760,16 @@ class WCFM_Ajax {
 	public function wcfm_listing_featured() {
 		global $WCFM, $WCFMu, $_POST;
 		
+		if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+			wp_die();
+		}
+		
+		if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+		
 		if( isset( $_POST['listid'] ) && !empty( $_POST['listid'] ) ) {
 			$listing_id = absint($_POST['listid']);
 			$is_featured = wc_clean($_POST['featured']);
@@ -571,7 +781,7 @@ class WCFM_Ajax {
 			}
 		}
 		
-		echo 'sucess';
+		echo esc_html('sucess');
 		die;
 	}
   
@@ -580,6 +790,16 @@ class WCFM_Ajax {
    */
   public function wcfm_order_mark_complete() {
   	global $WCFM;
+  	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
   	
   	$order_id = absint( $_POST['orderid'] );
   	
@@ -617,6 +837,16 @@ class WCFM_Ajax {
   public function wcfm_modify_order_status() {
   	global $WCFM;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	$order_id = absint( $_POST['order_id'] );
   	$order_status = wc_clean( $_POST['order_status'] );
   	
@@ -647,10 +877,10 @@ class WCFM_Ajax {
 			do_action( 'wcfm_order_status_updated', $order_id, str_replace('wc-', '', $order_status) );
 			
 			if( defined('WCFM_REST_API_CALL') ) {
-				return '{"status": true, "message": "' . __( 'Order status updated.', 'wc-frontend-manager' ) . '"}';
+				return '{"status": true, "message": "' . esc_html__( 'Order status updated.', 'wc-frontend-manager' ) . '"}';
 			}
 			
-			echo '{"status": true, "message": "' . __( 'Order status updated.', 'wc-frontend-manager' ) . '"}';
+			echo '{"status": true, "message": "' . esc_html__( 'Order status updated.', 'wc-frontend-manager' ) . '"}';
 		}
 		die;
   	
@@ -661,6 +891,16 @@ class WCFM_Ajax {
    */
   public function archive_wcfm_knowledgebase() {
   	global $WCFM, $WCFMu;
+  	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( __( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
   	
   	$knowledgebaseid = absint( $_POST['knowledgebaseid'] );
 		
@@ -679,6 +919,16 @@ class WCFM_Ajax {
   public function publish_wcfm_knowledgebase() {
   	global $WCFM, $WCFMu;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( __( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	$knowledgebaseid = absint( $_POST['knowledgebaseid'] );
 		
 		if($knowledgebaseid) {
@@ -696,11 +946,21 @@ class WCFM_Ajax {
   public function delete_wcfm_knowledgebase() {
   	global $WCFM, $WCFMu;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( __( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	$knowledgebaseid = absint( $_POST['knowledgebaseid'] );
 		
 		if($knowledgebaseid) {
 			if(wp_delete_post($knowledgebaseid)) {
-				echo 'success';
+				echo esc_html('success');
 				die;
 			}
 			die;
@@ -712,6 +972,16 @@ class WCFM_Ajax {
    */
   public function archive_wcfm_notice() {
   	global $WCFM, $WCFMu;
+  	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( __( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
   	
   	$noticeid = absint( $_POST['noticeid'] );
 		
@@ -730,6 +1000,16 @@ class WCFM_Ajax {
   public function publish_wcfm_notice() {
   	global $WCFM, $WCFMu;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( __( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	$noticeid = absint( $_POST['noticeid'] );
 		
 		if($noticeid) {
@@ -747,11 +1027,21 @@ class WCFM_Ajax {
   public function delete_wcfm_notice() {
   	global $WCFM, $WCFMu;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( __( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	$noticeid = absint( $_POST['noticeid'] );
 		
 		if($noticeid) {
 			if(wp_delete_post($noticeid)) {
-				echo 'success';
+				echo esc_html('success');
 				die;
 			}
 			die;
@@ -766,18 +1056,27 @@ class WCFM_Ajax {
 	 * @return void
 	 */
   function wcfm_dismiss_inactive_addon_notice() {
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			wp_die( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+		}
+		
+		if ( !current_user_can( 'manage_options' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+		
   	if ( ! empty( $_POST['wcfm_wcfmvm_inactive'] ) ) {
-			$offer_key = 'wcfm_wcfmvm_inactive04062019';
+			$offer_key = 'wcfm_wcfmvm_inactive23112021';
 			update_option( $offer_key . '_tracking_notice', 'hide' );
 		}
 		
 		if ( ! empty( $_POST['wcfm_wcfmu_inactive'] ) ) {
-			$offer_key = 'wcfm_wcfmu_inactive09062020';
+			$offer_key = 'wcfm_wcfmu_inactive23112021';
 			update_option( $offer_key . '_tracking_notice', 'hide' );
 		}
 		
 		if ( ! empty( $_POST['wcfm_wcfmgs_inactive'] ) ) {
-			$offer_key = 'wcfm_wcfmgs_inactive09062020';
+			$offer_key = 'wcfm_wcfmgs_inactive23112021';
 			update_option( $offer_key . '_tracking_notice', 'hide' );
 		}
   }
@@ -788,9 +1087,19 @@ class WCFM_Ajax {
   function vendor_manager_change_url() {
   	global $WCFM, $_POST;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+			wp_die();
+		}
+		
+		if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	if( isset( $_POST['vendor_manager_change'] ) && !empty( $_POST['vendor_manager_change'] ) ) {
   		$vendor_id = absint( $_POST['vendor_manager_change'] );
-  		echo '{"status": true, "redirect": "' . get_wcfm_vendors_manage_url($vendor_id) . '"}';
+  		echo '{"status": true, "redirect": "' . esc_url( get_wcfm_vendors_manage_url($vendor_id) ) . '"}';
   	}
   	
   	die;
@@ -802,9 +1111,14 @@ class WCFM_Ajax {
   function sales_by_vendor_change_url() {
   	global $WCFM, $_POST;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+			wp_die();
+		}
+  	
   	if( isset( $_POST['vendor_manager_change'] ) && !empty( $_POST['vendor_manager_change'] ) ) {
   		$vendor_id = absint( $_POST['vendor_manager_change'] );
-  		echo '{"status": true, "redirect": "' . get_wcfm_reports_url( '', 'wcfm-reports-sales-by-vendor', $vendor_id) . '"}';
+  		echo '{"status": true, "redirect": "' . esc_url( get_wcfm_reports_url( '', 'wcfm-reports-sales-by-vendor', $vendor_id) ) . '"}';
   	}
   	
   	die;
@@ -815,11 +1129,17 @@ class WCFM_Ajax {
    */
   function wcfm_menu_toggler() {
   	global $WCFM, $_POST;
+  	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+			wp_die();
+		}
+		
   	$user_id = get_current_user_id();
-  	$toggle_state = $_POST['toggle_state'];
+  	$toggle_state = wc_clean( $_POST['toggle_state'] );
   	update_user_meta( $user_id, '_wcfm_menu_toggle_state', $toggle_state );
   	
-  	echo "success";
+  	echo esc_html("success");
   	die;
   }
   
@@ -828,6 +1148,16 @@ class WCFM_Ajax {
    */
   function wcfm_json_search_pages() {
   	global $WCFM, $_POST, $_GET;
+  	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+			wp_die();
+		}
+		
+		if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
   	
   	$term = wc_clean( empty( $term ) ? wc_clean( $_GET['term'] ) : $term );
 
@@ -880,6 +1210,16 @@ class WCFM_Ajax {
   function wcfm_json_search_products_and_variations() {
   	global $WCFM, $_POST, $_GET;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+			wp_die();
+		}
+		
+		if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	$term = wc_clean( empty( $term ) ? wc_clean( $_GET['term'] ) : $term );
 
 		if ( empty( $term ) ) {
@@ -924,6 +1264,16 @@ class WCFM_Ajax {
    */
   function wcfm_json_search_products_with_variations() {
   	global $WCFM, $_POST, $_GET;
+  	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+			wp_die();
+		}
+		
+		if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
   	
   	$term = wc_clean( empty( $term ) ? wc_clean( $_GET['term'] ) : $term );
 
@@ -988,6 +1338,16 @@ class WCFM_Ajax {
   function wcfm_json_search_taxonomies() {
   	global $WCFM, $_POST, $_REQUEST;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+			wp_die();
+		}
+		
+		if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	$term_list = array();
   	
   	$term = wc_clean( empty( $term ) ? sanitize_text_field( $_REQUEST['term'] ) : $term );
@@ -1038,6 +1398,16 @@ class WCFM_Ajax {
   function wcfm_json_search_vendors() {
   	global $WCFM, $_POST, $_GET;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+			wp_die();
+		}
+		
+		if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) && !current_user_can( 'wcfm_affiliate' ) && !current_user_can( 'wcfm_delivery_boy' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	$term = wc_clean( empty( $term ) ? wc_clean( $_GET['term'] ) : $term );
 
 		if ( empty( $term ) ) {
@@ -1053,16 +1423,26 @@ class WCFM_Ajax {
   function wcfm_email_verification_code() {
   	global $WCFM;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+			wp_die();
+		}
+		
+		if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) && !current_user_can( 'wcfm_affiliate' ) && !current_user_can( 'wcfm_delivery_boy' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	$user_id = get_current_user_id();
-  	$user_email = wc_clean( $_POST['user_email'] );
+  	$user_email = sanitize_email( $_POST['user_email'] );
 		
 		if( $user_email ) {
-			$email_verification_code = get_post_meta( $user_id, '_wcfm_email_verification_code', true );
+			$email_verification_code = get_user_meta( $user_id, '_wcfm_email_verification_code', true );
 			if( $email_verification_code ) {
 				$verification_code = $email_verification_code;
 			} else {
 				$verification_code = rand( 100000, 999999 );
-				update_post_meta( $user_id, '_wcfm_email_verification_code', $verification_code );
+				update_user_meta( $user_id, '_wcfm_email_verification_code', $verification_code );
 			}
 			
 			// Sending verification code in email
@@ -1083,9 +1463,9 @@ class WCFM_Ajax {
 			
 			wp_mail( $user_email, $subject, $message );
 			
-			echo '{"status": true, "message": "' . __( 'Email verification code send to your email.', 'wc-frontend-manager' ) . '"}';
+			echo '{"status": true, "message": "' . esc_html__( 'Email verification code send to your email.', 'wc-frontend-manager' ) . '"}';
 		} else {
-			echo '{"status": false, "message": "' . __( 'Email verification not working right now, please try after sometime.', 'wc-frontend-manager' ) . '"}';
+			echo '{"status": false, "message": "' . esc_html__( 'Email verification not working right now, please try after sometime.', 'wc-frontend-manager' ) . '"}';
 		}
 		die;
   }
@@ -1095,6 +1475,16 @@ class WCFM_Ajax {
 	 */
 	function wcfm_vendor_disable() {
 		global $WCFM, $_POST, $wpdb;
+		
+		if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
 		
 		if( isset( $_POST['memberid'] ) ) {
 			$member_id = absint( $_POST['memberid'] );
@@ -1123,10 +1513,10 @@ class WCFM_Ajax {
 			
 			do_action( 'wcfm_vendor_disable_after', $member_id );
 				
-			echo '{"status": true, "message": "' . __( 'Vendor successfully disabled.', 'wc-frontend-manager' ) . '"}';
+			echo '{"status": true, "message": "' . esc_html__( 'Vendor successfully disabled.', 'wc-frontend-manager' ) . '"}';
 			die;
 		}
-		echo '{"status": false, "message": "' . __( 'Vendor can not be disabled right now, please try after sometime.', 'wc-frontend-manager' ) . '"}';
+		echo '{"status": false, "message": "' . esc_html__( 'Vendor can not be disabled right now, please try after sometime.', 'wc-frontend-manager' ) . '"}';
 		die;
 	}
 	
@@ -1135,6 +1525,16 @@ class WCFM_Ajax {
 	 */
 	function wcfm_vendor_enable() {
 		global $WCFM, $_POST, $wpdb;
+		
+		if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( __( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
 		
 		if( isset( $_POST['memberid'] ) ) {
 			$member_id = absint( $_POST['memberid'] );
@@ -1171,10 +1571,10 @@ class WCFM_Ajax {
 			
 			do_action( 'wcfm_vendor_enable_after', $member_id );
 				
-			echo '{"status": true, "message": "' . __( 'Vendor successfully enabled.', 'wc-frontend-manager' ) . '"}';
+			echo '{"status": true, "message": "' . esc_html__( 'Vendor successfully enabled.', 'wc-frontend-manager' ) . '"}';
 			die;
 		}
-		echo '{"status": false, "message": "' . __( 'Vendor can not be enabled right now, please try after sometime.', 'wc-frontend-manager' ) . '"}';
+		echo '{"status": false, "message": "' . esc_html__( 'Vendor can not be enabled right now, please try after sometime.', 'wc-frontend-manager' ) . '"}';
 		die;
 	}
 	
@@ -1184,6 +1584,16 @@ class WCFM_Ajax {
 	function wcfm_knowledgebase_view() {
 		global $WCFM;
 		
+		if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+			wp_die();
+		}
+		
+		if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		esc_html_e( 'You don&#8217;t have permission to do this.', 'woocommerce' );
+			wp_die();
+		}
+		
 		$knowledgebase_id = '';
 		if( isset($_POST['knowledgebaseid']) ) {
 			$knowledgebase_id = absint( $_POST['knowledgebaseid'] );
@@ -1191,9 +1601,9 @@ class WCFM_Ajax {
 			$knowledgebase_post = get_post( $knowledgebase_id );
 			
 			echo '<table><tbody><tr><td><h2 style="font-size: 18px;line-height: 20px;color:#00798b;text-decoration:underline;">';
-			echo $knowledgebase_post->post_title;
+			echo wp_kses_post($knowledgebase_post->post_title);
 			echo '</h2></td></tr><tr><td>';
-			echo $knowledgebase_post->post_content;
+			echo ($knowledgebase_post->post_content);
 			echo '</td></tr></tbody></table>';
 		}
 		die;
@@ -1204,6 +1614,17 @@ class WCFM_Ajax {
 	 */
 	function wcfm_messages_send_reply() {
 		global $WCFM;
+		
+		if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+			wp_die();
+		}
+		
+		if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) && !current_user_can( 'wcfm_affiliate' ) && !current_user_can( 'wcfm_delivery_boy' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+		
 		$WCFM->template->get_template( 'messages/wcfm-view-messages-send-reply.php' );
 		die;
 	}
@@ -1213,6 +1634,11 @@ class WCFM_Ajax {
 	 */
 	function wcfm_login_popup_form() {
 		global $WCFM;
+		
+		if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+			wp_die();
+		}
 		
 		$WCFM->template->get_template( 'login-popup/wcfm-login-popup-form.php' );
 		die;
@@ -1224,11 +1650,16 @@ class WCFM_Ajax {
 	function wcfm_login_popup_submit() {
 		global $WCFM, $current_user;
 		
+		if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+			wp_die();
+		}
+		
 		$wcfm_login_popup_form_data = array();
 	  parse_str($_POST['wcfm_login_popup_form'], $wcfm_login_popup_form_data);
 	  
 	  if ( empty( $wcfm_login_popup_form_data['wcfm_login_popup_username'] ) ) {
-			echo '{"status": false, "message": "' . __( 'Please insert username before submit.', 'wc-frontend-manager' ) . '"}';
+			echo '{"status": false, "message": "' . esc_html__( 'Please insert username before submit.', 'wc-frontend-manager' ) . '"}';
 			die;
 		}
 		
@@ -1237,33 +1668,53 @@ class WCFM_Ajax {
 			die;
 		}
 		
+		$creds = array(
+									'user_login'    => trim( wp_unslash( $wcfm_login_popup_form_data['wcfm_login_popup_username'] ) ), // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+									'user_password' => $wcfm_login_popup_form_data['wcfm_login_popup_password'], // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+									'remember'      => true, // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+								);
+		
 		if( is_email( $wcfm_login_popup_form_data['wcfm_login_popup_username'] ) ) {
 			
 			if( !email_exists( $wcfm_login_popup_form_data['wcfm_login_popup_username']) ) {
-				echo '{"status": false, "message": "' . __( 'Please insert a valid username / e-mail address.', 'wc-frontend-manager' ) . '"}';
+				echo '{"status": false, "message": "' . esc_html__( 'Please insert a valid username / e-mail address.', 'wc-frontend-manager' ) . '"}';
 				die;
 			}
 			
 			$current_user = get_user_by( 'email', $wcfm_login_popup_form_data['wcfm_login_popup_username'] );
 			if( $current_user && is_a( $current_user, 'WP_User' ) ) {
-				wp_set_auth_cookie( $current_user->ID, true );
-				echo '{"status": true, "message": "' . __( 'Login successfully ...', 'wc-frontend-manager' ) . '"}';
+				//wp_set_auth_cookie( $current_user->ID, true );
+				// Perform the login.
+				$user = wp_signon( apply_filters( 'woocommerce_login_credentials', $creds ), is_ssl() );
+
+				if ( is_wp_error( $user ) ) {
+					echo '{"status": false, "message": "' . esc_html__( 'Please try again!', 'wc-frontend-manager' ) . $user->get_error_message() . '"}';
+				} else {
+					echo '{"status": true, "message": "' . esc_html__( 'Login successfully ...', 'wc-frontend-manager' ) . '"}';
+				}
 			} else {
-				echo '{"status": false, "message": "' . __( 'Please try again!', 'wc-frontend-manager' ) . '"}';
+				echo '{"status": false, "message": "' . esc_html__( 'Please try again!', 'wc-frontend-manager' ) . '"}';
 			}
 			
 		} else {
 			if ( !validate_username( $wcfm_login_popup_form_data['wcfm_login_popup_username'] ) || !username_exists( $wcfm_login_popup_form_data['wcfm_login_popup_username'] ) ) {
-				echo '{"status": false, "message": "' . __( 'Please insert a valid username / e-mail address.', 'wc-frontend-manager' ) . '"}';
+				echo '{"status": false, "message": "' . esc_html__( 'Please insert a valid username / e-mail address.', 'wc-frontend-manager' ) . '"}';
 				die;
 			}
 			
 			$current_user = get_user_by( 'login', $wcfm_login_popup_form_data['wcfm_login_popup_username'] );
 			if( $current_user && is_a( $current_user, 'WP_User' ) ) {
-				wp_set_auth_cookie( $current_user->ID, true );
-				echo '{"status": true, "message": "' . __( 'Login successfully ...', 'wc-frontend-manager' ) . '"}';
+				//wp_set_auth_cookie( $current_user->ID, true );
+				// Perform the login.
+				$user = wp_signon( apply_filters( 'woocommerce_login_credentials', $creds ), is_ssl() );
+
+				if ( is_wp_error( $user ) ) {
+					echo '{"status": false, "message": "' . esc_html__( 'Please try again!', 'wc-frontend-manager' ) . '"}';
+				} else {
+					echo '{"status": true, "message": "' . esc_html__( 'Login successfully ...', 'wc-frontend-manager' ) . '"}';
+				}
 			} else {
-				echo '{"status": false, "message": "' . __( 'Please try again!', 'wc-frontend-manager' ) . '"}';
+				echo '{"status": false, "message": "' . esc_html__( 'Please try again!', 'wc-frontend-manager' ) . '"}';
 			}
 		}
 		
@@ -1277,6 +1728,11 @@ class WCFM_Ajax {
 	function wcfm_store_external_product_view_update() {
 		global $WCFM, $wpdb, $_SERVER;
 		
+		if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+			wp_die();
+		}
+		
 		if( isset( $_POST['product_id'] ) && !empty( $_POST['product_id'] ) ) {
 			$product_id = absint( $_POST['product_id'] );
 			
@@ -1288,24 +1744,28 @@ class WCFM_Ajax {
 				
 				$todate = date('Y-m-d');
 				
-				$_SESSION['location']['country'] = '';
-				$_SESSION['location']['state'] = '';
-				$_SESSION['location']['city'] = '';
+				$ip_address   = wc_clean( $_SERVER['REMOTE_ADDR'] );
+				$HTTP_REFERER = wc_clean($_SERVER['HTTP_REFERER']);
+				$_SCOUNTRY = '';
+				$_SSTATE = '';
+				$_SCITY = '';
 				
 				// wcfm_detailed_analysis Query
-				$wcfm_detailed_analysis = "INSERT into {$wpdb->prefix}wcfm_detailed_analysis 
+				$wcfm_detailed_analysis = $wpdb->prepare( "INSERT into {$wpdb->prefix}wcfm_detailed_analysis 
 																	(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `referer`, `ip_address`, `country`, `state`, `city`)
 																	VALUES
-																	(0, 0, 1, {$product_id}, {$post_author}, '{$_SERVER['HTTP_REFERER']}', '{$_SERVER['REMOTE_ADDR']}', '{$_SESSION['location']['country']}', '{$_SESSION['location']['state']}', '{$_SESSION['location']['city']}')";
+																	(%d, %d, %d, %d, %d, %s, %s, %s, %s, %s)",
+																	0, 0, 1, $product_id, $post_author, $HTTP_REFERER, $ip_address, $_SCOUNTRY, $_SSTATE, $_SCITY);
 				$wpdb->query($wcfm_detailed_analysis);
 				
 				// wcfm_daily_analysis Query
-				$wcfm_daily_analysis = "INSERT into {$wpdb->prefix}wcfm_daily_analysis 
+				$wcfm_daily_analysis = $wpdb->prepare( "INSERT into {$wpdb->prefix}wcfm_daily_analysis 
 																	(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `count`, `visited`)
 																	VALUES
-																	(0, 0, 1, {$product_id}, {$post_author}, 1, '{$todate}')
+																	(%d, %d, %d, %d, %d, %d, %s)
 																	ON DUPLICATE KEY UPDATE
-																	count = count+1";
+																	count = count+1",
+																	0, 0, 1, $product_id, $post_author, 1, $todate);
 				$wpdb->query($wcfm_daily_analysis);
 				
 				$wcfm_product_views = (int) get_post_meta( $product_id, '_wcfm_product_views', true );

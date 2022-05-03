@@ -20,8 +20,8 @@ class WCFM_Customers_Details_Orders_Controller {
 	public function processing() {
 		global $WCFM, $wpdb, $_POST;
 		
-		$length = wc_clean($_POST['length']);
-		$offset = wc_clean($_POST['start']);
+		$length = absint($_POST['length']);
+		$offset = absint($_POST['start']);
 		$customer_id = absint($_POST['customer_id']);
 		
 		$args = array(
@@ -116,7 +116,7 @@ class WCFM_Customers_Details_Orders_Controller {
 				}
 
 				if( apply_filters( 'wcfm_is_allow_order_details', true ) && $WCFM->wcfm_vendor_support->wcfm_is_order_for_vendor( $wcfm_orders_single->order_id ) ) {
-					$wcfm_orders_json_arr[$index][] =  '<a href="' . get_wcfm_view_order_url($wcfm_orders_single->ID, $the_order) . '" class="wcfm_dashboard_item_title">#' . esc_attr( $the_order->get_order_number() ) . '</a>' . ' ' . __( 'by', 'wc-frontend-manager' ) . ' ' . $username;
+					$wcfm_orders_json_arr[$index][] =  '<a href="' . esc_url(get_wcfm_view_order_url($wcfm_orders_single->ID, $the_order)) . '" class="wcfm_dashboard_item_title">#' . esc_attr( $the_order->get_order_number() ) . '</a>' . ' ' . __( 'by', 'wc-frontend-manager' ) . ' ' . $username;
 				} else {
 					$wcfm_orders_json_arr[$index][] =  '<span class="wcfm_dashboard_item_title">#' . esc_attr( $the_order->get_order_number() ) . '</span>' . ' ' . __( 'by', 'wc-frontend-manager' ) . ' ' . $username;
 				}
@@ -226,8 +226,8 @@ class WCFM_Customers_Details_Bookings_Controller {
 		
 		$wc_get_booking_status_name = array( 'paid' => __('Paid & Confirmed', 'wc-frontend-manager' ), 'pending-confirmation' => __('Pending Confirmation', 'wc-frontend-manager' ), 'unpaid' => __('Un-paid', 'wc-frontend-manager' ), 'cancelled' => __('Cancelled', 'wc-frontend-manager' ), 'complete' => __('Complete', 'wc-frontend-manager' ), 'confirmed' => __('Confirmed', 'wc-frontend-manager' ) );
 		
-		$length = wc_clean($_POST['length']);
-		$offset = wc_clean($_POST['start']);
+		$length = absint($_POST['length']);
+		$offset = absint($_POST['start']);
 		$customer_id = absint($_POST['customer_id']);
 		
 		$include_bookings = apply_filters( 'wcfm_wcb_include_bookings', '' );
@@ -419,8 +419,8 @@ class WCFM_Customers_Details_Appointments_Controller {
 			
 			
 		
-		$length = wc_clean($_POST['length']);
-		$offset = wc_clean($_POST['start']);
+		$length = absint($_POST['length']);
+		$offset = absint($_POST['start']);
 		$customer_id = absint($_POST['customer_id']);
 		
 		$include_appointments = apply_filters( 'wcfm_wca_include_appointments', '' );
@@ -480,7 +480,7 @@ class WCFM_Customers_Details_Appointments_Controller {
 				$wcfm_appointments_json_arr[$index][] =  '<span class="appointment-status tips wcicon-status-' . sanitize_title( $the_appointment->get_status( ) ) . ' text_tip" data-tip="' . $wc_get_appointment_status_name[$the_appointment->get_status()] . '"></span>';
 				
 				// Appointment
-				$appointment_label =  '<a href="' . get_wcfm_view_appointment_url($wcfm_appointments_single->ID, $the_appointment) . '" class="wcfm_appointment_title">#' . $wcfm_appointments_single->ID . '</a>';
+				$appointment_label =  '<a href="' . esc_url(get_wcfm_view_appointment_url($wcfm_appointments_single->ID, $the_appointment)) . '" class="wcfm_appointment_title">#' . $wcfm_appointments_single->ID . '</a>';
 				
 				$customer = $the_appointment->get_customer();
 				if ( ! isset( $customer->user_id ) || 0 == $customer->user_id ) {
@@ -528,7 +528,7 @@ class WCFM_Customers_Details_Appointments_Controller {
 				// Order
 				if ( $the_order ) {
 					if( apply_filters( 'wcfm_is_allow_order_details', true ) && $WCFM->wcfm_vendor_support->wcfm_is_order_for_vendor( $the_order->get_order_number() ) ) {
-						$wcfm_appointments_json_arr[$index][] = '<span class="appointment-orderno"><a href="' . get_wcfm_view_order_url( $the_order->get_order_number(), $the_order ) . '">#' . $the_order->get_order_number() . '</a></span><br />' . esc_html( wc_get_order_status_name( $the_order->get_status() ) );
+						$wcfm_appointments_json_arr[$index][] = '<span class="appointment-orderno"><a href="' . esc_url(get_wcfm_view_order_url( $the_order->get_order_number(), $the_order )) . '">#' . $the_order->get_order_number() . '</a></span><br />' . esc_html( wc_get_order_status_name( $the_order->get_status() ) );
 					} else  {
 						$wcfm_appointments_json_arr[$index][] = '<span class="appointment-orderno">#' . $the_order->get_order_number() . '</span><br /> ' . esc_html( wc_get_order_status_name( $the_order->get_status() ) );
 					}
@@ -547,7 +547,7 @@ class WCFM_Customers_Details_Appointments_Controller {
 				if ( current_user_can( 'manage_appointments' ) ) {
 					if ( in_array( $the_appointment->get_status(), array( 'pending-confirmation' ) ) ) $actions = '<a class="wcfm_appointment_mark_confirm wcfm-action-icon" href="#" data-appointmentid="' . $wcfm_appointments_single->ID . '"><span class="wcfmfa fa-check-circle text_tip" data-tip="' . esc_attr__( 'Mark as Confirmed', 'wc-frontend-manager' ) . '"></span></a>';
 				}
-				$actions .= apply_filters ( 'wcfm_appointments_actions', '<a class="wcfm-action-icon" href="' . get_wcfm_view_appointment_url( $wcfm_appointments_single->ID, $the_appointment ) . '"><span class="wcfmfa fa-eye text_tip" data-tip="' . esc_attr__( 'View Details', 'wc-frontend-manager' ) . '"></span></a>', $wcfm_appointments_single, $the_appointment );
+				$actions .= apply_filters ( 'wcfm_appointments_actions', '<a class="wcfm-action-icon" href="' . esc_url(get_wcfm_view_appointment_url( $wcfm_appointments_single->ID, $the_appointment )) . '"><span class="wcfmfa fa-eye text_tip" data-tip="' . esc_attr__( 'View Details', 'wc-frontend-manager' ) . '"></span></a>', $wcfm_appointments_single, $the_appointment );
 				$wcfm_appointments_json_arr[$index][] = $actions;  
 				
 				

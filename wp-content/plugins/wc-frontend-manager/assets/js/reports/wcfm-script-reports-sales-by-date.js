@@ -9,7 +9,8 @@ jQuery(function( $ ) {
 		$('#dropdown_vendor').on('change', function() {
 			var data = {
 				action                : 'sales_by_vendor_change_url',
-				vendor_manager_change : $('#dropdown_vendor').val()
+				vendor_manager_change : $('#dropdown_vendor').val(),
+				wcfm_ajax_nonce       : wcfm_params.wcfm_ajax_nonce,
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {

@@ -83,7 +83,7 @@ class WCFM_Profile_Controller {
 		//$wcfm_profile_form = array_map( 'sanitize_text_field', $wcfm_profile_form );
 		//$wcfm_profile_form = array_map( 'stripslashes', $wcfm_profile_form );
 		
-		$description = ! empty( $_POST['about'] ) ? stripslashes( html_entity_decode( $_POST['about'], ENT_QUOTES, 'UTF-8' ) ) : '';
+		$description = ! empty( $_POST['about'] ) ? wp_filter_post_kses( stripslashes( html_entity_decode( $_POST['about'], ENT_QUOTES, 'UTF-8' ) ) ) : '';
 		update_user_meta( $user_id, 'description', apply_filters( 'wcfm_editor_content_before_save', $description ) );
 		
 		// Password
@@ -253,7 +253,7 @@ class WCFM_Profile_Controller {
 		$has_error = false;
 		if( wcfm_is_vendor() && apply_filters( 'wcfm_is_allow_email_verification', true ) && isset( $_POST['user_email'] ) ) {
 			$email_verified = false;
-			$user_email     = wc_clean($_POST['user_email']);
+			$user_email     = sanitize_email($_POST['user_email']);
 			$email_verified = get_user_meta( $user_id, '_wcfm_email_verified', true );
 			$wcfm_email_verified_for = get_user_meta( $user_id, '_wcfm_email_verified_for', true );
 			if( $email_verified && ( $user_email != $wcfm_email_verified_for ) ) $email_verified = false;
@@ -261,15 +261,15 @@ class WCFM_Profile_Controller {
 			if( !$email_verified ) {
 				$wcfm_email_verified_input = isset( $wcfm_profile_form['wcfm_email_verified_input'] ) ? $wcfm_profile_form['wcfm_email_verified_input'] : '';
 				if( $wcfm_email_verified_input ) {
-					$verification_code = get_post_meta( $user_id, '_wcfm_email_verification_code', true );
+					$verification_code = get_user_meta( $user_id, '_wcfm_email_verification_code', true );
 					if( $verification_code ) {
 						if( $verification_code == $wcfm_email_verified_input ) {
 							update_user_meta( $user_id, '_wcfm_email_verified', true );
 							update_user_meta( $user_id, '_wcfm_email_verified_for', $user_email );
-							delete_post_meta( $user_id, '_wcfm_email_verification_code' );
+							delete_user_meta( $user_id, '_wcfm_email_verification_code' );
 						} else {
 							$has_error = true;
-							echo '{"status": false, "message": "' . __( 'Email verification code invalid.', 'wc-frontend-manager' ). '"}';
+							echo '{"status": false, "message": "' . esc_html( __( 'Email verification code invalid.', 'wc-frontend-manager' ) ). '"}';
 						}
 					}
 				}
@@ -279,7 +279,7 @@ class WCFM_Profile_Controller {
 		do_action( 'wcfm_profile_update', $user_id, $wcfm_profile_form );
 		
 		if( !$has_error ) {
-			echo '{"status": true, "message": "' . __( 'Profile saved successfully', 'wc-frontend-manager' ) . '"}';
+			echo '{"status": true, "message": "' . esc_html( __( 'Profile saved successfully', 'wc-frontend-manager' ) ) . '"}';
 		}
 		
 		die;

@@ -434,6 +434,11 @@ class WCFM_Withdrawal {
   public function wcfm_withdrawal_ajax_controller() {
   	global $WCFM;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
   	$controllers_path = $WCFM->plugin_path . 'controllers/withdrawal/';
   	
   	$controller = '';
@@ -441,6 +446,11 @@ class WCFM_Withdrawal {
   		$controller = wc_clean( $_POST['controller'] );
   		switch( $controller ) {
   			case 'wcfm-payments':
+  				if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+		
   				if( $WCFM->is_marketplace == 'wcmarketplace' ) {
 						include_once( $controllers_path . 'wcmp/wcfm-controller-payments.php' );
 						new WCFM_Payments_Controller();
@@ -454,6 +464,11 @@ class WCFM_Withdrawal {
   			break;
   			
   			case 'wcfm-withdrawal':
+  				if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+		
   				if( $WCFM->is_marketplace == 'wcmarketplace' ) {
 						include_once( $controllers_path . 'wcmp/wcfm-controller-withdrawal.php' );
 						new WCFM_Withdrawal_Controller();
@@ -467,6 +482,11 @@ class WCFM_Withdrawal {
   			break;
   			
   			case 'wcfm-withdrawal-request':
+  				if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+		
   				if( $WCFM->is_marketplace == 'wcmarketplace' ) {
 						include_once( $controllers_path . 'wcmp/wcfm-controller-withdrawal-request.php' );
 						new WCFM_Withdrawal_Request_Controller();
@@ -480,6 +500,11 @@ class WCFM_Withdrawal {
   			break;
   			
   			case 'wcfm-withdrawal-requests':
+  				if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+		
   				if( $WCFM->is_marketplace == 'wcmarketplace' ) {
 						//include_once( $controllers_path . 'wcmp/wcfm-controller-withdrawal-request.php' );
 						//new WCFM_Withdrawal_Request_Controller();
@@ -493,6 +518,11 @@ class WCFM_Withdrawal {
   			break;
   			
   			case 'wcfm-withdrawal-requests-approve':
+  				if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+		
   				if( $WCFM->is_marketplace == 'wcmarketplace' ) {
 						//include_once( $controllers_path . 'wcmp/wcfm-controller-withdrawal-request.php' );
 						//new WCFM_Withdrawal_Request_Controller();
@@ -506,6 +536,11 @@ class WCFM_Withdrawal {
   			break;
   			
   			case 'wcfm-withdrawal-requests-cancel':
+  				if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+		
   				if( $WCFM->is_marketplace == 'wcmarketplace' ) {
 						//include_once( $controllers_path . 'wcmp/wcfm-controller-withdrawal-request.php' );
 						//new WCFM_Withdrawal_Request_Controller();
@@ -519,6 +554,11 @@ class WCFM_Withdrawal {
   			break;
   			
   			case 'wcfm-withdrawal-reverse':
+  				if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+		
 					if( $WCFM->is_marketplace == 'wcfmmarketplace' ) {
 						include_once( $controllers_path . 'wcfm/wcfm-controller-withdrawal-reverse.php' );
 						new WCFM_Withdrawal_Reverse_Controller();
@@ -526,6 +566,11 @@ class WCFM_Withdrawal {
   			break;
   			
   			case 'wcfm-withdrawal-reverse-approve':
+  				if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+		
 					if( $WCFM->is_marketplace == 'wcfmmarketplace' ) {
 						include_once( $controllers_path . 'wcfm/wcfm-controller-withdrawal-reverse-actions.php' );
 						new WCFM_Withdrawal_Reverse_Approve_Controller();

@@ -19,7 +19,7 @@ if( !$wcfm_is_allow_manage_settings ) {
 
 $wcfm_options = $WCFM->wcfm_options;
 
-$quick_access_image_url = isset( $wcfm_options['wcfm_quick_access_icon'] ) ? $wcfm_options['wcfm_quick_access_icon'] : $WCFM->plugin_url . 'assets/images/wcfm-30x30.png';
+$quick_access_image_url = isset( $wcfm_options['wcfm_quick_access_icon'] ) ? $wcfm_options['wcfm_quick_access_icon'] : esc_url($WCFM->plugin_url) . 'assets/images/wcfm-30x30.png';
 $is_quick_access_disabled = isset( $wcfm_options['quick_access_disabled'] ) ? $wcfm_options['quick_access_disabled'] : 'no';
 $is_dashboard_logo_disabled = isset( $wcfm_options['dashboard_logo_disabled'] ) ? $wcfm_options['dashboard_logo_disabled'] : 'no';
 $is_welcome_box_disabled = isset( $wcfm_options['welcome_box_disabled'] ) ? $wcfm_options['welcome_box_disabled'] : 'no';
@@ -192,7 +192,7 @@ $is_marketplace = wcfm_is_marketplace();
 								$wcfm_module_value = isset( $wcfm_module_options[$wcfm_module] ) ? $wcfm_module_options[$wcfm_module] : 'no';
 								$hints = $wcfm_module_data['label'];
 								if( isset( $wcfm_module_data['hints'] ) ) { $hints .= ': ' . $wcfm_module_data['hints']; }
-								$background_image = 'background-image: url(' . $WCFM->plugin_url . 'assets/images/modules/' . $wcfm_module . '.png);';
+								$background_image = 'background-image: url(' . esc_url($WCFM->plugin_url) . 'assets/images/modules/' . $wcfm_module . '.png);';
 								echo '<div class="wcfm_module_boxes"><div class="wcfm_module_box wcfm_module_' . $wcfm_module . ' text_tip" data-tip="' . $hints . '" style="' . $background_image . '">';
 								$WCFM->wcfm_fields->wcfm_generate_form_field( array(
 																																		$wcfm_module => array( 'name' => 'module_options[' . $wcfm_module . ']', 'type' => 'checkboxoffon', 'class' => 'wcfm-checkbox wcfm_ele', 'value' => 'yes', 'label_class' => 'wcfm_title checkbox_title module_options_title', 'dfvalue' => $wcfm_module_value ),
@@ -209,7 +209,7 @@ $is_marketplace = wcfm_is_marketplace();
 							}
 							
 							$hints = __('Analytics', 'wc-frontend-manager');
-							$background_image = 'background-image: url(' . $WCFM->plugin_url . 'assets/images/modules/analytics.png);';
+							$background_image = 'background-image: url(' . esc_url($WCFM->plugin_url) . 'assets/images/modules/analytics.png);';
 							echo '<div class="wcfm_module_boxes"><div class="wcfm_module_box wcfm_module_analytics_disabled text_tip" data-tip="' . $hints . '" style="' . $background_image . '">';
 							$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_settings_fields_analytics', array(
 																																																"analytics_disabled" => array( 'name' => 'analytics_disabled','type' => 'checkboxoffon', 'class' => 'wcfm-checkbox wcfm_ele', 'value' => 'yes', 'label_class' => 'wcfm_title checkbox_title module_options_title', 'dfvalue' => $is_analytics_disabled),
@@ -576,8 +576,8 @@ $is_marketplace = wcfm_is_marketplace();
 								foreach( $product_types as $product_type => $product_type_label ) {
 									$product_type_categories = isset( $wcfm_product_type_categories[$product_type] ) ? $wcfm_product_type_categories[$product_type] : array();
 								?>
-								<p class="wcfm_title catlimit_title"><strong><?php echo $product_type_label . ' '; _e( 'Categories', 'wc-frontend-manager' ); ?></strong></p><label class="screen-reader-text" for="vendor_product_cats"><?php echo $product_type_label . ' '; _e( 'Categories', 'wc-frontend-manager' ); ?></label>
-								<select id="wcfm_product_type_categories<?php echo $product_type; ?>" name="wcfm_product_type_categories[<?php echo $product_type; ?>][]" class="wcfm-select wcfm_ele wcfm_product_type_categories" multiple="multiple" data-catlimit="-1" style="width: 60%; margin-bottom: 10px;">
+								<p class="wcfm_title catlimit_title"><strong><?php echo esc_html($product_type_label) . ' '; _e( 'Categories', 'wc-frontend-manager' ); ?></strong></p><label class="screen-reader-text" for="vendor_product_cats"><?php echo $product_type_label . ' '; _e( 'Categories', 'wc-frontend-manager' ); ?></label>
+								<select id="wcfm_product_type_categories<?php echo esc_html($product_type); ?>" name="wcfm_product_type_categories[<?php echo $product_type; ?>][]" class="wcfm-select wcfm_ele wcfm_product_type_categories" multiple="multiple" data-catlimit="-1" style="width: 60%; margin-bottom: 10px;">
 									<?php
 										if ( $product_categories ) {
 											$WCFM->library->generateTaxonomyHTML( 'product_cat', $product_categories, $product_type_categories, '', false, false, false );

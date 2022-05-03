@@ -17,7 +17,8 @@ jQuery(document).ready(function($) {
 		var data = {
 			action       : 'wcfm_modify_order_status',
 			order_status : $('#wcfm_order_status').val(),
-			order_id     : $('#wcfm_modify_order_status').data('orderid')
+			order_id     : $('#wcfm_modify_order_status').data('orderid'),
+			wcfm_ajax_nonce : wcfm_params.wcfm_ajax_nonce
 		}	
 		$.ajax({
 			type:		'POST',

@@ -44,8 +44,8 @@ global $wp, $WCFM, $wpdb;
 					<?php if ( $legends = $wcfm_report_sales_by_date->get_chart_legend() ) : ?>
 						<ul class="chart-legend">
 							<?php foreach ( $legends as $legend ) : ?>
-								<li style="border-color: <?php echo $legend['color']; ?>" <?php if ( isset( $legend['highlight_series'] ) ) echo 'class="highlight_series ' . ( isset( $legend['placeholder'] ) ? 'tips' : '' ) . '" data-series="' . esc_attr( $legend['highlight_series'] ) . '"'; ?> data-tip="<?php echo isset( $legend['placeholder'] ) ? $legend['placeholder'] : ''; ?>">
-									<?php echo $legend['title']; ?>
+								<li style="border-color: <?php echo esc_attr($legend['color']); ?>" <?php if ( isset( $legend['highlight_series'] ) ) echo 'class="highlight_series ' . ( isset( $legend['placeholder'] ) ? 'tips' : '' ) . '" data-series="' . esc_attr( $legend['highlight_series'] ) . '"'; ?> data-tip="<?php echo isset( $legend['placeholder'] ) ? esc_attr($legend['placeholder']) : ''; ?>">
+									<?php echo wp_kses_post($legend['title']); ?>
 								</li>
 							<?php endforeach; ?>
 						</ul>
@@ -53,7 +53,7 @@ global $wp, $WCFM, $wpdb;
 					<ul class="chart-widgets">
 						<?php foreach ( $wcfm_report_sales_by_date->get_chart_widgets() as $widget ) : ?>
 							<li class="chart-widget">
-								<?php if ( $widget['title'] ) : ?><h4><?php echo $widget['title']; ?></h4><?php endif; ?>
+								<?php if ( $widget['title'] ) : ?><h4><?php echo wp_kses_post($widget['title']); ?></h4><?php endif; ?>
 								<?php call_user_func( $widget['callback'] ); ?>
 							</li>
 						<?php endforeach; ?>

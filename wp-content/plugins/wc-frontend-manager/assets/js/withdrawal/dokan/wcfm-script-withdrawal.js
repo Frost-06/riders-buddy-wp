@@ -15,6 +15,7 @@ jQuery(document).ready(function($) {
 			action                      : 'wcfm_ajax_controller',
 			controller                  : 'wcfm-withdrawal-request',
 			wcfm_withdrawal_manage_form : $('#wcfm_withdrawal_manage_form').serialize(),
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce,
 			status                      : 'submit'
 		}	
 		$.post(wcfm_params.ajax_url, data, function(response) {

@@ -43,7 +43,7 @@ class WCFM_Non_Ajax {
 		$pending_count = wcfm_get_user_posts_count( $current_user_id, 'product', 'pending' );
 		$draft_count   = wcfm_get_user_posts_count( $current_user_id, 'product', 'draft' );
 		
-		$product_stat = '{"online" : ' . $publish_count . ', "pending" : ' . $pending_count . ', "draft" : ' . $draft_count . '}';
+		$product_stat = '{"online" : ' . esc_attr($publish_count) . ', "pending" : ' . esc_attr($pending_count) . ', "draft" : ' . esc_attr($draft_count) . '}';
 		?>
 		<script type="text/javascript">
 			var product_stat_data = <?php echo $product_stat; ?>;
@@ -238,9 +238,9 @@ class WCFM_Non_Ajax {
 		//unset($wcfm_menus['settings']);
 		
 		if( $WCFM->is_marketplace && ( $WCFM->is_marketplace == 'wcfmmarketplace' ) ) {
-			$title = '<div class="wcfm-admin-menu-head"><img src="' .trailingslashit( $WCFM->plugin_url ) . 'assets/images/wcfmmp-30X30.png" alt="WCFM Home" /><span class="screen-reader-text">' . __( 'WCFM', 'wordpress-seo' ) . '</span></div>';
+			$title = '<div class="wcfm-admin-menu-head"><img src="' .esc_url( $WCFM->plugin_url ) . 'assets/images/wcfmmp-30X30.png" alt="WCFM Home" /><span class="screen-reader-text">' . __( 'WCFM', 'wordpress-seo' ) . '</span></div>';
 		} else {
-			$title = '<div class="wcfm-admin-menu-head"><img src="' . trailingslashit( $WCFM->plugin_url ) . 'assets/images/wcfm-30x30.jpg" alt="WCFM Home" /><span class="screen-reader-text">' . __( 'WCFM', 'wordpress-seo' ) . '</span></div>';
+			$title = '<div class="wcfm-admin-menu-head"><img src="' . esc_url( $WCFM->plugin_url ) . 'assets/images/wcfm-30x30.jpg" alt="WCFM Home" /><span class="screen-reader-text">' . __( 'WCFM', 'wordpress-seo' ) . '</span></div>';
 		}
 		
 		$wp_admin_bar->add_menu( array(

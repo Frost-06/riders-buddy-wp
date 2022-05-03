@@ -73,13 +73,13 @@ $logo_image_url = wp_get_attachment_image_src( $logo, 'thumbnail' );
 if ( !empty( $logo_image_url ) ) {
 	$logo_image_url = $logo_image_url[0];
 } else {
-	$logo_image_url = $WCFM->plugin_url . 'assets/images/your-logo-here.png';
+	$logo_image_url = esc_url($WCFM->plugin_url) . 'assets/images/your-logo-here.png';
 }
 
 $wcfm_my_store_label = wcfm_get_option( 'wcfm_my_store_label', __( 'My Store', 'wc-frontend-manager' ) );
 $wcfm_home_menu_label = wcfm_get_option( 'wcfm_home_menu_label', __( 'Home', 'wc-frontend-manager' ) );
 
-$logo_image_url = '<a class="wcfm_store_logo_icon" href="'.get_permalink( wc_get_page_id( 'shop' ) ).'" target="_blank"><img src="' . $logo_image_url . '" alt="Store Logo" /></a>';
+$logo_image_url = '<a class="wcfm_store_logo_icon" href="'.get_permalink( wc_get_page_id( 'shop' ) ).'" target="_blank"><img src="' . esc_url($logo_image_url) . '" alt="Store Logo" /></a>';
 $store_logo = apply_filters( 'wcfm_store_logo', $logo_image_url );
 $store_name = '<a href="'.get_permalink( wc_get_page_id( 'shop' ) ).'" target="_blank">' . __( $wcfm_my_store_label, 'wc-frontend-manager' ) . '</a>';
 $store_name = apply_filters( 'wcfm_store_name', $store_name );

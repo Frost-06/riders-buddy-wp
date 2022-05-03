@@ -259,6 +259,11 @@ class WCFM_Enquiry {
   public function ajax_controller() {
   	global $WCFM, $WCFMu;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
   	$controllers_path = $WCFM->plugin_path . 'controllers/enquiry/';
   	
   	$controller = '';
@@ -267,6 +272,11 @@ class WCFM_Enquiry {
   		
   		switch( $controller ) {
   			case 'wcfm-enquiry':
+  				if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+		
 					include_once( $controllers_path . 'wcfm-controller-enquiry.php' );
 					if( defined('WCFM_REST_API_CALL') ) {
 						$enquiry_wcfm_manage_object = new WCFM_Enquiry_Controller();
@@ -277,6 +287,11 @@ class WCFM_Enquiry {
 				break;
 				
 				case 'wcfm-enquiry-manage':
+					if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+		
 					include_once( $controllers_path . 'wcfm-controller-enquiry-manage.php' );
 					//new WCFM_Enquiry_Manage_Controller();
 					if( defined('WCFM_REST_API_CALL') ) {
@@ -374,14 +389,24 @@ class WCFM_Enquiry {
   function delete_wcfm_enquiry() {
   	global $WCFM, $wpdb, $_POST;
   	
-  	if( isset( $_POST['enquiryid'] ) && !empty( $_POST['enquiryid'] ) ) {
-  		$enquiryid = absint( $_POST['enquiryid'] );
-  		$wpdb->query( "DELETE FROM {$wpdb->prefix}wcfm_enquiries WHERE ID = {$enquiryid}" );
-  		$wpdb->query( "DELETE FROM {$wpdb->prefix}wcfm_enquiries_meta WHERE enquiry_id = {$enquiryid}" );
-  		$wpdb->query( "DELETE FROM {$wpdb->prefix}wcfm_enquiries_response WHERE enquiry_id = {$enquiryid}" );
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( __( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
   	}
   	
-  	echo "success";
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
+  	if( isset( $_POST['enquiryid'] ) && !empty( $_POST['enquiryid'] ) ) {
+  		$enquiryid = absint( $_POST['enquiryid'] );
+  		$wpdb->query( $wpdb->prepare("DELETE FROM {$wpdb->prefix}wcfm_enquiries WHERE ID = %d", $enquiryid ) );
+  		$wpdb->query( $wpdb->prepare("DELETE FROM {$wpdb->prefix}wcfm_enquiries_meta WHERE enquiry_id = %d", $enquiryid ) );
+  		$wpdb->query( $wpdb->prepare("DELETE FROM {$wpdb->prefix}wcfm_enquiries_response WHERE enquiry_id = %d", $enquiryid ) );
+  	}
+  	
+  	echo esc_html("success");
   	die;
   }
   
@@ -391,13 +416,23 @@ class WCFM_Enquiry {
   function delete_wcfm_enquiry_response() {
   	global $WCFM, $wpdb, $_POST;
   	
-  	if( isset( $_POST['responseid'] ) && !empty( $_POST['responseid'] ) ) {
-  		$responseid = absint( $_POST['responseid'] );
-  		$wpdb->query( "DELETE FROM {$wpdb->prefix}wcfm_enquiries_response WHERE ID = {$responseid}" );
-  		$wpdb->query( "DELETE FROM {$wpdb->prefix}wcfm_enquiries_response_meta WHERE `enquiry_response_id` = {$responseid}" );
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( __( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
   	}
   	
-  	echo "success";
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'seller' ) && !current_user_can( 'vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
+  	if( isset( $_POST['responseid'] ) && !empty( $_POST['responseid'] ) ) {
+  		$responseid = absint( $_POST['responseid'] );
+  		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}wcfm_enquiries_response WHERE ID = %d", $responseid ) );
+  		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}wcfm_enquiries_response_meta WHERE `enquiry_response_id` = %d", $responseid ) );
+  	}
+  	
+  	echo esc_html("success");
   	die;
   }
 	
@@ -457,11 +492,11 @@ class WCFM_Enquiry {
 			?>
 			<div class="wcfm_ele_wrapper wcfm_catalog_enquiry_button_wrapper">
 				<div class="wcfm-clearfix"></div>
-				<a href="#" class="wcfm_catalog_enquiry <?php echo $button_class; ?>" data-store="<?php echo $vendor_id; ?>" data-product="<?php echo $product_id; ?>" style="<?php echo $button_style; ?>"><span class="wcfmfa fa-question-circle"></span>&nbsp;&nbsp;<span class="add_enquiry_label"><?php _e( $wcfm_enquiry_button_label, 'wc-frontend-manager' ); ?></span></a>
+				<a href="#" class="wcfm_catalog_enquiry <?php echo esc_attr($button_class); ?>" data-store="<?php echo esc_attr($vendor_id); ?>" data-product="<?php echo esc_attr($product_id); ?>" style="<?php echo esc_attr($button_style); ?>"><span class="wcfmfa fa-question-circle"></span>&nbsp;&nbsp;<span class="add_enquiry_label"><?php esc_html_e( $wcfm_enquiry_button_label, 'wc-frontend-manager' ); ?></span></a>
 				<?php do_action( 'wcfm_after_product_catalog_enquiry_button' ); ?>
 				<?php if( $hover_color ) { ?>
 					<style>
-					a.wcfm_catalog_enquiry:hover{background: <?php echo $hover_color; ?> !important;background-color: <?php echo $hover_color; ?> !important;border-bottom-color: <?php echo $hover_color; ?> !important;color: <?php echo $hover_text_color; ?> !important;}
+					a.wcfm_catalog_enquiry:hover{background: <?php echo esc_attr($hover_color); ?> !important;background-color: <?php echo esc_attr($hover_color); ?> !important;border-bottom-color: <?php echo esc_attr($hover_color); ?> !important;color: <?php echo esc_attr($hover_text_color); ?> !important;}
 					</style>
 				<?php } ?>
 				<div class="wcfm-clearfix"></div>
@@ -493,7 +528,7 @@ class WCFM_Enquiry {
 				$wcfm_enquiry_button_label  = isset( $wcfm_options['wcfm_enquiry_button_label'] ) ? $wcfm_options['wcfm_enquiry_button_label'] : __( 'Inquiry', 'wc-frontend-manager' );
 			}
 			?>
-			<div class="lft bd_icon_box"><a class="wcfm_store_enquiry <?php echo $button_class; ?>" data-store="<?php echo $vendor_id; ?>" data-product="0" href="#"><i class="wcfmfa fa-question" aria-hidden="true"></i><span><?php _e( $wcfm_enquiry_button_label, 'wc-frontend-manager' ); ?></span></a></div>
+			<div class="lft bd_icon_box"><a class="wcfm_store_enquiry <?php echo esc_attr($button_class); ?>" data-store="<?php echo esc_attr($vendor_id); ?>" data-product="0" href="#"><i class="wcfmfa fa-question" aria-hidden="true"></i><span><?php esc_html_e( $wcfm_enquiry_button_label, 'wc-frontend-manager' ); ?></span></a></div>
 			<?php
 		}
 	}
@@ -516,7 +551,7 @@ class WCFM_Enquiry {
 				$wcfm_enquiry_button_label  = isset( $wcfm_options['wcfm_enquiry_button_label'] ) ? $wcfm_options['wcfm_enquiry_button_label'] : __( 'Inquiry', 'wc-frontend-manager' );
 			}
 			?>
-			<p class="store-enquiry"><a class="wcfm_catalog_enquiry <?php echo $button_class; ?>" data-store="<?php echo $store_id; ?>" data-product="0" href="#"><span class="wcfmfa fa-question-circle fa-question-circle"></span>&nbsp;<span class="add_enquiry_label"><?php _e( $wcfm_enquiry_button_label, 'wc-frontend-manager' ); ?></span></a></p>
+			<p class="store-enquiry"><a class="wcfm_catalog_enquiry <?php echo esc_attr($button_class); ?>" data-store="<?php echo esc_attr($store_id); ?>" data-product="0" href="#"><span class="wcfmfa fa-question-circle fa-question-circle"></span>&nbsp;<span class="add_enquiry_label"><?php esc_html_e( $wcfm_enquiry_button_label, 'wc-frontend-manager' ); ?></span></a></p>
 			<?php
 		}
 	}
@@ -536,7 +571,8 @@ class WCFM_Enquiry {
 			$enquiry_query .= " WHERE 1 = 1";
 			$enquiry_query .= " AND `reply` = ''";
 			if( wcfm_is_vendor() ) { 
-				$enquiry_query .= " AND `vendor_id` = {$vendor_id}";
+				$enquiry_query .= " AND `vendor_id` = %d";
+				$enquiry_query = $wpdb->prepare( $enquiry_query, $vendor_id );
 			}
 			$enquiry_query = apply_filters( 'wcfm_enquery_list_query', $enquiry_query );
 			$enquiry_query .= " ORDER BY wcfm_enquiries.`ID` DESC";
@@ -555,14 +591,14 @@ class WCFM_Enquiry {
 					  	$counter = 0;
 							foreach($wcfm_enquirys_array as $wcfm_enquirys_single) {
 								if( $counter == 5 ) break;
-								echo '<div class="wcfm_dashboard_enquiry"><a href="' . get_wcfm_enquiry_manage_url($wcfm_enquirys_single->ID) . '" class="wcfm_dashboard_item_title"><span class="wcfmfa fa-question-circle"></span>' . substr( $wcfm_enquirys_single->enquiry, 0, 60 ) . ' ...</a></div>';
+								echo '<div class="wcfm_dashboard_enquiry"><a href="' . esc_url(get_wcfm_enquiry_manage_url($wcfm_enquirys_single->ID)). '" class="wcfm_dashboard_item_title"><span class="wcfmfa fa-question-circle"></span>' . wp_kses_post(substr( $wcfm_enquirys_single->enquiry, 0, 60 )) . ' ...</a></div>';
 								$counter++;
 							}
 							if( count( $wcfm_enquirys_array ) > 5 ) {
-								echo '<div class="wcfm_dashboard_enquiry_show_all"><a class="wcfm_submit_button" href="' . get_wcfm_enquiry_url() . '">' . __( 'Show All', 'wc-frontend-manager' ) . '</a></div>';
+								echo '<div class="wcfm_dashboard_enquiry_show_all"><a class="wcfm_submit_button" href="' . esc_url(get_wcfm_enquiry_url()) . '">' . esc_html__( 'Show All', 'wc-frontend-manager' ) . '</a></div>';
 							}
 						} else {
-							_e( 'There is no enquiry yet!!', 'wc-frontend-manager' );
+							esc_html_e( 'There is no enquiry yet!!', 'wc-frontend-manager' );
 						}
 						?>
 					</div>
@@ -577,6 +613,12 @@ class WCFM_Enquiry {
    */
 	function wcfm_enquiry_form_content() {
 		global $WCFM, $wp, $_POST;
+		
+		if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+			echo '{"status": false, "message": "' . esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) . '"}';
+			wp_die();
+		}
+		
 		$product_id = absint($_POST['product']);
 		$vendor_id  = absint($_POST['store']);
 		
@@ -597,16 +639,16 @@ class WCFM_Enquiry {
 			$wcfm_options = $WCFM->wcfm_options;
 			$wcfm_enquiry_allow_attachment = isset( $wcfm_options['wcfm_enquiry_allow_attachment'] ) ? $wcfm_options['wcfm_enquiry_allow_attachment'] : 'yes';
 			if( ( $wcfm_enquiry_allow_attachment == 'yes' ) && apply_filters( 'wcfm_is_allow_enquiry_reply_attachment', true ) ) {
-				$wcfm_enquiry_attachments = $wpdb->get_results( "SELECT value from {$wpdb->prefix}wcfm_enquiries_response_meta WHERE `key` = 'attchment' AND `enquiry_response_id` = " . $wcfm_enquiry_reply_id );
+				$wcfm_enquiry_attachments = $wpdb->get_results( $wpdb->prepare( "SELECT value from {$wpdb->prefix}wcfm_enquiries_response_meta WHERE `key` = 'attchment' AND `enquiry_response_id` = %d", $wcfm_enquiry_reply_id ) );
 				if( !empty( $wcfm_enquiry_attachments ) ) {
 					foreach( $wcfm_enquiry_attachments as $wcfm_enquiry_attachment ) {
 						if( $wcfm_enquiry_attachment->value ) {
 							$attachments = maybe_unserialize( $wcfm_enquiry_attachment->value );
 							if( $attachments && is_array( $attachments ) && !empty( $attachments ) ) {
 								if( $context == 'view' ) {
-									echo '<div class="wcfm_clearfix"></div><br /><h2 style="font-size:15px;">' . __( 'Attachment(s)', 'wc-frontend-manager' ) . '</h2><div class="wcfm_clearfix"></div>';
+									echo '<div class="wcfm_clearfix"></div><br /><h2 style="font-size:15px;">' . esc_html__( 'Attachment(s)', 'wc-frontend-manager' ) . '</h2><div class="wcfm_clearfix"></div>';
 									foreach( $attachments as $attachment ) {
-										echo '<a class="wcfm-wp-fields-uploader wcfm_linked_attached" target="_blank" style="width:32px;height:32px;margin-right:10px;" href="' . $attachment . '"><span style="font-size:32px;color:	#f86c6b;display:inline-block;" class="wcfmfa fa-file-image"></span></a>';
+										echo '<a class="wcfm-wp-fields-uploader wcfm_linked_attached" target="_blank" style="width:32px;height:32px;margin-right:10px;" href="' . esc_url($attachment) . '"><span style="font-size:32px;color:	#f86c6b;display:inline-block;" class="wcfmfa fa-file-image"></span></a>';
 									}
 									return;
 								}

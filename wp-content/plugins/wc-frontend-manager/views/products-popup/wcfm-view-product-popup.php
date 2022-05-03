@@ -157,7 +157,7 @@ $wcfm_wpml_edit_disable_element = '';
 							<?php if( apply_filters( 'wcfm_is_allow_category', true ) && apply_filters( 'wcfm_is_allow_pm_category', true ) ) { ?>
 								<?php if( apply_filters( 'wcfm_is_allow_product_category', true ) ) { $ptax_custom_arrtibutes = apply_filters( 'wcfm_taxonomy_custom_attributes', array(), 'product_cat' ); ?>
 									<p class="wcfm_title"><strong><?php echo apply_filters( 'wcfm_taxonomy_custom_label', __( 'Categories', 'wc-frontend-manager' ), 'product_cat' ); ?></strong></p><label class="screen-reader-text" for="product_cats"><?php echo apply_filters( 'wcfm_taxonomy_custom_label', __( 'Categories', 'wc-frontend-manager' ), 'product_cat' ); ?></label>
-									<select id="product_cats" name="product_cats[]" class="wcfm-select wcfm_ele simple variable external grouped booking" multiple="multiple" data-catlimit="<?php echo $catlimit; ?>" <?php echo implode( ' ', $ptax_custom_arrtibutes ); ?> style="width: 100%; margin-bottom: 10px;">
+									<select id="product_cats" name="product_cats[]" class="wcfm-select wcfm_ele simple variable external grouped booking" multiple="multiple" data-catlimit="<?php echo esc_attr($catlimit); ?>" <?php echo implode( ' ', $ptax_custom_arrtibutes ); ?> style="width: 100%; margin-bottom: 10px;">
 										<?php
 											if ( $product_categories ) {
 												$WCFM->library->generateTaxonomyHTML( 'product_cat', $product_categories, $categories );
@@ -187,8 +187,8 @@ $wcfm_wpml_edit_disable_element = '';
 														$ptax_custom_arrtibutes = apply_filters( 'wcfm_taxonomy_custom_attributes', array(), $product_taxonomy->name );
 														$taxonomy_limit = apply_filters( 'wcfm_taxonomy_limit', -1, $product_taxonomy->name );
 														?>
-														<p class="wcfm_title"><strong><?php echo apply_filters( 'wcfm_taxonomy_custom_label', __( $product_taxonomy->label, 'wc-frontend-manager' ), $product_taxonomy->name ); ?></strong></p><label class="screen-reader-text" for="<?php echo $product_taxonomy->name; ?>"><?php echo apply_filters( 'wcfm_taxonomy_custom_label', __( $product_taxonomy->label, 'wc-frontend-manager' ), $product_taxonomy->name ); ?></label>
-														<select id="<?php echo $product_taxonomy->name; ?>" name="product_custom_taxonomies[<?php echo $product_taxonomy->name; ?>][]" class="wcfm-select product_taxonomies wcfm_ele simple variable external grouped booking" multiple="multiple" data-catlimit="<?php echo $taxonomy_limit; ?>" <?php echo implode( ' ', $ptax_custom_arrtibutes ); ?> style="width: 100%; margin-bottom: 10px;">
+														<p class="wcfm_title"><strong><?php echo apply_filters( 'wcfm_taxonomy_custom_label', __( $product_taxonomy->label, 'wc-frontend-manager' ), $product_taxonomy->name ); ?></strong></p><label class="screen-reader-text" for="<?php echo esc_attr($product_taxonomy->name); ?>"><?php echo apply_filters( 'wcfm_taxonomy_custom_label', __( $product_taxonomy->label, 'wc-frontend-manager' ), $product_taxonomy->name ); ?></label>
+														<select id="<?php echo esc_attr($product_taxonomy->name); ?>" name="product_custom_taxonomies[<?php echo esc_attr($product_taxonomy->name); ?>][]" class="wcfm-select product_taxonomies wcfm_ele simple variable external grouped booking" multiple="multiple" data-catlimit="<?php echo esc_attr($taxonomy_limit); ?>" <?php echo implode( ' ', $ptax_custom_arrtibutes ); ?> style="width: 100%; margin-bottom: 10px;">
 															<?php
 																$product_taxonomy_terms   = get_terms( $product_taxonomy->name, 'orderby=name&hide_empty=0&parent=0' );
 																if ( $product_taxonomy_terms ) {

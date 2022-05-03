@@ -69,7 +69,8 @@ jQuery(document).ready(function($) {
 				d.report_vendor     = $report_vendor,
 				d.report_membership = $report_membership,
 				d.filter_date_form  = $filter_date_form,
-				d.filter_date_to    = $filter_date_to
+				d.filter_date_to    = $filter_date_to,
+				d.wcfm_ajax_nonce   = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -112,8 +113,9 @@ jQuery(document).ready(function($) {
 					}
 				});
 				var data = {
-					action       : 'wcfm_vendor_enable',
-					memberid     : $(this).data('memberid'),
+					action           : 'wcfm_vendor_enable',
+					memberid         : $(this).data('memberid'),
+					wcfm_ajax_nonce  : wcfm_params.wcfm_ajax_nonce
 				}	
 				$.post(wcfm_params.ajax_url, data, function(response) {
 					if(response) {
@@ -136,8 +138,9 @@ jQuery(document).ready(function($) {
 					}
 				});
 				var data = {
-					action       : 'wcfm_vendor_disable',
-					memberid     : $(this).data('memberid'),
+					action           : 'wcfm_vendor_disable',
+					memberid         : $(this).data('memberid'),
+					wcfm_ajax_nonce  : wcfm_params.wcfm_ajax_nonce
 				}	
 				$.post(wcfm_params.ajax_url, data, function(response) {
 					if(response) {
@@ -160,8 +163,9 @@ jQuery(document).ready(function($) {
 					}
 				});
 				var data = {
-					action       : 'wcfm_vendor_store_offline',
-					memberid     : $(this).data('memberid'),
+					action            : 'wcfm_vendor_store_offline',
+					memberid          : $(this).data('memberid'),
+					wcfm_ajax_nonce   : wcfm_params.wcfm_ajax_nonce
 				}	
 				$.post(wcfm_params.ajax_url, data, function(response) {
 					if(response) {
@@ -184,8 +188,9 @@ jQuery(document).ready(function($) {
 					}
 				});
 				var data = {
-					action       : 'wcfm_vendor_store_online',
-					memberid     : $(this).data('memberid'),
+					action            : 'wcfm_vendor_store_online',
+					memberid          : $(this).data('memberid'),
+					wcfm_ajax_nonce   : wcfm_params.wcfm_ajax_nonce
 				}	
 				$.post(wcfm_params.ajax_url, data, function(response) {
 					if(response) {

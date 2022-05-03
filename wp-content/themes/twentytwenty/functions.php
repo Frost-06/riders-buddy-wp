@@ -141,6 +141,19 @@ function twentytwenty_theme_support() {
 	 */
 	$loader = new TwentyTwenty_Script_Loader();
 	add_filter( 'script_loader_tag', array( $loader, 'filter_script_loader_tag' ), 10, 2 );
+	
+	add_filter( 'woocommerce_bookings_booking_cost_string', 'change_bookings_booking_cost_string', 10, 2 );
+	function change_bookings_booking_cost_string( $cost_string, $product ) {
+		$raw_price       = $product->get_price();
+		$display_price   = wc_get_price_to_display($product);
+		$price_suffix    = $product->get_price_suffix();
+		$formatted_price = wc_price($display_price) . $price_suffix;
+		$sale_price       = $product->get_price();
+
+		$sale_price = $product->get_sale_price(); // Replace by your code variables 
+
+		return $cost_string . ' ' . $sale_price; // Always return (never echo)
+	}
 
 }
 

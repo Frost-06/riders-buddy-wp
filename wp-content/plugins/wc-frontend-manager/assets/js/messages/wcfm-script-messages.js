@@ -32,7 +32,8 @@ jQuery(document).ready( function($) {
 				action             : 'wcfm_ajax_controller',
 				controller         : 'wcfm-message-sent',
 				wcfm_messages      : wcfm_messages,
-				direct_to          : direct_to
+				direct_to          : direct_to,
+				wcfm_ajax_nonce    : wcfm_params.wcfm_ajax_nonce,
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {
@@ -106,7 +107,8 @@ jQuery(document).ready( function($) {
 				d.action            = 'wcfm_ajax_controller',
 				d.controller        = 'wcfm-messages',
 				d.message_status    = $message_status,
-				d.message_type      = $message_type
+				d.message_type      = $message_type,
+				d.wcfm_ajax_nonce   = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -140,7 +142,8 @@ jQuery(document).ready( function($) {
 		var data = {
 			action    : 'wcfm_messages_send_reply',
 			messageid : item.data( 'messageid' ),
-			authorid  : item.data( 'authorid' )
+			authorid  : item.data( 'authorid' ),
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 		}	
 		$.ajax({
 			type:		'POST',
@@ -178,7 +181,8 @@ jQuery(document).ready( function($) {
 									action             : 'wcfm_ajax_controller',
 									controller         : 'wcfm-message-sent',
 									wcfm_messages      : wcfm_messages,
-									direct_to          : direct_to
+									direct_to          : direct_to,
+									wcfm_ajax_nonce    : wcfm_params.wcfm_ajax_nonce,
 								}	
 								$.post(wcfm_params.ajax_url, data, function(response) {
 									if(response) {
@@ -228,7 +232,8 @@ jQuery(document).ready( function($) {
 		});
 		var data = {
 			action    : 'wcfm_messages_mark_read',
-			messageid : item.data('messageid')
+			messageid : item.data('messageid'),
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 		}	
 		$.ajax({
 			type:		'POST',
@@ -280,7 +285,8 @@ jQuery(document).ready( function($) {
 		if(rconfirm) { 
 			var data = {
 				action            : 'wcfm_messages_bulk_mark_read',
-				selected_messages : $selected_messages
+				selected_messages : $selected_messages,
+				wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 			}	
 			
 			$.ajax({
@@ -328,7 +334,8 @@ jQuery(document).ready( function($) {
 		if(rconfirm) { 
 			var data = {
 				action            : 'wcfm_messages_bulk_mark_delete',
-				selected_messages : $selected_messages
+				selected_messages : $selected_messages,
+				wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 			}	
 			
 			$.ajax({
@@ -369,7 +376,8 @@ jQuery(document).ready( function($) {
 		var data = {
 			action    : 'wcfmu_seller_verification_html',
 			messageid : item.data('messageid'),
-			vendorid  : item.data('vendorid')
+			vendorid  : item.data('vendorid'),
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 		}	
 		$.ajax({
 			type:		'POST',
@@ -391,7 +399,8 @@ jQuery(document).ready( function($) {
 							});
 							var data = {
 								action     : 'wcfmu_verification_response_update',
-								wcfm_verification_response_form : jQuery('#wcfm_verification_response_form').serialize()
+								wcfm_verification_response_form : jQuery('#wcfm_verification_response_form').serialize(),
+								wcfm_ajax_nonce       : wcfm_params.wcfm_ajax_nonce
 							}	
 							jQuery.post(wcfm_params.ajax_url, data, function(response) {
 								if(response) {
@@ -439,7 +448,8 @@ jQuery(document).ready( function($) {
 		});
 		var data = {
 			action    : 'wcfm_messages_delete',
-			messageid : item.data('messageid')
+			messageid : item.data('messageid'),
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 		}	
 		$.ajax({
 			type:		'POST',

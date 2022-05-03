@@ -26,7 +26,8 @@ jQuery(document).ready(function($) {
 			"url"    : wcfm_params.ajax_url,
 			"data"   : function( d ) {
 				d.action     = 'wcfm_ajax_controller',
-				d.controller = 'wcfm-reports-out-of-stock'
+				d.controller = 'wcfm-reports-out-of-stock',
+				d.wcfm_ajax_nonce = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -60,7 +61,8 @@ jQuery(document).ready(function($) {
 		});
 		var data = {
 			action : 'delete_wcfm_product',
-			proid : item.data('proid')
+			proid : item.data('proid'),
+			wcfm_ajax_nonce : wcfm_params.wcfm_ajax_nonce
 		}	
 		jQuery.ajax({
 			type:		'POST',

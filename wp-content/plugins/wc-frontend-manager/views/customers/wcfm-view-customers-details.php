@@ -125,7 +125,7 @@ if( isset( $wp->query_vars['wcfm-customers-details'] ) && !empty( $wp->query_var
 			<div class="wcfm-clearfix"></div>
 		</div>
 	  <div class="wcfm-clearfix"></div><br />
-	  <input type="hidden" name="wcfm_customer_id" value="<?php echo $customer_id; ?>" />
+	  <input type="hidden" name="wcfm_customer_id" value="<?php echo esc_attr($customer_id); ?>" />
 	  
 	  <?php do_action( 'begin_wcfm_customers_details' ); ?>
 	  

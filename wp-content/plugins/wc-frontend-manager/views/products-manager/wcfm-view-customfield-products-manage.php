@@ -37,8 +37,8 @@ if( $wcfm_product_custom_fields && is_array( $wcfm_product_custom_fields ) && !e
 		$allowed_product_type_classes = implode( " ", array_keys( $allowed_product_types ) );
 		$exclude_product_type_classes = "non-" . implode( " non-", $exclude_product_types );
 		?>
-		<div class="page_collapsible products_manage_<?php echo sanitize_title( $wcfm_product_custom_field['block_name'] ); ?> <?php echo $allowed_product_type_classes; ?> <?php echo $exclude_product_type_classes; ?>" id="wcfm_products_manage_form_<?php echo sanitize_title( $wcfm_product_custom_field['block_name'] ); ?>_head"><label class="wcfmfa fa-<?php echo ($wpcf_icons[$wpcf_index]) ? $wpcf_icons[$wpcf_index] : 'snowflake-o'; ?>"></label><?php echo wcfm_removeslashes( __( $wcfm_product_custom_field['block_name'], 'wc-frontend-manager') ); ?><span></span></div>
-		<div class="wcfm-container <?php echo $allowed_product_type_classes; ?> <?php echo $exclude_product_type_classes; ?>">
+		<div class="page_collapsible products_manage_<?php echo sanitize_title( $wcfm_product_custom_field['block_name'] ); ?> <?php echo esc_attr($allowed_product_type_classes); ?> <?php echo esc_attr($exclude_product_type_classes); ?>" id="wcfm_products_manage_form_<?php echo sanitize_title( $wcfm_product_custom_field['block_name'] ); ?>_head"><label class="wcfmfa fa-<?php echo ($wpcf_icons[$wpcf_index]) ? $wpcf_icons[$wpcf_index] : 'snowflake-o'; ?>"></label><?php echo wcfm_removeslashes( __( $wcfm_product_custom_field['block_name'], 'wc-frontend-manager') ); ?><span></span></div>
+		<div class="wcfm-container <?php echo esc_attr($allowed_product_type_classes); ?> <?php echo esc_attr($exclude_product_type_classes); ?>">
 			<div id="wcfm_products_manage_form_<?php echo sanitize_title( $wcfm_product_custom_field['block_name'] ); ?>_expander" class="wcfm-content">
 			  <h2><?php echo wcfm_removeslashes( __( $wcfm_product_custom_field['block_name'], 'wc-frontend-manager') ); ?></h2>
 				<div class="wcfm_clearfix"></div>
@@ -115,7 +115,7 @@ if( $wcfm_product_custom_fields && is_array( $wcfm_product_custom_fields ) && !e
 							break;
 							
 							case 'datepicker':
-								$WCFM->wcfm_fields->wcfm_generate_form_field(  apply_filters( 'wcfm_pm_custom_field', array( $field_id => array( 'label' => __( $wcfm_product_custom_block_field['label'], 'wc-frontend-manager') , 'name' => $field_name, 'custom_attributes' => $custom_attributes, 'type' => 'text', 'placeholder' => 'YYYY-MM-DD', 'class' => 'wcfm-text wcfm_ele wcfm_datepicker simple variable external grouped booking', 'label_class' => 'wcfm_title', 'value' => $field_value, 'hints' => __( $wcfm_product_custom_block_field['help_text'], 'wc-frontend-manager') ) ), $product_id, $wcfm_product_custom_block_field ) );
+								$WCFM->wcfm_fields->wcfm_generate_form_field(  apply_filters( 'wcfm_pm_custom_field', array( $field_id => array( 'label' => __( $wcfm_product_custom_block_field['label'], 'wc-frontend-manager') , 'name' => $field_name, 'custom_attributes' => $custom_attributes, 'type' => 'text', 'placeholder' => get_option( 'date_format' ), 'class' => 'wcfm-text wcfm_ele wcfm_datepicker simple variable external grouped booking', 'label_class' => 'wcfm_title', 'value' => $field_value, 'hints' => __( $wcfm_product_custom_block_field['help_text'], 'wc-frontend-manager') ) ), $product_id, $wcfm_product_custom_block_field ) );
 							break;
 							
 							case 'timepicker':

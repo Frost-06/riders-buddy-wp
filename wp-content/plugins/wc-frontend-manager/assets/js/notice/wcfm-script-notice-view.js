@@ -31,7 +31,8 @@ jQuery(document).ready( function($) {
 				action             : 'wcfm_ajax_controller',
 				controller         : 'wcfm-notice-reply',
 				topic_reply        : topic_reply,
-				topic_id           : topic_id
+				topic_id           : topic_id,
+				wcfm_ajax_nonce    : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {

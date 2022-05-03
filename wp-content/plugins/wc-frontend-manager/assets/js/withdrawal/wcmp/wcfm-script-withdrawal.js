@@ -27,7 +27,8 @@ jQuery(document).ready(function($) {
 			"url"    : wcfm_params.ajax_url,
 			"data"   : function( d ) {
 				d.action       = 'wcfm_ajax_controller',
-				d.controller   = 'wcfm-withdrawal'
+				d.controller   = 'wcfm-withdrawal',
+				d.wcfm_ajax_nonce = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -53,7 +54,8 @@ jQuery(document).ready(function($) {
 			action                      : 'wcfm_ajax_controller',
 			controller                  : 'wcfm-withdrawal-request',
 			wcfm_withdrawal_manage_form : $('#wcfm_withdrawal_manage_form').serialize(),
-			status                      : 'submit'
+			status                      : 'submit',
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce
 		}	
 		$.post(wcfm_params.ajax_url, data, function(response) {
 			if(response) {
