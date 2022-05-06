@@ -1,0 +1,20 @@
+2022-05-05T20:52:43+00:00 CRITICAL Allowed memory size of 134217728 bytes exhausted (tried to allocate 20480 bytes) in C:\xampp-new\htdocs\riders-buddy\riders-buddy-wp\wp-includes\rest-api\class-wp-rest-server.php on line 840
+
+2022-05-05T21:05:11+00:00 CRITICAL Uncaught Error: Call to a member function get_field_schema() on null in C:\xampp-new\htdocs\riders-buddy\riders-buddy-wp\wp-includes\rest-api\endpoints\class-wp-rest-users-controller.php:1498
+Stack trace:
+#0 C:\xampp-new\htdocs\riders-buddy\riders-buddy-wp\wp-includes\rest-api\endpoints\class-wp-rest-controller.php(387): WP_REST_Users_Controller->get_item_schema()
+#1 C:\xampp-new\htdocs\riders-buddy\riders-buddy-wp\wp-includes\rest-api\endpoints\class-wp-rest-controller.php(342): WP_REST_Controller->get_context_param()
+#2 C:\xampp-new\htdocs\riders-buddy\riders-buddy-wp\wp-includes\rest-api\endpoints\class-wp-rest-users-controller.php(1514): WP_REST_Controller->get_collection_params()
+#3 C:\xampp-new\htdocs\riders-buddy\riders-buddy-wp\wp-includes\rest-api\endpoints\class-wp-rest-users-controller.php(59): WP_REST_Users_Controller->get_collection_params()
+#4 C:\xampp-new\htdocs\riders-buddy\riders-buddy-wp\wp-includes\rest-api.php(265): WP_REST_Users_Controller->register_routes()
+#5 C:\xampp-new\htdocs\riders- in C:\xampp-new\htdocs\riders-buddy\riders-buddy-wp\wp-includes\rest-api\endpoints\class-wp-rest-users-controller.php on line 1498
+
+2022-05-05T21:06:07+00:00 CRITICAL Uncaught Error: Call to a member function get_field_schema() on null in C:\xampp-new\htdocs\riders-buddy\riders-buddy-wp\wp-includes\rest-api\endpoints\class-wp-rest-users-controller.php:1498
+Stack trace:
+#0 C:\xampp-new\htdocs\riders-buddy\riders-buddy-wp\wp-includes\rest-api\endpoints\class-wp-rest-controller.php(387): WP_REST_Users_Controller->get_item_schema()
+#1 C:\xampp-new\htdocs\riders-buddy\riders-buddy-wp\wp-includes\rest-api\endpoints\class-wp-rest-controller.php(342): WP_REST_Controller->get_context_param()
+#2 C:\xampp-new\htdocs\riders-buddy\riders-buddy-wp\wp-includes\rest-api\endpoints\class-wp-rest-users-controller.php(1514): WP_REST_Controller->get_collection_params()
+#3 C:\xampp-new\htdocs\riders-buddy\riders-buddy-wp\wp-includes\rest-api\endpoints\class-wp-rest-users-controller.php(59): WP_REST_Users_Controller->get_collection_params()
+#4 C:\xampp-new\htdocs\riders-buddy\riders-buddy-wp\wp-includes\rest-api.php(265): WP_REST_Users_Controller->register_routes()
+#5 C:\xampp-new\htdocs\riders- in C:\xampp-new\htdocs\riders-buddy\riders-buddy-wp\wp-includes\rest-api\endpoints\class-wp-rest-users-controller.php on line 1498
+

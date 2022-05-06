@@ -1,0 +1,2 @@
+2022-05-06T08:47:22+00:00 CRITICAL Allowed memory size of 134217728 bytes exhausted (tried to allocate 20480 bytes) in C:\xampp-new\htdocs\riders-buddy\riders-buddy-wp\wp-includes\rest-api\class-wp-rest-server.php on line 840
+

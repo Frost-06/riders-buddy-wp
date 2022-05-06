@@ -3,11 +3,11 @@ Contributors: wclovers
 Tags: woocommerce marketplace api, rest api, remote api, http api
 Donate link: https://www.paypal.me/wclovers/25usd
 Requires at least: 4.4
-Tested up to: 5.9
+Tested up to: 5.9.3
 WC requires at least: 3.0
-WC tested up to: 6.1.1
+WC tested up to: 6.4.1
 Requires PHP: 5.6
-Stable tag: 1.5.1
+Stable tag: 1.5.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -163,6 +163,20 @@ NONE.
 
 
 == Changelog ==
+
+= 1.5.3 =
+
+* Updated - 06/05/2022 *
+
+* Bug Fix Shipping Tracking route
+
+= 1.5.2 =
+
+* Updated - 05/05/2022 *
+
+* Minor bug fix.
+* Shipment Tracking rout condition check fixed.
+* All image sizes added to product route.
 
 = 1.5.1 =
 * Updated - 31/01/2022 *
@@ -358,6 +372,6 @@ NONE.
 
 == Upgrade Notice ==
 
-= 1.5.1 =
-* Minor Bug Fix
+= 1.5.3 =
 
+* Bug Fix Shipping Tracking route

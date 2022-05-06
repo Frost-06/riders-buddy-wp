@@ -776,7 +776,7 @@ class WCFM_REST_Order_Controller extends WCFM_REST_Controller {
   }
 
   public function update_shipment_tracking( $request ) {
-    global $WCFM, $WCFMu;
+    global $WCFM, $WCFMu, $WCFMd;
     
     $_POST['orderid'] = !empty($request['order_id']) ? $request['order_id'] : '';
 
@@ -796,16 +796,26 @@ class WCFM_REST_Order_Controller extends WCFM_REST_Controller {
     $_POST['tracking_data'] .= !empty($request['delivery_boy']) ? $request['delivery_boy'] : "";
     $_REQUEST['wcfm_ajax_nonce'] = wp_create_nonce( 'wcfm_ajax_nonce' );   
     define('WCFM_REST_API_CALL', TRUE);
-    $WCFMu->init_wcfmu();
-    $wcfm_tracking_data = $WCFMu->wcfmu_shipment_tracking->wcfm_wcfmmarketplace_order_mark_shipped();
-    
-    $order_id = absint( $wcfm_tracking_data['wcfm_tracking_order_id'] );
-    $order    = wc_get_order( $order_id );
-    $response = array('order_id' => $order_id);
-    $response['order_status'] = apply_filters( 'wcfm_current_order_status', $order->get_status(), $order->get_id() );
-    $response['tracking_data'] = $wcfm_tracking_data;
-    
-    return rest_ensure_response( $response );
+    if(WCFMapi_Dependencies::wcfmapi_ultimate_plugin_active_check()) {
+      $WCFMu->init_wcfmu();
+      $wcfm_tracking_data = $WCFMu->wcfmu_shipment_tracking->wcfm_wcfmmarketplace_order_mark_shipped();
+      $order_id = absint( $wcfm_tracking_data['wcfm_tracking_order_id'] );
+      $order    = wc_get_order( $order_id );
+      $response = array('order_id' => $order_id);
+      $response['order_status'] = apply_filters( 'wcfm_current_order_status', $order->get_status(), $order->get_id() );
+      $response['tracking_data'] = $wcfm_tracking_data;
+      
+      return rest_ensure_response( $response );
+    } elseif( !empty($request['delivery_boy']) ) {
+      $WCFMd->init_wcfmd();
+      $wcfm_tracking_data = $WCFMd->ajax->wcfmd_delivery_boy_assign();
+      $order_id = absint( $wcfm_tracking_data['wcfm_tracking_order_id'] );
+      $order    = wc_get_order( $order_id );
+      $response = array('order_id' => $order_id);
+      $response['order_status'] = apply_filters( 'wcfm_current_order_status', $order->get_status(), $order->get_id() );
+      $response['tracking_data'] = $wcfm_tracking_data;
+      return rest_ensure_response( $response );
+    }
 
   }
 

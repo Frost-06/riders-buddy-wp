@@ -43,11 +43,30 @@ class WCFMapi {
   function init_wcfm_api() {
   	
   	// Init Text Domain
-		$this->load_plugin_textdomain();
+	$this->load_plugin_textdomain();
   	
     $this->load_class( 'rest-controller' );
     $this->load_class( 'api-manager' );
     new WCFMapi_API_Manager();
+    add_filter("woocommerce_rest_prepare_product_object", array( &$this, "wcfmapi_prepare_product_images" ), 10, 3);
+	add_filter("wcfmapi_rest_prepare_product_object", array( &$this, "wcfmapi_prepare_product_images" ), 10, 3);
+  }
+
+  public function wcfmapi_prepare_product_images($response, $post, $request) {
+    global $_wp_additional_image_sizes;
+	
+    if (empty($response->data)) {
+      return $response;
+    }
+
+    foreach ($response->data['images'] as $key => $image) {
+      $image_urls = [];
+      foreach ($_wp_additional_image_sizes as $size => $value) {
+        $image_info = wp_get_attachment_image_src($image['id'], $size);
+        $response->data['images'][$key][$size] = $image_info[0];
+      }
+    }
+    return $response;
   }
 
   function modify_jwt_auth_plugin_response($data, $user) {
