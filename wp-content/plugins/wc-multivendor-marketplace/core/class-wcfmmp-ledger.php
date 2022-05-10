@@ -163,6 +163,11 @@ class WCFMmp_Ledger {
   public function wcfm_ledger_ajax_controller() {
   	global $WCFM, $WCFMmp;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
   	$controllers_path = $WCFMmp->plugin_path . 'controllers/ledger/';
   	
   	$controller = '';
@@ -170,6 +175,11 @@ class WCFMmp_Ledger {
   		$controller = sanitize_text_field( $_POST['controller'] );
   		switch( $controller ) {
   			case 'wcfm-ledger':
+  				if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+		
 					include_once( $controllers_path . 'wcfmmp-controller-ledger.php' );
 					new WCFMmp_Ledger_Controller();
   			break;

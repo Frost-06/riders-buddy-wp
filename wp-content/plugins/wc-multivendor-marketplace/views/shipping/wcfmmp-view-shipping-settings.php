@@ -187,11 +187,11 @@
             foreach ($vendor_all_shipping_zones as $key => $vendor_shipping_zones ){ ?>
             <tr>
               <td>
-                <a href="JavaScript:void(0);" data-user-id="<?php echo $user_id; ?>" data-zone-id="<?php echo $vendor_shipping_zones['zone_id']; ?>" class="vendor_edit_zone">
+                <a href="JavaScript:void(0);" data-user-id="<?php echo esc_attr($user_id); ?>" data-zone-id="<?php echo esc_attr($vendor_shipping_zones['zone_id']); ?>" class="vendor_edit_zone">
                   <?php _e( $vendor_shipping_zones['zone_name'], 'wc-multivendor-marketplace'); ?>
                 </a> 
                 <div class="row-actions">
-                  <a href="JavaScript:void(0);" data-user-id="<?php echo $user_id; ?>" data-zone-id="<?php echo $vendor_shipping_zones['zone_id']; ?>" class="vendor_edit_zone">
+                  <a href="JavaScript:void(0);" data-user-id="<?php echo esc_attr($user_id); ?>" data-zone-id="<?php echo esc_attr($vendor_shipping_zones['zone_id']); ?>" class="vendor_edit_zone">
                     <?php _e( 'Edit', 'wc-multivendor-marketplace' ); ?>
                   </a>
                 </div>
@@ -208,11 +208,11 @@
                     //print_r($vendor_shipping_methods_titles);
                     if(empty($vendor_shipping_methods)) { ?>
                       <span><?php _e('No method found&nbsp;', 'wc-multivendor-marketplace'); ?> </span> 
-                      <a href="JavaScript:void(0);" data-user-id="<?php echo $user_id; ?>" data-zone-id="<?php echo $vendor_shipping_zones['zone_id']; ?>" class="vendor_edit_zone"><?php _e(' Add Shipping Methods', 'wc-multivendor-marketplace'); ?></a>
+                      <a href="JavaScript:void(0);" data-user-id="<?php echo esc_attr($user_id); ?>" data-zone-id="<?php echo esc_attr($vendor_shipping_zones['zone_id']); ?>" class="vendor_edit_zone"><?php _e(' Add Shipping Methods', 'wc-multivendor-marketplace'); ?></a>
                     <?php  
                     } else { ?>
                       <div><?php _e($vendor_shipping_methods_titles, 'wc-multivendor-marketplace'); ?> </div> 
-                      <a href="JavaScript:void(0);" data-user-id="<?php echo $user_id; ?>" data-zone-id="<?php echo $vendor_shipping_zones['zone_id']; ?>" class="vendor_edit_zone"><?php _e(' Edit Shipping Methods', 'wc-multivendor-marketplace'); ?></a>
+                      <a href="JavaScript:void(0);" data-user-id="<?php echo esc_attr($user_id); ?>" data-zone-id="<?php echo esc_attr($vendor_shipping_zones['zone_id']); ?>" class="vendor_edit_zone"><?php _e(' Edit Shipping Methods', 'wc-multivendor-marketplace'); ?></a>
                     <?php }
                   ?> 
 

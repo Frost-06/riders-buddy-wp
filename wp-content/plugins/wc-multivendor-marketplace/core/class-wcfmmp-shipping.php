@@ -18,7 +18,7 @@ class WCFMmp_Shipping {
     add_action( 'wcfm_marketplace_shipping', array( &$this, 'wcfmmp_load_shipping_view' ) );
     
     //Save Vendor Shipping Settings
-    add_action('wcfm_vendor_settings_update' , array( &$this,'wcfmmp_vendor_shipping_settings_update' ), 10, 2 );
+    add_action('wcfm_vendor_settings_before_update' , array( &$this,'wcfmmp_vendor_shipping_settings_update' ), 10, 2 );
     add_action('wcfm_vendor_shipping_settings_update' , array( &$this,'wcfmmp_vendor_shipping_settings_update' ), 10, 2 );
      
     // Single Product page Shipping Info
@@ -349,8 +349,22 @@ class WCFMmp_Shipping {
     $id = $id[0];
     
     // Shipping Vendor Reference
-    if( $package_key ) {
+    if( $package_key && wcfm_is_vendor( $package_key ) ) {
     	$item->add_meta_data( 'vendor_id', $package_key, true );
+    } else { // Fetch Vendor Reference from Item
+    	if( apply_filters( 'wcfmmp_is_allow_shipping_package_meta_from_item', true ) ) {
+				if( isset( $package['contents'] ) ) {
+					foreach( $package['contents'] as $key => $pkg_values ) {
+						if( isset( $pkg_values['product_id'] ) ) {
+							$product_id = $pkg_values['product_id'];
+							$vendor_id = wcfm_get_vendor_id_by_post( $product_id );
+							if( $vendor_id ) {
+								$item->add_meta_data( 'vendor_id', $vendor_id, true );
+							}
+						}
+					}
+				}
+			}
     }
     
     $package_qty = array_sum( wp_list_pluck( $package['contents'], 'quantity' ) );
@@ -386,9 +400,22 @@ class WCFMmp_Shipping {
 		$wcfm_shipping_options = get_option( 'wcfm_shipping_options', array() );
 		$wcfmmp_store_shipping_enabled = isset( $wcfm_shipping_options['enable_store_shipping'] ) ? $wcfm_shipping_options['enable_store_shipping'] : 'yes';
 		if( $wcfmmp_store_shipping_enabled != 'yes' ) return $package_name;
+		
+		if( apply_filters( 'wcfmmp_is_allow_shipping_package_name_from_item', true ) ) {
+			if( !$vendor_id || ( $vendor_id != 0 ) || ( $vendor_id && !wcfm_is_vendor( $vendor_id ) ) ) {
+				if( isset( $package['contents'] ) ) {
+					foreach( $package['contents'] as $key => $pkg_values ) {
+						if( isset( $pkg_values['product_id'] ) ) {
+							$product_id = $pkg_values['product_id'];
+							$vendor_id = wcfm_get_vendor_id_by_post( $product_id );
+						}
+					}
+				}
+			}
+		}
     
     if ($vendor_id && $vendor_id != 0) {
-			if( $WCFMmp->wcfmmp_vendor->is_vendor_sold_by( $vendor_id ) ) {
+			if( wcfm_is_vendor( $vendor_id ) && $WCFMmp->wcfmmp_vendor->is_vendor_sold_by( $vendor_id ) ) {
 				
 				$min_amount   = 0;
 				$is_available = false;

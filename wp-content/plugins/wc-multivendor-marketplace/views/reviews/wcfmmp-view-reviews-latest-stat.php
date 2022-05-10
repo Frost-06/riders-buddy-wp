@@ -40,7 +40,7 @@ $latest_avatars = array_reverse( $latest_avatars );
 	<div class="famous_reviewers_pictures lft">
 	  <?php foreach( $latest_avatars as $latest_avatar ) { ?>
 		  <div class="famous_reviewers_picture lft">
-			  <img class="avatar image" src="<?php echo $latest_avatar; ?>" data-original="<?php echo $latest_avatar; ?>" style="display: block;">
+			  <img class="avatar image" src="<?php echo esc_url($latest_avatar); ?>" data-original="<?php echo esc_url($latest_avatar); ?>" style="display: block;">
 			</div>
 		<?php } ?>
 		<div class="spacer"></div>    

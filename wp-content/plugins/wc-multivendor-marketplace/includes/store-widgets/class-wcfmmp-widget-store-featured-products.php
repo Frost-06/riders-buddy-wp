@@ -124,7 +124,7 @@ class WCFMmp_Store_Featured_Product extends WP_Widget {
 			echo $before_widget;
 
 			if ( ! empty( $title ) ) {
-				echo $args['before_title'] . $title . $args['after_title'];
+				echo $args['before_title'] . wp_kses_post($title) . $args['after_title'];
 			}
 			
 			do_action( 'wcfmmp_store_before_sidebar_recent_products', $store_user->get_id() );
@@ -132,7 +132,7 @@ class WCFMmp_Store_Featured_Product extends WP_Widget {
 			echo wp_kses_post( apply_filters( 'woocommerce_before_widget_product_list', '<ul class="product_list_widget">' ) );
 
 			$template_args = array(
-				'widget_id'   => $args['widget_id'],
+				'widget_id'   => isset( $args['widget_id'] ) ? $args['widget_id'] : 'wcfmmp-store-featured-products-'.rand(10,100),
 				'show_rating' => true,
 			);
 
@@ -187,16 +187,16 @@ class WCFMmp_Store_Featured_Product extends WP_Widget {
 		$hide_free = $instance['hide_free'];
 		?>
 		<p>
-			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'wc-multivendor-marketplace' ); ?></label>
-			<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
+			<label for="<?php echo esc_attr($this->get_field_id( 'title' )); ?>"><?php _e( 'Title:', 'wc-multivendor-marketplace' ); ?></label>
+			<input class="widefat" id="<?php echo esc_attr($this->get_field_id( 'title' )); ?>" name="<?php echo esc_attr($this->get_field_name( 'title' )); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
 		</p>
 		<p>
-			<label for="<?php echo $this->get_field_id( 'number' ); ?>"><?php _e( 'Number of products to show:', 'wc-multivendor-marketplace' ); ?></label>
-			<input class="widefat" id="<?php echo $this->get_field_id( 'number' ); ?>" name="<?php echo $this->get_field_name( 'number' ); ?>" type="number" min="1" step="1" value="<?php echo esc_attr( $number ); ?>" />
+			<label for="<?php echo esc_attr($this->get_field_id( 'number' )); ?>"><?php _e( 'Number of products to show:', 'wc-multivendor-marketplace' ); ?></label>
+			<input class="widefat" id="<?php echo esc_attr($this->get_field_id( 'number' )); ?>" name="<?php echo esc_attr($this->get_field_name( 'number' )); ?>" type="number" min="1" step="1" value="<?php echo esc_attr( $number ); ?>" />
 		</p>
 		<p>
-			<label for="<?php echo $this->get_field_id( 'hide_free' ); ?>"><?php _e( 'Hide Free Products:', 'wc-multivendor-marketplace' ); ?></label>
-			<input class="widefat" id="<?php echo $this->get_field_id( 'hide_free' ); ?>" name="<?php echo $this->get_field_name( 'hide_free' ); ?>" type="checkbox" <?php checked( $hide_free, "yes" ); ?> value="yes" />
+			<label for="<?php echo esc_attr($this->get_field_id( 'hide_free' )); ?>"><?php _e( 'Hide Free Products:', 'wc-multivendor-marketplace' ); ?></label>
+			<input class="widefat" id="<?php echo esc_attr($this->get_field_id( 'hide_free' )); ?>" name="<?php echo esc_attr($this->get_field_name( 'hide_free' )); ?>" type="checkbox" <?php checked( $hide_free, "yes" ); ?> value="yes" />
 		</p>
 		<?php
 	}

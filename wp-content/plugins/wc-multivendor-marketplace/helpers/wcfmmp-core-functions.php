@@ -300,13 +300,13 @@ if ( ! function_exists( 'wcfmmp_content_nav' ) ) {
 			return;
 	
 		?>
-		<div id="<?php echo $nav_id; ?>">
+		<div id="<?php echo esc_attr($nav_id); ?>">
 	
 			<?php if ( $wp_query->max_num_pages > 1 && wcfmmp_is_store_page() ) : ?>
 					<?php wcfmmp_page_navi( '', '', $wp_query ); ?>
 			<?php endif; ?>
 	
-		</div><!-- #<?php echo $nav_id; ?> -->
+		</div><!-- #<?php echo esc_attr($nav_id); ?> -->
 		<?php
 	}
 }
@@ -344,10 +344,10 @@ if ( ! function_exists( 'wcfmmp_page_navi' ) ) {
 			$start_page = 1;
     }
 
-    echo $before . '<div class="paginations"><ul class="wcfmmp-pagination">' . "";
+    echo wp_kses_post($before) . '<div class="paginations"><ul class="wcfmmp-pagination">' . "";
     if ( $paged > 1 ) {
 			$first_page_text = "&laquo;";
-			echo '<li class="prev"><a href="' . get_pagenum_link() . '" title="First">' . $first_page_text . '</a></li>';
+			echo '<li class="prev"><a href="' . esc_url(get_pagenum_link()) . '" title="First">' . wp_kses_post($first_page_text) . '</a></li>';
     }
 
     /*$prevposts = get_previous_posts_link( '&larr; Previous' );
@@ -369,9 +369,9 @@ if ( ! function_exists( 'wcfmmp_page_navi' ) ) {
    // echo '</li>';
     //if ( $end_page < $max_page ) {
 			$last_page_text = "&raquo;";
-			echo '<li class="next"><a href="' . get_pagenum_link( $max_page ) . '" title="Last">' . $last_page_text . '</a></li>';
+			echo '<li class="next"><a href="' . get_pagenum_link( $max_page ) . '" title="Last">' . wp_kses_post($last_page_text) . '</a></li>';
     //}
-    echo '</ul></div>' . $after . "";
+    echo '</ul></div>' . wp_kses_post($after) . "";
   }
 }
 
@@ -667,11 +667,11 @@ function bp_wcfmmp_store_nav_item() {
 		$sold_by_text = $WCFMmp->wcfmmp_vendor->sold_by_label( $bp->displayed_user->id );
 		$wcfmmp_store_bp_menu_class = apply_filters( 'wcfmmp_store_bp_menu_classes', 'yz-navbar-item' );
 		?>
-		<li id="wcfmmp-store-personal-li" class="bp-personal-tab <?php echo $wcfmmp_store_bp_menu_class; ?>">
+		<li id="wcfmmp-store-personal-li" class="bp-personal-tab <?php echo esc_attr($wcfmmp_store_bp_menu_class); ?>">
 		  <?php do_action( 'wcfmmp_store_bp_menu_before', $bp->displayed_user->id ); ?>
 		  <a href="<?php echo wcfmmp_get_store_url( $bp->displayed_user->id ); ?>">
 		    <?php do_action( 'wcfmmp_store_bp_menu_anchor_before', $bp->displayed_user->id ); ?>
-		    <?php echo $sold_by_text; ?> 
+		    <?php echo esc_attr($sold_by_text); ?> 
 		    <?php do_action( 'wcfmmp_store_bp_menu_anchor_after', $bp->displayed_user->id ); ?>
 		  </a>
 		  <?php do_action( 'wcfmmp_store_bp_menu_after', $bp->displayed_user->id ); ?>
@@ -764,7 +764,7 @@ function wcfmmp_product_location_show() {
 			echo '</div>';
 			?>
 			<style>
-			  #<?php echo $map_id; ?>{width:100%!important;height:450px!important;}
+			  #<?php echo esc_attr($map_id); ?>{width:100%!important;height:450px!important;}
 			</style>
 			<?php
 			wp_enqueue_script( 'wcfmmp_store_js', $WCFMmp->library->js_lib_url_min . 'store/wcfmmp-script-store.js', array('jquery' ), $WCFMmp->version, true );
@@ -777,7 +777,7 @@ function wcfmmp_product_location_show() {
 			$default_lat         = isset( $default_geolocation['lat'] ) ? esc_attr( $default_geolocation['lat'] ) : apply_filters( 'wcfmmp_map_default_lat', 30.0599153 );
 			$default_lng         = isset( $default_geolocation['lng'] ) ? esc_attr( $default_geolocation['lng'] ) : apply_filters( 'wcfmmp_map_default_lng', 31.2620199 );
 			$default_zoom        =  apply_filters( 'wcfmmp_map_default_zoom_level', 17 );
-			$store_icon          = apply_filters( 'wcfmmp_map_store_icon', $WCFMmp->plugin_url . 'assets/images/wcfmmp_map_icon.png', 0, '' );
+			$store_icon          = apply_filters( 'wcfmmp_map_store_icon', esc_url($WCFMmp->plugin_url . 'assets/images/wcfmmp_map_icon.png'), 0, '' );
 			
 			wp_localize_script( 'wcfmmp_store_js', 'wcfmmp_store_map_options', array( 'default_lat' => $default_lat, 'default_lng' => $default_lng, 'default_zoom' => absint( $default_zoom ), 'store_icon' => $store_icon, 'icon_width' => apply_filters( 'wcfmmp_map_icon_width', 40 ), 'icon_height' => apply_filters( 'wcfmmp_map_icon_height', 57 ), 'is_poi' => apply_filters( 'wcfmmp_is_allow_map_poi', true ), 'is_allow_scroll_zoom' => apply_filters( 'wcfmmp_is_allow_map_scroll_zoom', true ), 'is_rtl' => is_rtl() ) );
 		}
@@ -934,12 +934,12 @@ if(!function_exists('wcfmmp_get_shipping_processing_times')) {
 
 if(!function_exists('wcfmmp_get_shipping_methods')) {
   function wcfmmp_get_shipping_methods( ) {
-    return apply_filters( 'vendor_shipping_methods', array(
+    return apply_filters( 'wcfmmp_vendor_shipping_methods', apply_filters( 'vendor_shipping_methods', array(
 																														''  => __('-- Select a Method --', 'wc-multivendor-marketplace'),
 																														'flat_rate' => __('Flat Rate', 'wc-multivendor-marketplace'),
 																														'local_pickup' => __('Local Pickup', 'wc-multivendor-marketplace'),
 																														'free_shipping' => __('Free Shipping', 'wc-multivendor-marketplace')
-																													) );
+																													) ) );
   }
 }
 
@@ -953,7 +953,7 @@ if(!function_exists('wcfmmp_is_shipping_enabled')) {
     
     $vendor_shipping_details = get_user_meta( $vendor_id, '_wcfmmp_shipping', true );
     if( !empty($vendor_shipping_details) ){
-      $enabled = isset( $vendor_shipping_details['_wcfmmp_user_shipping_enable'] ) ? 'yes' : '';
+      $enabled = isset( $vendor_shipping_details['_wcfmmp_user_shipping_enable'] ) ? $vendor_shipping_details['_wcfmmp_user_shipping_enable'] : '';
       $type = !empty( $vendor_shipping_details['_wcfmmp_user_shipping_type'] ) ? $vendor_shipping_details['_wcfmmp_user_shipping_type'] : '';
       if ( ( !empty($enabled) && $enabled == 'yes' ) && ( !empty($type) ) && '' != $type ) {
          return apply_filters( 'wcfmmp_is_shipping_enabled', true, $vendor_id );
@@ -989,9 +989,9 @@ function wcfmmp_get_user_vendor_distance( $store_id ) {
 		
 		$store_query .= " inner join {$wpdb->usermeta} as wcfmmplat on {$wpdb->users}.ID = wcfmmplat.user_id and wcfmmplat.meta_key = '_wcfm_store_lat'";
 		$store_query .= " inner join {$wpdb->usermeta} as wcfmmplong on {$wpdb->users}.ID = wcfmmplong.user_id and wcfmmplong.meta_key = '_wcfm_store_lng'";
-		$store_query .= " WHERE {$wpdb->users}.ID = {$store_id}";
+		$store_query .= " WHERE {$wpdb->users}.ID = %d";
 		
-		$distance = $wpdb->get_results( $store_query );
+		$distance = $wpdb->get_results( $wpdb->prepare($store_query, $store_id) );
 		if( isset($distance[0] ) ) {
 			if( $distance[0]->wcfmmp_distance ) {
 				$distance = round( $distance[0]->wcfmmp_distance, 2 );

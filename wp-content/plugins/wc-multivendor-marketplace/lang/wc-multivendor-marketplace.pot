@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce Multivendor Marketplace\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-27 23:33+0000\n"
+"POT-Creation-Date: 2020-11-08 14:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -64,27 +64,27 @@ msgstr ""
 msgid "Commission"
 msgstr ""
 
-#: core/class-wcfmmp-admin.php:401 core/class-wcfmmp-admin.php:533 core/class-wcfmmp-admin.php:618 core/class-wcfmmp-admin.php:691 core/class-wcfmmp-frontend.php:583 core/class-wcfmmp-product.php:133 core/class-wcfmmp-product.php:198 core/class-wcfmmp-vendor.php:944 core/class-wcfmmp-vendor.php:962 core/class-wcfmmp-vendor.php:987
+#: core/class-wcfmmp-admin.php:401 core/class-wcfmmp-admin.php:533 core/class-wcfmmp-admin.php:618 core/class-wcfmmp-admin.php:691 core/class-wcfmmp-frontend.php:585 core/class-wcfmmp-product.php:133 core/class-wcfmmp-product.php:198 core/class-wcfmmp-vendor.php:944 core/class-wcfmmp-vendor.php:962 core/class-wcfmmp-vendor.php:987
 msgid "By Global Rule"
 msgstr ""
 
-#: core/class-wcfmmp-admin.php:427 core/class-wcfmmp-admin.php:633 core/class-wcfmmp-admin.php:710 core/class-wcfmmp-frontend.php:619 core/class-wcfmmp-product.php:166 core/class-wcfmmp-settings.php:507 core/class-wcfmmp-vendor.php:1011
+#: core/class-wcfmmp-admin.php:427 core/class-wcfmmp-admin.php:633 core/class-wcfmmp-admin.php:710 core/class-wcfmmp-frontend.php:621 core/class-wcfmmp-product.php:166 core/class-wcfmmp-settings.php:507 core/class-wcfmmp-vendor.php:1011
 msgid "Commission For"
 msgstr ""
 
-#: core/class-wcfmmp-admin.php:429 core/class-wcfmmp-admin.php:635 core/class-wcfmmp-admin.php:710 core/class-wcfmmp-frontend.php:619 core/class-wcfmmp-product.php:166 core/class-wcfmmp-settings.php:507 includes/payment-gateways/class-wcfmmp-gateway-wirecard.php:147
+#: core/class-wcfmmp-admin.php:429 core/class-wcfmmp-admin.php:635 core/class-wcfmmp-admin.php:710 core/class-wcfmmp-frontend.php:621 core/class-wcfmmp-product.php:166 core/class-wcfmmp-settings.php:507 includes/payment-gateways/class-wcfmmp-gateway-wirecard.php:147
 msgid "Vendor"
 msgstr ""
 
-#: core/class-wcfmmp-admin.php:429 core/class-wcfmmp-admin.php:635 core/class-wcfmmp-admin.php:710 core/class-wcfmmp-frontend.php:619 core/class-wcfmmp-product.php:166 core/class-wcfmmp-settings.php:507 includes/payment-gateways/class-wcfmmp-gateway-wirecard.php:146
+#: core/class-wcfmmp-admin.php:429 core/class-wcfmmp-admin.php:635 core/class-wcfmmp-admin.php:710 core/class-wcfmmp-frontend.php:621 core/class-wcfmmp-product.php:166 core/class-wcfmmp-settings.php:507 includes/payment-gateways/class-wcfmmp-gateway-wirecard.php:146
 msgid "Admin"
 msgstr ""
 
-#: core/class-wcfmmp-admin.php:431 core/class-wcfmmp-admin.php:637 core/class-wcfmmp-admin.php:710 core/class-wcfmmp-frontend.php:619 core/class-wcfmmp-product.php:166 core/class-wcfmmp-vendor.php:1011
+#: core/class-wcfmmp-admin.php:431 core/class-wcfmmp-admin.php:637 core/class-wcfmmp-admin.php:710 core/class-wcfmmp-frontend.php:621 core/class-wcfmmp-product.php:166 core/class-wcfmmp-vendor.php:1011
 msgid "Always applicable as per global rule."
 msgstr ""
 
-#: core/class-wcfmmp-admin.php:434 core/class-wcfmmp-admin.php:549 core/class-wcfmmp-admin.php:640 core/class-wcfmmp-admin.php:714 core/class-wcfmmp-frontend.php:620 core/class-wcfmmp-product.php:167 core/class-wcfmmp-product.php:205 core/class-wcfmmp-settings.php:508 core/class-wcfmmp-vendor.php:1012
+#: core/class-wcfmmp-admin.php:434 core/class-wcfmmp-admin.php:549 core/class-wcfmmp-admin.php:640 core/class-wcfmmp-admin.php:714 core/class-wcfmmp-frontend.php:622 core/class-wcfmmp-product.php:167 core/class-wcfmmp-product.php:205 core/class-wcfmmp-settings.php:508 core/class-wcfmmp-vendor.php:1012
 msgid "Commission Mode"
 msgstr ""
 
@@ -92,31 +92,31 @@ msgstr ""
 msgid "Keep this as Global to apply commission rule as per vendor or marketplace commission setup."
 msgstr ""
 
-#: core/class-wcfmmp-admin.php:441 core/class-wcfmmp-admin.php:563 core/class-wcfmmp-admin.php:647 core/class-wcfmmp-admin.php:718 core/class-wcfmmp-frontend.php:621 core/class-wcfmmp-frontend.php:627 core/class-wcfmmp-frontend.php:634 core/class-wcfmmp-frontend.php:641 core/class-wcfmmp-product.php:168 core/class-wcfmmp-product.php:206 core/class-wcfmmp-settings.php:509 core/class-wcfmmp-settings.php:515 core/class-wcfmmp-settings.php:522 core/class-wcfmmp-settings.php:529 core/class-wcfmmp-vendor.php:1013 core/class-wcfmmp-vendor.php:1019 core/class-wcfmmp-vendor.php:1026 core/class-wcfmmp-vendor.php:1033
+#: core/class-wcfmmp-admin.php:441 core/class-wcfmmp-admin.php:563 core/class-wcfmmp-admin.php:647 core/class-wcfmmp-admin.php:718 core/class-wcfmmp-frontend.php:623 core/class-wcfmmp-frontend.php:629 core/class-wcfmmp-frontend.php:636 core/class-wcfmmp-frontend.php:643 core/class-wcfmmp-product.php:168 core/class-wcfmmp-product.php:206 core/class-wcfmmp-settings.php:509 core/class-wcfmmp-settings.php:515 core/class-wcfmmp-settings.php:522 core/class-wcfmmp-settings.php:529 core/class-wcfmmp-vendor.php:1013 core/class-wcfmmp-vendor.php:1019 core/class-wcfmmp-vendor.php:1026 core/class-wcfmmp-vendor.php:1033
 msgid "Commission Percent(%)"
 msgstr ""
 
-#: core/class-wcfmmp-admin.php:447 core/class-wcfmmp-admin.php:577 core/class-wcfmmp-admin.php:653 core/class-wcfmmp-admin.php:722 core/class-wcfmmp-frontend.php:622 core/class-wcfmmp-frontend.php:628 core/class-wcfmmp-frontend.php:635 core/class-wcfmmp-frontend.php:642 core/class-wcfmmp-product.php:169 core/class-wcfmmp-product.php:207 core/class-wcfmmp-settings.php:510 core/class-wcfmmp-settings.php:516 core/class-wcfmmp-settings.php:523 core/class-wcfmmp-settings.php:530 core/class-wcfmmp-vendor.php:1014 core/class-wcfmmp-vendor.php:1020 core/class-wcfmmp-vendor.php:1027 core/class-wcfmmp-vendor.php:1034
+#: core/class-wcfmmp-admin.php:447 core/class-wcfmmp-admin.php:577 core/class-wcfmmp-admin.php:653 core/class-wcfmmp-admin.php:722 core/class-wcfmmp-frontend.php:624 core/class-wcfmmp-frontend.php:630 core/class-wcfmmp-frontend.php:637 core/class-wcfmmp-frontend.php:644 core/class-wcfmmp-product.php:169 core/class-wcfmmp-product.php:207 core/class-wcfmmp-settings.php:510 core/class-wcfmmp-settings.php:516 core/class-wcfmmp-settings.php:523 core/class-wcfmmp-settings.php:530 core/class-wcfmmp-vendor.php:1014 core/class-wcfmmp-vendor.php:1020 core/class-wcfmmp-vendor.php:1027 core/class-wcfmmp-vendor.php:1034
 msgid "Commission Fixed"
 msgstr ""
 
-#: core/class-wcfmmp-admin.php:453 core/class-wcfmmp-admin.php:659 core/class-wcfmmp-admin.php:725 core/class-wcfmmp-frontend.php:652 core/class-wcfmmp-product.php:173 core/class-wcfmmp-settings.php:540 core/class-wcfmmp-vendor.php:1043
+#: core/class-wcfmmp-admin.php:453 core/class-wcfmmp-admin.php:659 core/class-wcfmmp-admin.php:725 core/class-wcfmmp-frontend.php:654 core/class-wcfmmp-product.php:173 core/class-wcfmmp-settings.php:540 core/class-wcfmmp-vendor.php:1043
 msgid "Commission Tax Settings"
 msgstr ""
 
-#: core/class-wcfmmp-admin.php:455 core/class-wcfmmp-admin.php:661 core/class-wcfmmp-admin.php:728 core/class-wcfmmp-frontend.php:653 core/class-wcfmmp-product.php:174 core/class-wcfmmp-settings.php:545 core/class-wcfmmp-settings.php:1073 core/class-wcfmmp-settings.php:1086 core/class-wcfmmp-settings.php:1201 core/class-wcfmmp-settings.php:1324 core/class-wcfmmp-settings.php:1936 core/class-wcfmmp-settings.php:1950 core/class-wcfmmp-settings.php:1965 core/class-wcfmmp-vendor.php:1044
+#: core/class-wcfmmp-admin.php:455 core/class-wcfmmp-admin.php:661 core/class-wcfmmp-admin.php:728 core/class-wcfmmp-frontend.php:655 core/class-wcfmmp-product.php:174 core/class-wcfmmp-settings.php:545 core/class-wcfmmp-settings.php:1073 core/class-wcfmmp-settings.php:1086 core/class-wcfmmp-settings.php:1201 core/class-wcfmmp-settings.php:1324 core/class-wcfmmp-settings.php:1936 core/class-wcfmmp-settings.php:1950 core/class-wcfmmp-settings.php:1965 core/class-wcfmmp-vendor.php:1044
 msgid "Enable"
 msgstr ""
 
-#: core/class-wcfmmp-admin.php:461 core/class-wcfmmp-admin.php:667 core/class-wcfmmp-admin.php:732 core/class-wcfmmp-frontend.php:654 core/class-wcfmmp-product.php:175 core/class-wcfmmp-settings.php:546 core/class-wcfmmp-vendor.php:1046
+#: core/class-wcfmmp-admin.php:461 core/class-wcfmmp-admin.php:667 core/class-wcfmmp-admin.php:732 core/class-wcfmmp-frontend.php:656 core/class-wcfmmp-product.php:175 core/class-wcfmmp-settings.php:546 core/class-wcfmmp-vendor.php:1046
 msgid "Tax Label"
 msgstr ""
 
-#: core/class-wcfmmp-admin.php:463 core/class-wcfmmp-admin.php:669 core/class-wcfmmp-admin.php:732 core/class-wcfmmp-frontend.php:654 core/class-wcfmmp-product.php:175 core/class-wcfmmp-settings.php:546 core/class-wcfmmp-vendor.php:1046
+#: core/class-wcfmmp-admin.php:463 core/class-wcfmmp-admin.php:669 core/class-wcfmmp-admin.php:732 core/class-wcfmmp-frontend.php:656 core/class-wcfmmp-product.php:175 core/class-wcfmmp-settings.php:546 core/class-wcfmmp-vendor.php:1046
 msgid "Tax"
 msgstr ""
 
-#: core/class-wcfmmp-admin.php:467 core/class-wcfmmp-admin.php:673 core/class-wcfmmp-admin.php:736 core/class-wcfmmp-frontend.php:655 core/class-wcfmmp-product.php:176 core/class-wcfmmp-settings.php:547 core/class-wcfmmp-vendor.php:1047
+#: core/class-wcfmmp-admin.php:467 core/class-wcfmmp-admin.php:673 core/class-wcfmmp-admin.php:736 core/class-wcfmmp-frontend.php:657 core/class-wcfmmp-product.php:176 core/class-wcfmmp-settings.php:547 core/class-wcfmmp-vendor.php:1047
 msgid "Tax Percent (%)"
 msgstr ""
 
@@ -142,7 +142,7 @@ msgstr ""
 msgid "<b>%s</b> order item <b>%s</b> status updated to <b>%s</b> by <b>%s</b>"
 msgstr ""
 
-#: core/class-wcfmmp-ajax.php:160 core/class-wcfmmp-commission.php:881
+#: core/class-wcfmmp-ajax.php:160 core/class-wcfmmp-commission.php:882
 #, php-format
 msgid "<b>%s</b> order status updated to <b>%s</b>"
 msgstr ""
@@ -191,7 +191,7 @@ msgstr ""
 msgid "Add your shipping method for appropiate zone"
 msgstr ""
 
-#: core/class-wcfmmp-ajax.php:589 includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:78 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:189 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:186 views/shipping/wcfmmp-view-edit-method-popup.php:43 views/shipping/wcfmmp-view-edit-method-popup.php:91 views/shipping/wcfmmp-view-edit-method-popup.php:162
+#: core/class-wcfmmp-ajax.php:589 includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:78 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:190 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:187 views/shipping/wcfmmp-view-edit-method-popup.php:44 views/shipping/wcfmmp-view-edit-method-popup.php:98 views/shipping/wcfmmp-view-edit-method-popup.php:175
 msgid "Method Title"
 msgstr ""
 
@@ -199,7 +199,7 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: core/class-wcfmmp-ajax.php:591 includes/payment-gateways/class-wcfmmp-gateway-wirecard.php:137 views/shipping/wcfmmp-view-edit-method-popup.php:73 views/shipping/wcfmmp-view-edit-method-popup.php:144 views/shipping/wcfmmp-view-edit-method-popup.php:220
+#: core/class-wcfmmp-ajax.php:591 includes/payment-gateways/class-wcfmmp-gateway-wirecard.php:137 views/shipping/wcfmmp-view-edit-method-popup.php:78 views/shipping/wcfmmp-view-edit-method-popup.php:155 views/shipping/wcfmmp-view-edit-method-popup.php:235
 msgid "Description"
 msgstr ""
 
@@ -269,130 +269,130 @@ msgstr ""
 msgid "Payment for Order #"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:309 core/class-wcfmmp-frontend.php:393
+#: core/class-wcfmmp-frontend.php:310 core/class-wcfmmp-frontend.php:395
 msgid "Delivery Location"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:310
+#: core/class-wcfmmp-frontend.php:311
 msgctxt "placeholder"
 msgid "Insert your address .."
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:405 helpers/wcfmmp-core-functions.php:792 helpers/wcfmmp-core-functions.php:818
+#: core/class-wcfmmp-frontend.php:407 helpers/wcfmmp-core-functions.php:792 helpers/wcfmmp-core-functions.php:818
 msgid "Location"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:526 core/class-wcfmmp-frontend.php:528
+#: core/class-wcfmmp-frontend.php:528 core/class-wcfmmp-frontend.php:530
 msgid "Become a Vendor"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:542
+#: core/class-wcfmmp-frontend.php:544
 msgid "Store Manager"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:623 core/class-wcfmmp-settings.php:511 core/class-wcfmmp-vendor.php:1015
+#: core/class-wcfmmp-frontend.php:625 core/class-wcfmmp-settings.php:511 core/class-wcfmmp-vendor.php:1015
 msgid "Commission By Sales Rule(s)"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:623 core/class-wcfmmp-settings.php:511 core/class-wcfmmp-vendor.php:1015
+#: core/class-wcfmmp-frontend.php:625 core/class-wcfmmp-settings.php:511 core/class-wcfmmp-vendor.php:1015
 #, php-format
 msgid "Commission rules depending upon vendors total sales. e.g 50&#37; commission when sales < %s1000, 75&#37; commission when sales > %s1000 but < %s2000 and so on. You may define any number of such rules. Please be sure, do not set conflicting rules."
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:624 core/class-wcfmmp-settings.php:512 core/class-wcfmmp-vendor.php:1016
+#: core/class-wcfmmp-frontend.php:626 core/class-wcfmmp-settings.php:512 core/class-wcfmmp-vendor.php:1016
 msgid "Sales"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:625 core/class-wcfmmp-frontend.php:632 core/class-wcfmmp-frontend.php:639 core/class-wcfmmp-settings.php:513 core/class-wcfmmp-settings.php:520 core/class-wcfmmp-settings.php:527 core/class-wcfmmp-vendor.php:1017 core/class-wcfmmp-vendor.php:1024 core/class-wcfmmp-vendor.php:1031
+#: core/class-wcfmmp-frontend.php:627 core/class-wcfmmp-frontend.php:634 core/class-wcfmmp-frontend.php:641 core/class-wcfmmp-settings.php:513 core/class-wcfmmp-settings.php:520 core/class-wcfmmp-settings.php:527 core/class-wcfmmp-vendor.php:1017 core/class-wcfmmp-vendor.php:1024 core/class-wcfmmp-vendor.php:1031
 msgid "Rule"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:625 core/class-wcfmmp-frontend.php:632 core/class-wcfmmp-frontend.php:639 core/class-wcfmmp-settings.php:513 core/class-wcfmmp-settings.php:520 core/class-wcfmmp-settings.php:527 core/class-wcfmmp-vendor.php:1017 core/class-wcfmmp-vendor.php:1024 core/class-wcfmmp-vendor.php:1031
+#: core/class-wcfmmp-frontend.php:627 core/class-wcfmmp-frontend.php:634 core/class-wcfmmp-frontend.php:641 core/class-wcfmmp-settings.php:513 core/class-wcfmmp-settings.php:520 core/class-wcfmmp-settings.php:527 core/class-wcfmmp-vendor.php:1017 core/class-wcfmmp-vendor.php:1024 core/class-wcfmmp-vendor.php:1031
 msgid "Up to"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:625 core/class-wcfmmp-frontend.php:632 core/class-wcfmmp-frontend.php:639 core/class-wcfmmp-settings.php:513 core/class-wcfmmp-settings.php:520 core/class-wcfmmp-settings.php:527 core/class-wcfmmp-vendor.php:1017 core/class-wcfmmp-vendor.php:1024 core/class-wcfmmp-vendor.php:1031
+#: core/class-wcfmmp-frontend.php:627 core/class-wcfmmp-frontend.php:634 core/class-wcfmmp-frontend.php:641 core/class-wcfmmp-settings.php:513 core/class-wcfmmp-settings.php:520 core/class-wcfmmp-settings.php:527 core/class-wcfmmp-vendor.php:1017 core/class-wcfmmp-vendor.php:1024 core/class-wcfmmp-vendor.php:1031
 msgid "More than"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:626 core/class-wcfmmp-frontend.php:633 core/class-wcfmmp-frontend.php:640 core/class-wcfmmp-settings.php:514 core/class-wcfmmp-settings.php:521 core/class-wcfmmp-settings.php:528 core/class-wcfmmp-vendor.php:1018 core/class-wcfmmp-vendor.php:1025 core/class-wcfmmp-vendor.php:1032
+#: core/class-wcfmmp-frontend.php:628 core/class-wcfmmp-frontend.php:635 core/class-wcfmmp-frontend.php:642 core/class-wcfmmp-settings.php:514 core/class-wcfmmp-settings.php:521 core/class-wcfmmp-settings.php:528 core/class-wcfmmp-vendor.php:1018 core/class-wcfmmp-vendor.php:1025 core/class-wcfmmp-vendor.php:1032
 msgid "Commission Type"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:626 core/class-wcfmmp-frontend.php:633 core/class-wcfmmp-frontend.php:640 core/class-wcfmmp-settings.php:514 core/class-wcfmmp-settings.php:521 core/class-wcfmmp-settings.php:528 core/class-wcfmmp-settings.php:833 core/class-wcfmmp-settings.php:857 core/class-wcfmmp-vendor.php:1018 core/class-wcfmmp-vendor.php:1025 core/class-wcfmmp-vendor.php:1032 core/class-wcfmmp-vendor.php:1073 core/class-wcfmmp-vendor.php:1113 helpers/wcfmmp-core-functions.php:412
+#: core/class-wcfmmp-frontend.php:628 core/class-wcfmmp-frontend.php:635 core/class-wcfmmp-frontend.php:642 core/class-wcfmmp-settings.php:514 core/class-wcfmmp-settings.php:521 core/class-wcfmmp-settings.php:528 core/class-wcfmmp-settings.php:833 core/class-wcfmmp-settings.php:857 core/class-wcfmmp-vendor.php:1018 core/class-wcfmmp-vendor.php:1025 core/class-wcfmmp-vendor.php:1032 core/class-wcfmmp-vendor.php:1073 core/class-wcfmmp-vendor.php:1113 helpers/wcfmmp-core-functions.php:412
 msgid "Percent"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:626 core/class-wcfmmp-frontend.php:633 core/class-wcfmmp-frontend.php:640 core/class-wcfmmp-settings.php:514 core/class-wcfmmp-settings.php:521 core/class-wcfmmp-settings.php:528 core/class-wcfmmp-settings.php:833 core/class-wcfmmp-settings.php:857 core/class-wcfmmp-vendor.php:1018 core/class-wcfmmp-vendor.php:1025 core/class-wcfmmp-vendor.php:1032 core/class-wcfmmp-vendor.php:1073 core/class-wcfmmp-vendor.php:1113 helpers/wcfmmp-core-functions.php:413
+#: core/class-wcfmmp-frontend.php:628 core/class-wcfmmp-frontend.php:635 core/class-wcfmmp-frontend.php:642 core/class-wcfmmp-settings.php:514 core/class-wcfmmp-settings.php:521 core/class-wcfmmp-settings.php:528 core/class-wcfmmp-settings.php:833 core/class-wcfmmp-settings.php:857 core/class-wcfmmp-vendor.php:1018 core/class-wcfmmp-vendor.php:1025 core/class-wcfmmp-vendor.php:1032 core/class-wcfmmp-vendor.php:1073 core/class-wcfmmp-vendor.php:1113 helpers/wcfmmp-core-functions.php:413
 msgid "Fixed"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:626 core/class-wcfmmp-frontend.php:633 core/class-wcfmmp-frontend.php:640 core/class-wcfmmp-settings.php:514 core/class-wcfmmp-settings.php:521 core/class-wcfmmp-settings.php:528 core/class-wcfmmp-settings.php:833 core/class-wcfmmp-settings.php:857 core/class-wcfmmp-vendor.php:1018 core/class-wcfmmp-vendor.php:1025 core/class-wcfmmp-vendor.php:1032 core/class-wcfmmp-vendor.php:1073 core/class-wcfmmp-vendor.php:1113 helpers/wcfmmp-core-functions.php:414
+#: core/class-wcfmmp-frontend.php:628 core/class-wcfmmp-frontend.php:635 core/class-wcfmmp-frontend.php:642 core/class-wcfmmp-settings.php:514 core/class-wcfmmp-settings.php:521 core/class-wcfmmp-settings.php:528 core/class-wcfmmp-settings.php:833 core/class-wcfmmp-settings.php:857 core/class-wcfmmp-vendor.php:1018 core/class-wcfmmp-vendor.php:1025 core/class-wcfmmp-vendor.php:1032 core/class-wcfmmp-vendor.php:1073 core/class-wcfmmp-vendor.php:1113 helpers/wcfmmp-core-functions.php:414
 msgid "Percent + Fixed"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:630 core/class-wcfmmp-settings.php:518 core/class-wcfmmp-vendor.php:1022
+#: core/class-wcfmmp-frontend.php:632 core/class-wcfmmp-settings.php:518 core/class-wcfmmp-vendor.php:1022
 msgid "Commission By Product Price"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:630 core/class-wcfmmp-settings.php:518 core/class-wcfmmp-vendor.php:1022
+#: core/class-wcfmmp-frontend.php:632 core/class-wcfmmp-settings.php:518 core/class-wcfmmp-vendor.php:1022
 #, php-format
 msgid "Commission rules depending upon product price. e.g 80&#37; commission when product cost < %s1000, %s100 fixed commission when product cost > %s1000 and so on. You may define any number of such rules. Please be sure, do not set conflicting rules."
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:631 core/class-wcfmmp-settings.php:519 core/class-wcfmmp-vendor.php:1023
+#: core/class-wcfmmp-frontend.php:633 core/class-wcfmmp-settings.php:519 core/class-wcfmmp-vendor.php:1023
 msgid "Product Cost"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:637 core/class-wcfmmp-settings.php:525 core/class-wcfmmp-vendor.php:1029
+#: core/class-wcfmmp-frontend.php:639 core/class-wcfmmp-settings.php:525 core/class-wcfmmp-vendor.php:1029
 msgid "Commission By Purchase Quantity"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:637 core/class-wcfmmp-settings.php:525 core/class-wcfmmp-vendor.php:1029
+#: core/class-wcfmmp-frontend.php:639 core/class-wcfmmp-settings.php:525 core/class-wcfmmp-vendor.php:1029
 msgid "Commission rules depending upon purchased product quantity. e.g 80&#37; commission when purchase quantity 2, 80&#37; commission when purchase quantity > 2 and so on. You may define any number of such rules. Please be sure, do not set conflicting rules."
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:638 core/class-wcfmmp-settings.php:526 core/class-wcfmmp-vendor.php:1030
+#: core/class-wcfmmp-frontend.php:640 core/class-wcfmmp-settings.php:526 core/class-wcfmmp-vendor.php:1030
 msgid "Purchase Quantity"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:644 core/class-wcfmmp-settings.php:532 core/class-wcfmmp-vendor.php:1036
+#: core/class-wcfmmp-frontend.php:646 core/class-wcfmmp-settings.php:532 core/class-wcfmmp-vendor.php:1036
 msgid "Shipping cost goes to vendor?"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:645 core/class-wcfmmp-settings.php:533 core/class-wcfmmp-vendor.php:1037
+#: core/class-wcfmmp-frontend.php:647 core/class-wcfmmp-settings.php:533 core/class-wcfmmp-vendor.php:1037
 msgid "Tax goes to vendor?"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:646 core/class-wcfmmp-settings.php:534 core/class-wcfmmp-vendor.php:1038
+#: core/class-wcfmmp-frontend.php:648 core/class-wcfmmp-settings.php:534 core/class-wcfmmp-vendor.php:1038
 msgid "Commission after consider Vendor Coupon?"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:646 core/class-wcfmmp-settings.php:534 core/class-wcfmmp-vendor.php:1038
+#: core/class-wcfmmp-frontend.php:648 core/class-wcfmmp-settings.php:534 core/class-wcfmmp-vendor.php:1038
 msgid "Generate vendor commission after deduct Vendor Coupon discounts."
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:647 core/class-wcfmmp-settings.php:535 core/class-wcfmmp-vendor.php:1039
+#: core/class-wcfmmp-frontend.php:649 core/class-wcfmmp-settings.php:535 core/class-wcfmmp-vendor.php:1039
 msgid "Commission after consider Admin Coupon?"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:647 core/class-wcfmmp-settings.php:535 core/class-wcfmmp-vendor.php:1039
+#: core/class-wcfmmp-frontend.php:649 core/class-wcfmmp-settings.php:535 core/class-wcfmmp-vendor.php:1039
 msgid "Generate vendor commission after deduct Admin Coupon discounts."
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:896 includes/store-widgets/class-wcfmmp-widget-store-lists-category-filter.php:64 views/store-lists/wcfmmp-view-store-lists-search-form.php:105
+#: core/class-wcfmmp-frontend.php:930 includes/store-widgets/class-wcfmmp-widget-store-lists-category-filter.php:64 views/store-lists/wcfmmp-view-store-lists-search-form.php:105
 msgid "Choose Category"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:896
+#: core/class-wcfmmp-frontend.php:930
 msgid "Choose Location"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:896 includes/store-widgets/class-wcfmmp-widget-store-lists-location-filter.php:94 includes/store-widgets/class-wcfmmp-widget-store-lists-location-filter.php:100
+#: core/class-wcfmmp-frontend.php:930 includes/store-widgets/class-wcfmmp-widget-store-lists-location-filter.php:94 includes/store-widgets/class-wcfmmp-widget-store-lists-location-filter.php:100
 msgid "Choose State"
 msgstr ""
 
-#: core/class-wcfmmp-frontend.php:897 core/class-wcfmmp-frontend.php:909 core/class-wcfmmp-frontend.php:930 core/class-wcfmmp-library.php:103 helpers/class-wcfmmp-store-setup.php:199 includes/store-widgets/class-wcfmmp-widget-store-lists-radius-filter.php:65 views/product-geolocate/wcfmmp-view-product-lists-search-form.php:39 views/store-lists/wcfmmp-view-store-lists-search-form.php:250
+#: core/class-wcfmmp-frontend.php:931 core/class-wcfmmp-frontend.php:943 core/class-wcfmmp-frontend.php:964 core/class-wcfmmp-library.php:103 helpers/class-wcfmmp-store-setup.php:199 includes/store-widgets/class-wcfmmp-widget-store-lists-radius-filter.php:65 views/product-geolocate/wcfmmp-view-product-lists-search-form.php:39 views/store-lists/wcfmmp-view-store-lists-search-form.php:250
 msgid "Insert your address .."
 msgstr ""
 
@@ -565,21 +565,26 @@ msgstr ""
 msgid "Your Refund Request approved for Order <b>%s</b>."
 msgstr ""
 
-#: core/class-wcfmmp-refund.php:689 core/class-wcfmmp-refund.php:717 core/class-wcfmmp-refund.php:754 core/class-wcfmmp-refund.php:771 core/class-wcfmmp-withdraw.php:497 core/class-wcfmmp-withdraw.php:536 core/class-wcfmmp-withdraw.php:580 core/class-wcfmmp-withdraw.php:626
+#: core/class-wcfmmp-refund.php:689 core/class-wcfmmp-refund.php:723 core/class-wcfmmp-refund.php:762 core/class-wcfmmp-refund.php:779 core/class-wcfmmp-withdraw.php:497 core/class-wcfmmp-withdraw.php:536 core/class-wcfmmp-withdraw.php:580 core/class-wcfmmp-withdraw.php:626
 msgid "Note"
 msgstr ""
 
-#: core/class-wcfmmp-refund.php:715
+#: core/class-wcfmmp-refund.php:717
+#, php-format
+msgid "Partial Refund Request approved for Order <b>%s</b>."
+msgstr ""
+
+#: core/class-wcfmmp-refund.php:719
 #, php-format
 msgid "Refund Request approved for Order <b>%s</b>."
 msgstr ""
 
-#: core/class-wcfmmp-refund.php:752 core/class-wcfmmp-refund.php:816
+#: core/class-wcfmmp-refund.php:760 core/class-wcfmmp-refund.php:824
 #, php-format
 msgid "Your Refund Request cancelled for Order <b>%s</b>."
 msgstr ""
 
-#: core/class-wcfmmp-refund.php:769
+#: core/class-wcfmmp-refund.php:777
 #, php-format
 msgid "Refund Request cancelled for Order <b>%s</b>."
 msgstr ""
@@ -1290,7 +1295,7 @@ msgstr ""
 msgid "Country"
 msgstr ""
 
-#: core/class-wcfmmp-settings.php:1153 core/class-wcfmmp-settings.php:1172 core/class-wcfmmp-settings.php:1296 core/class-wcfmmp-settings.php:1364 views/shipping/wcfmmp-view-edit-method-popup.php:106 views/shipping/wcfmmp-view-edit-method-popup.php:178 views/shipping/wcfmmp-view-shipping-settings.php:131 views/shipping/wcfmmp-view-shipping-settings.php:151 views/shipping/wcfmmp-view-shipping-settings.php:358 views/shipping/wcfmmp-view-shipping-settings.php:431
+#: core/class-wcfmmp-settings.php:1153 core/class-wcfmmp-settings.php:1172 core/class-wcfmmp-settings.php:1296 core/class-wcfmmp-settings.php:1364 views/shipping/wcfmmp-view-edit-method-popup.php:115 views/shipping/wcfmmp-view-edit-method-popup.php:192 views/shipping/wcfmmp-view-shipping-settings.php:131 views/shipping/wcfmmp-view-shipping-settings.php:151 views/shipping/wcfmmp-view-shipping-settings.php:358 views/shipping/wcfmmp-view-shipping-settings.php:431
 msgid "Cost"
 msgstr ""
 
@@ -1302,7 +1307,7 @@ msgstr ""
 msgid "State"
 msgstr ""
 
-#: core/class-wcfmmp-settings.php:1175 core/class-wcfmmp-settings.php:1291 core/class-wcfmmp-settings.php:1298 core/class-wcfmmp-settings.php:1366 helpers/wcfmmp-core-functions.php:941 includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:160 includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:197 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:116 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:152 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:112 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:149 views/shipping/wcfmmp-view-shipping-settings.php:154 views/shipping/wcfmmp-view-shipping-settings.php:352 views/shipping/wcfmmp-view-shipping-settings.php:360 views/shipping/wcfmmp-view-shipping-settings.php:433
+#: core/class-wcfmmp-settings.php:1175 core/class-wcfmmp-settings.php:1291 core/class-wcfmmp-settings.php:1298 core/class-wcfmmp-settings.php:1366 helpers/wcfmmp-core-functions.php:941 includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:161 includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:198 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:117 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:153 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:113 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:150 views/shipping/wcfmmp-view-shipping-settings.php:154 views/shipping/wcfmmp-view-shipping-settings.php:352 views/shipping/wcfmmp-view-shipping-settings.php:360 views/shipping/wcfmmp-view-shipping-settings.php:433
 msgid "Free Shipping"
 msgstr ""
 
@@ -1406,7 +1411,7 @@ msgstr ""
 msgid "Distance more than"
 msgstr ""
 
-#: core/class-wcfmmp-settings.php:1358 core/class-wcfmmp-shipping.php:484 views/shipping/wcfmmp-view-shipping-settings.php:425
+#: core/class-wcfmmp-settings.php:1358 core/class-wcfmmp-shipping.php:511 views/shipping/wcfmmp-view-shipping-settings.php:425
 msgid "Distance"
 msgstr ""
 
@@ -1678,15 +1683,15 @@ msgstr ""
 msgid "Method enable or disable not working"
 msgstr ""
 
-#: core/class-wcfmmp-shipping.php:400 views/emails/store-new-order.php:240 views/emails/store-new-order.php:378 views/emails/plain/store-new-order.php:240 views/emails/plain/store-new-order.php:378
+#: core/class-wcfmmp-shipping.php:427 views/emails/store-new-order.php:240 views/emails/store-new-order.php:378 views/emails/plain/store-new-order.php:240 views/emails/plain/store-new-order.php:378
 msgid "Shipping"
 msgstr ""
 
-#: core/class-wcfmmp-shipping.php:490
+#: core/class-wcfmmp-shipping.php:517
 msgid "Deliver upto"
 msgstr ""
 
-#: core/class-wcfmmp-shipping.php:498
+#: core/class-wcfmmp-shipping.php:525
 #, php-format
 msgid "Shop for %s%s more to get free shipping"
 msgstr ""
@@ -1955,11 +1960,11 @@ msgstr ""
 msgid "Suggestion(s)"
 msgstr ""
 
-#: core/class-wcfmmp-vendor.php:3051
+#: core/class-wcfmmp-vendor.php:3054
 msgid "Item(s) from one store already in your cart. First checkout with those and then purchase from other stores!"
 msgstr ""
 
-#: core/class-wcfmmp-vendor.php:3093
+#: core/class-wcfmmp-vendor.php:3096
 msgid "Item(s) from one store already in your quote list. First send request for those."
 msgstr ""
 
@@ -2472,21 +2477,31 @@ msgstr ""
 msgid "Refund request tax amount more than item actual tax value."
 msgstr ""
 
-#: controllers/refund/wcfmmp-controller-refund-requests-form.php:176
+#: controllers/refund/wcfmmp-controller-refund-requests-form.php:179
+#, php-format
+msgid "Refund <b>%s</b> has been processed for Order <b>%s</b> by <b>%s</b>"
+msgstr ""
+
+#: controllers/refund/wcfmmp-controller-refund-requests-form.php:181
 #, php-format
 msgid "Refund <b>%s</b> has been processed for Order <b>%s</b> item <b>%s</b> by <b>%s</b>"
 msgstr ""
 
-#: controllers/refund/wcfmmp-controller-refund-requests-form.php:194
+#: controllers/refund/wcfmmp-controller-refund-requests-form.php:205
+#, php-format
+msgid "Refund Request <b>%s</b> received for Order <b>%s</b>"
+msgstr ""
+
+#: controllers/refund/wcfmmp-controller-refund-requests-form.php:207
 #, php-format
 msgid "Refund Request <b>%s</b> received for Order <b>%s</b> item <b>%s</b>"
 msgstr ""
 
-#: controllers/refund/wcfmmp-controller-refund-requests-form.php:225
+#: controllers/refund/wcfmmp-controller-refund-requests-form.php:242
 msgid "No item selected for refund request."
 msgstr ""
 
-#: controllers/refund/wcfmmp-controller-refund-requests-form.php:227
+#: controllers/refund/wcfmmp-controller-refund-requests-form.php:244
 msgid "Refund requests successfully processed."
 msgstr ""
 
@@ -2692,7 +2707,7 @@ msgstr ""
 msgid "Stripe charge authorized (Charge ID: %s). Process order to take payment, or cancel to remove the pre-authorization."
 msgstr ""
 
-#: includes/payment-gateways/class-wcfmmp-gateway-stripe_split.php:978 includes/payment-gateways/class-wcfmmp-gateway-wirecard.php:124 includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:72 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:183 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:180 includes/store-emails/class-wcfmmp-email-store-new-order.php:175
+#: includes/payment-gateways/class-wcfmmp-gateway-stripe_split.php:978 includes/payment-gateways/class-wcfmmp-gateway-wirecard.php:124 includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:72 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:184 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:181 includes/store-emails/class-wcfmmp-email-store-new-order.php:175
 msgid "Enable/Disable"
 msgstr ""
 
@@ -2793,7 +2808,7 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: includes/payment-gateways/class-wcfmmp-gateway-wirecard.php:133 includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:80 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:191 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:188 includes/shipping-gateways/class-wcfmmp-shipping-by-zone.php:193
+#: includes/payment-gateways/class-wcfmmp-gateway-wirecard.php:133 includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:80 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:192 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:189 includes/shipping-gateways/class-wcfmmp-shipping-by-zone.php:193
 msgid "This controls the title which the user sees during checkout."
 msgstr ""
 
@@ -2894,11 +2909,11 @@ msgstr ""
 msgid "Enable vendors to set marketplace shipping per country"
 msgstr ""
 
-#: includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:32 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:32 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:192 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:32 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:189
+#: includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:32 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:32 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:193 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:32 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:190
 msgid "Shipping Cost"
 msgstr ""
 
-#: includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:74 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:185 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:182 views/shipping/wcfmmp-view-shipping-settings.php:53
+#: includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:74 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:186 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:183 views/shipping/wcfmmp-view-shipping-settings.php:53
 msgid "Enable Shipping"
 msgstr ""
 
@@ -2906,20 +2921,20 @@ msgstr ""
 msgid "Regular Shipping"
 msgstr ""
 
-#: includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:85 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:196 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:193 views/shipping/wcfmmp-view-edit-method-popup.php:124 views/shipping/wcfmmp-view-edit-method-popup.php:200
+#: includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:85 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:197 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:194 views/shipping/wcfmmp-view-edit-method-popup.php:134 views/shipping/wcfmmp-view-edit-method-popup.php:214
 msgid "Tax Status"
 msgstr ""
 
-#: includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:89 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:200 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:197 includes/shipping-gateways/class-wcfmmp-shipping-by-zone.php:203 views/shipping/wcfmmp-view-edit-method-popup.php:131 views/shipping/wcfmmp-view-edit-method-popup.php:207
+#: includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:89 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:201 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:198 includes/shipping-gateways/class-wcfmmp-shipping-by-zone.php:203 views/shipping/wcfmmp-view-edit-method-popup.php:141 views/shipping/wcfmmp-view-edit-method-popup.php:221
 msgid "Taxable"
 msgstr ""
 
-#: includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:90 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:201 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:198 includes/shipping-gateways/class-wcfmmp-shipping-by-zone.php:204
+#: includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:90 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:202 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:199 includes/shipping-gateways/class-wcfmmp-shipping-by-zone.php:204
 msgctxt "Tax status"
 msgid "None"
 msgstr ""
 
-#: includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:181 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:136 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:133
+#: includes/shipping-gateways/class-wcfmmp-shipping-by-country.php:182 includes/shipping-gateways/class-wcfmmp-shipping-by-distance.php:137 includes/shipping-gateways/class-wcfmmp-shipping-by-weight.php:134
 msgid "Pickup from Store"
 msgstr ""
 
@@ -3162,11 +3177,11 @@ msgstr ""
 msgid "Store List: Search"
 msgstr ""
 
-#: includes/store-widgets/class-wcfmmp-widget-store-lists-search.php:54 views/store-lists/wcfmmp-view-store-lists-search-form.php:93
+#: includes/store-widgets/class-wcfmmp-widget-store-lists-search.php:54
 msgid "Search &hellip;"
 msgstr ""
 
-#: includes/store-widgets/class-wcfmmp-widget-store-lists-search.php:54 views/store-lists/wcfmmp-view-store-lists-search-form.php:93
+#: includes/store-widgets/class-wcfmmp-widget-store-lists-search.php:54 views/store-lists/wcfmmp-view-store-lists-search-form.php:93 views/store-lists/wcfmmp-view-store-lists-search-form.php:93
 msgid "Search store &hellip;"
 msgstr ""
 
@@ -3499,12 +3514,8 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-#: views/product-geolocate/wcfmmp-view-product-lists-vendor-filter.php:37 views/product-geolocate/wcfmmp-view-product-lists-vendor-filter.php:53
+#: views/product-geolocate/wcfmmp-view-product-lists-vendor-filter.php:67 views/product-geolocate/wcfmmp-view-product-lists-vendor-filter.php:83
 msgid "Filter by"
-msgstr ""
-
-#: views/product_multivendor/wcfmmp-view-more-offer-single.php:40
-msgid "Admin Product"
 msgstr ""
 
 #: views/product_multivendor/wcfmmp-view-more-offer-single.php:62
@@ -3539,15 +3550,15 @@ msgstr ""
 msgid "Refund by Item(s)"
 msgstr ""
 
-#: views/refund/wcfmmp-view-refund-requests-popup.php:178
+#: views/refund/wcfmmp-view-refund-requests-popup.php:180
 msgid "Refund Requests Reason"
 msgstr ""
 
-#: views/refund/wcfmmp-view-refund-requests-popup.php:246
+#: views/refund/wcfmmp-view-refund-requests-popup.php:248
 msgid "Submit"
 msgstr ""
 
-#: views/refund/wcfmmp-view-refund-requests-popup.php:250
+#: views/refund/wcfmmp-view-refund-requests-popup.php:252
 msgid "This order's item(s) are already requested for refund!"
 msgstr ""
 
@@ -3736,59 +3747,59 @@ msgstr ""
 msgid "Edit Shipping Methods"
 msgstr ""
 
-#: views/shipping/wcfmmp-view-edit-method-popup.php:48 views/shipping/wcfmmp-view-edit-method-popup.php:96 views/shipping/wcfmmp-view-edit-method-popup.php:167
+#: views/shipping/wcfmmp-view-edit-method-popup.php:49 views/shipping/wcfmmp-view-edit-method-popup.php:103 views/shipping/wcfmmp-view-edit-method-popup.php:180
 msgid "Enter method title"
 msgstr ""
 
-#: views/shipping/wcfmmp-view-edit-method-popup.php:58
+#: views/shipping/wcfmmp-view-edit-method-popup.php:61
 msgid "Minimum order amount for free shipping"
 msgstr ""
 
-#: views/shipping/wcfmmp-view-edit-method-popup.php:63 views/shipping/wcfmmp-view-edit-method-popup.php:111 views/shipping/wcfmmp-view-edit-method-popup.php:183
+#: views/shipping/wcfmmp-view-edit-method-popup.php:66 views/shipping/wcfmmp-view-edit-method-popup.php:120 views/shipping/wcfmmp-view-edit-method-popup.php:197
 msgid "0.00"
 msgstr ""
 
-#: views/shipping/wcfmmp-view-edit-method-popup.php:130 views/shipping/wcfmmp-view-edit-method-popup.php:206
+#: views/shipping/wcfmmp-view-edit-method-popup.php:140 views/shipping/wcfmmp-view-edit-method-popup.php:220
 msgid "None"
 msgstr ""
 
-#: views/shipping/wcfmmp-view-edit-method-popup.php:191 views/shipping/wcfmmp-view-edit-method-popup.php:261 views/shipping/wcfmmp-view-edit-method-popup.php:282
+#: views/shipping/wcfmmp-view-edit-method-popup.php:205 views/shipping/wcfmmp-view-edit-method-popup.php:279 views/shipping/wcfmmp-view-edit-method-popup.php:300
 msgid "Enter a cost (excl. tax) or sum, e.g. <code>10.00 * [qty]</code>."
 msgstr ""
 
-#: views/shipping/wcfmmp-view-edit-method-popup.php:191 views/shipping/wcfmmp-view-edit-method-popup.php:261 views/shipping/wcfmmp-view-edit-method-popup.php:282
+#: views/shipping/wcfmmp-view-edit-method-popup.php:205 views/shipping/wcfmmp-view-edit-method-popup.php:279 views/shipping/wcfmmp-view-edit-method-popup.php:300
 msgid "Use <code>[qty]</code> for the number of items, <br/><code>[cost]</code> for the total cost of items, and <code>[fee percent=\"10\" min_fee=\"20\" max_fee=\"\"]</code> for percentage based fees."
 msgstr ""
 
-#: views/shipping/wcfmmp-view-edit-method-popup.php:232
+#: views/shipping/wcfmmp-view-edit-method-popup.php:248
 msgid "Shipping Class Cost"
 msgstr ""
 
-#: views/shipping/wcfmmp-view-edit-method-popup.php:234
+#: views/shipping/wcfmmp-view-edit-method-popup.php:250
 msgid "These costs can be optionally entered based on the shipping class set per product( This cost will be added with the shipping cost above)."
 msgstr ""
 
-#: views/shipping/wcfmmp-view-edit-method-popup.php:249
+#: views/shipping/wcfmmp-view-edit-method-popup.php:266
 msgid "Cost of Shipping Class: \""
 msgstr ""
 
-#: views/shipping/wcfmmp-view-edit-method-popup.php:254 views/shipping/wcfmmp-view-edit-method-popup.php:275 views/store-lists/wcfmmp-view-store-lists-card.php:40
+#: views/shipping/wcfmmp-view-edit-method-popup.php:271 views/shipping/wcfmmp-view-edit-method-popup.php:293 views/store-lists/wcfmmp-view-store-lists-card.php:40
 msgid "N/A"
 msgstr ""
 
-#: views/shipping/wcfmmp-view-edit-method-popup.php:289
+#: views/shipping/wcfmmp-view-edit-method-popup.php:307
 msgid "Calculation type"
 msgstr ""
 
-#: views/shipping/wcfmmp-view-edit-method-popup.php:295
+#: views/shipping/wcfmmp-view-edit-method-popup.php:313
 msgid "Per class: Charge shipping for each shipping class individually"
 msgstr ""
 
-#: views/shipping/wcfmmp-view-edit-method-popup.php:296
+#: views/shipping/wcfmmp-view-edit-method-popup.php:314
 msgid "Per order: Charge shipping for the most expensive shipping class"
 msgstr ""
 
-#: views/shipping/wcfmmp-view-edit-method-popup.php:314
+#: views/shipping/wcfmmp-view-edit-method-popup.php:332
 msgid "Save Method Settings"
 msgstr ""
 

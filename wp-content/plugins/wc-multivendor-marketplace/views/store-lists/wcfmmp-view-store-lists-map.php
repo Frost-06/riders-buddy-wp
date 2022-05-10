@@ -24,13 +24,13 @@ if( !apply_filters( 'wcfmmp_is_allow_store_list_map', true ) ) return;
 
 <script>
   $map_zoom    = <?php echo absint($map_zoom); ?>;
-  $auto_zoom   = '<?php echo $auto_zoom; ?>';
-  $per_row     = '<?php echo $per_row; ?>';
-	$per_page    = '<?php echo $limit; ?>';
+  $auto_zoom   = '<?php echo esc_attr($auto_zoom); ?>';
+  $per_row     = '<?php echo esc_attr($per_row); ?>';
+	$per_page    = '<?php echo esc_attr($limit); ?>';
 	$includes    = '<?php echo implode(",", $includes ); ?>';
-	$excludes    = '<?php echo $excludes; ?>';
-	$has_product = '<?php echo $has_product; ?>';
-	$sidebar     = '<?php echo $sidebar; ?>';
-	$has_orderby = '<?php echo $has_orderby; ?>';
-	$theme       = '<?php echo $theme; ?>';
+	$excludes    = '<?php echo esc_attr($excludes); ?>';
+	$has_product = '<?php echo esc_attr($has_product); ?>';
+	$sidebar     = '<?php echo esc_attr($sidebar); ?>';
+	$has_orderby = '<?php echo esc_attr($has_orderby); ?>';
+	$theme       = '<?php echo esc_attr($theme); ?>';
 </script>

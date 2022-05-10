@@ -25,7 +25,7 @@ if( empty( $latest_reviews ) ) return;
 				$wp_user_avatar_id = get_user_meta( $latest_review->author_id, 'wp_user_avatar', true );
 				$wp_user_avatar = wp_get_attachment_url( $wp_user_avatar_id );
 				if ( !$wp_user_avatar ) {
-					$wp_user_avatar = $WCFM->plugin_url . 'assets/images/avatar.png';
+					$wp_user_avatar = esc_url( $WCFM->plugin_url . 'assets/images/avatar.png' );
 				}
 				?>
 			  <img src="<?php echo apply_filters( 'wcfmmp_review_author_avatar', $wp_user_avatar, $latest_review ); ?>" alt="Review">
@@ -41,13 +41,13 @@ if( empty( $latest_reviews ) ) return;
 		  <div class="user_review_sec_left" style="display: inline-block;float: left;width: 60%;">
 				<div class="user_name"><?php echo apply_filters( 'wcfmmp_review_author_name', $latest_review->author_name, $latest_review ); ?></div>
 				<div class="user_review_area">
-					<span><?php echo $WCFMmp->wcfmmp_reviews->get_author_reviews_count($latest_review->author_id); ?> <?php _e( 'reviews', 'wc-multivendor-marketplace' ); ?></span> <span class="user_date"><?php echo date_i18n( wc_date_format() . ' ' . wc_time_format(), strtotime($latest_review->created) ) ; ?></span>
+					<span><?php echo wp_kses_post($WCFMmp->wcfmmp_reviews->get_author_reviews_count($latest_review->author_id)); ?> <?php _e( 'reviews', 'wc-multivendor-marketplace' ); ?></span> <span class="user_date"><?php echo date_i18n( wc_date_format() . ' ' . wc_time_format(), strtotime($latest_review->created) ) ; ?></span>
 				</div>
 				<div class="user_review_text">
-					<p><?php echo $latest_review->review_description; ?></p>
+					<p><?php echo wp_kses_post($latest_review->review_description); ?></p>
 					<?php 
 					if( apply_filters( 'wcfm_is_allow_review_product', true ) ) {
-						$product_id = $wpdb->get_var( "SELECT `value` FROM {$wpdb->prefix}wcfm_marketplace_review_rating_meta WHERE `review_id` = {$latest_review->ID} AND `key` = 'product' AND `type` = 'rating_product'" );
+						$product_id = $wpdb->get_var( $wpdb->prepare( "SELECT `value` FROM {$wpdb->prefix}wcfm_marketplace_review_rating_meta WHERE `review_id` = %d AND `key` = 'product' AND `type` = 'rating_product'", $latest_review->ID ) );
 						if( $product_id ) {
 							echo '<p><i class="wcfmfa fa-cube img_tip" data-tip="'. __( 'Review via Product', 'wc-multivendor-marketplace' ) .'"></i>&nbsp;<a style="display: inline-block;color:#17a2b8;" href="'. get_permalink($product_id) .'" target="_blank">'.get_the_title($product_id).'</a></p>';
 						}
@@ -75,7 +75,7 @@ if( empty( $latest_reviews ) ) return;
 									_e( $wcfm_review_category['category'], 'wc-multivendor-marketplace' );
 									?>
 								</span>
-								<input type="hidden" class="store_rating_value" name="wcfm_saved_store_review_category[<?php echo $wcfm_review_cat_key; ?>]" value="<?php echo wc_format_decimal( $category_review_rating[$wcfm_review_cat_key], 1 ); ?>" />
+								<input type="hidden" class="store_rating_value" name="wcfm_saved_store_review_category[<?php echo esc_attr($wcfm_review_cat_key); ?>]" value="<?php echo wc_format_decimal( $category_review_rating[$wcfm_review_cat_key], 1 ); ?>" />
 							</div>
 							<?php
 						}

@@ -28,7 +28,7 @@ $address  = $store_user->get_address_string();
 			
 				<?php do_action( 'wcfmmp_store_before_avatar', $store_user->get_id() ); ?>
 				
-				<div class="logo_area lft"><a href="#"><img src="<?php echo $gravatar; ?>" alt="Logo"/></a></div>
+				<div class="logo_area lft"><a href="#"><img src="<?php echo esc_url($gravatar); ?>" alt="Logo"/></a></div>
 				
 				<?php do_action( 'wcfmmp_store_after_avatar', $store_user->get_id() ); ?>
 				
@@ -46,7 +46,7 @@ $address  = $store_user->get_address_string();
 					<?php do_action( 'wcfmmp_store_before_address', $store_user->get_id() ); ?>
 					
 					<?php if( $address && ( $store_info['store_hide_address'] == 'no' ) && $WCFM->wcfm_vendor_support->wcfm_vendor_has_capability( $store_user->get_id(), 'vendor_address' ) ) { ?>
-						<p><i class="wcfmfa fa-map-marker" aria-hidden="true"></i><span><?php echo $address; ?></span></p>
+						<p><i class="wcfmfa fa-map-marker" aria-hidden="true"></i><span><?php echo esc_html($address); ?></span></p>
 					<?php } ?>
 					
 					<?php do_action( 'wcfmmp_store_after_address', $store_user->get_id() ); ?>
@@ -54,14 +54,14 @@ $address  = $store_user->get_address_string();
 					
 					<div>
 						<?php if( $phone && ( $store_info['store_hide_phone'] == 'no' ) && $WCFM->wcfm_vendor_support->wcfm_vendor_has_capability( $store_user->get_id(), 'vendor_phone' ) ) { ?>
-							<div class="store_info_parallal" style="margin-right: 10px;"><i class="wcfmfa fa-phone" aria-hidden="true"></i><span><?php echo $phone; ?></span></div>
+							<div class="store_info_parallal" style="margin-right: 10px;"><i class="wcfmfa fa-phone" aria-hidden="true"></i><span><?php echo esc_attr($phone); ?></span></div>
 						<?php } ?>
 						
 						<?php do_action( 'wcfmmp_store_after_phone', $store_user->get_id() ); ?>
 						<?php do_action( 'wcfmmp_store_before_email', $store_user->get_id() ); ?>
 						
 						<?php if( $email && ( $store_info['store_hide_email'] == 'no' ) && $WCFM->wcfm_vendor_support->wcfm_vendor_has_capability( $store_user->get_id(), 'vendor_email' ) ) { ?>
-							<div class="store_info_parallal"><i class="wcfmfa fa-envelope" aria-hidden="true"></i><span><a href="#"><?php echo $email; ?></a></span></div>
+							<div class="store_info_parallal"><i class="wcfmfa fa-envelope" aria-hidden="true"></i><span><a href="#"><?php echo esc_attr($email); ?></a></span></div>
 						<?php } ?>
 						<div class="spacer"></div>  
 					</div>

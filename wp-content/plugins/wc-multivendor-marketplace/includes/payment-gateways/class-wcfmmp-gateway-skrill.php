@@ -18,7 +18,7 @@ class WCFMmp_Gateway_Skrill extends WCFMmp_Abstract_Gateway {
 		$this->payment_gateway = $this->id;
 	}
 	
-	public function gateway_logo() { global $WCFMmp; return $WCFMmp->plugin_url . 'assets/images/'.$this->id.'.png'; }
+	public function gateway_logo() { global $WCFMmp; return esc_url($WCFMmp->plugin_url . 'assets/images/'.$this->id.'.png'); }
 
 	public function process_payment( $withdrawal_id, $vendor_id, $withdraw_amount, $withdraw_charges, $transaction_mode = 'auto' ) {
 		global $WCFM, $WCFMmp;

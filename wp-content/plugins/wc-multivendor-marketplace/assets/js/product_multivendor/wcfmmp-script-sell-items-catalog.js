@@ -38,7 +38,8 @@ jQuery(document).ready(function($) {
 				d.controller       = 'wcfm-sell-items-catalog',
 				d.product_type     = $product_type,
 				d.product_cat      = $product_cat,
-				d.product_taxonomy = $product_taxonomy
+				d.product_taxonomy = $product_taxonomy,
+				d.wcfm_ajax_nonce  = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -95,7 +96,8 @@ jQuery(document).ready(function($) {
 		});
 		var data = {
 			action     : 'wcfmmp_product_multivendor_clone',
-			product_id : item.data('proid')
+			product_id : item.data('proid'),
+			wcfm_ajax_nonce          : wcfm_params.wcfm_ajax_nonce
 		}	
 		jQuery.ajax({
 			type:		'POST',
@@ -143,7 +145,8 @@ jQuery(document).ready(function($) {
 		});
 		var data = {
 			action      : 'wcfmmp_product_multivendor_bulk_clone',
-			product_ids : $selected_products
+			product_ids : $selected_products,
+			wcfm_ajax_nonce          : wcfm_params.wcfm_ajax_nonce
 		}	
 		jQuery.ajax({
 			type:		'POST',

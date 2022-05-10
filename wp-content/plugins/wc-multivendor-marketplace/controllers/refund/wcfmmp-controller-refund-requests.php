@@ -22,45 +22,65 @@ class WCFMmp_Refund_Requests_Controller {
 		
 		$vendor_id = $WCFMmp->vendor_id;
 		
-		$length = sanitize_text_field( $_POST['length'] );
-		$offset = sanitize_text_field( $_POST['start'] );
+		$length = absint( $_POST['length'] );
+		$offset = absint( $_POST['start'] );
 		
-		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_text_field( $_POST['orderby'] ) : 'ID';
+		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_sql_orderby( $_POST['orderby'] ) : 'ID';
 		$the_order   = ( ! empty( $_POST['order'] ) && 'asc' === $_POST['order'] ) ? 'ASC' : 'DESC';
 		
-		$transaction_id = ! empty( $_POST['transaction_id'] ) ? sanitize_text_field( $_POST['transaction_id'] ) : '';
+		$transaction_id = ! empty( $_POST['transaction_id'] ) ? absint( $_POST['transaction_id'] ) : '';
 		
 		$refund_vendor_filter = '';
 		if( wcfm_is_vendor() && $vendor_id ) {
-			$refund_vendor_filter = " AND commission.`vendor_id` = {$vendor_id}";
+			$refund_vendor = $vendor_id;
+			$refund_vendor_filter = " AND commission.`vendor_id` = %d";
 		} elseif ( ! empty( $_POST['refund_vendor'] ) ) {
-			$refund_vendor = sanitize_text_field( $_POST['refund_vendor'] );
-			$refund_vendor_filter = " AND commission.`vendor_id` = {$refund_vendor}";
+			$refund_vendor = absint( $_POST['refund_vendor'] );
+			$refund_vendor_filter = " AND commission.`vendor_id` = %d";
 		}
 		
-		$status_filter = 'requested';
+		$status_filter = '';
+		$status_type = 'requested';
 		if( isset($_POST['status_type']) ) {
-			$status_filter = sanitize_text_field( $_POST['status_type'] );
-			if( $status_filter != 'requested' ) $the_order = 'DESC';
+			$status_type = sanitize_text_field( $_POST['status_type'] );
+			if( $status_type != 'requested' ) $the_order = 'DESC';
 		}
-		if( $status_filter ) {
-			$status_filter = " AND commission.refund_status = '" . $status_filter . "'";
+		if( $status_type ) {
+			$status_filter = " AND commission.refund_status = %s";
 		}
 
 		$sql = 'SELECT COUNT(commission.ID) FROM ' . $wpdb->prefix . 'wcfm_marketplace_refund_request AS commission';
 		$sql .= ' WHERE 1=1';
-		if( $transaction_id ) $sql .= " AND commission.ID = $transaction_id";
-		$sql .= $status_filter;
-		$sql .= $refund_vendor_filter;
+		if( $status_type && $status_filter ) {
+			$sql .= $status_filter;
+			$sql = $wpdb->prepare( $sql, $status_type );
+		}
+		if( $transaction_id ) {
+			$sql .= " AND commission.ID = %d";
+			$sql = $wpdb->prepare( $sql, $transaction_id );
+		}
+		if( $refund_vendor_filter ) {
+			$sql .= $refund_vendor_filter;
+			$sql = $wpdb->prepare( $sql, $refund_vendor );
+		}
 		
 		$filtered_refund_requests_count = $wpdb->get_var( $sql );
 		if( !$filtered_refund_requests_count ) $filtered_refund_requests_count = 0;
 
 		$sql = 'SELECT * FROM ' . $wpdb->prefix . 'wcfm_marketplace_refund_request AS commission';
 		$sql .= ' WHERE 1=1';
-		if( $transaction_id ) $sql .= " AND commission.ID = $transaction_id";
-		$sql .= $status_filter;
-		$sql .= $refund_vendor_filter;
+		if( $status_type && $status_filter ) {
+			$sql .= $status_filter;
+			$sql = $wpdb->prepare( $sql, $status_type );
+		}
+		if( $transaction_id ) {
+			$sql .= " AND commission.ID = %d";
+			$sql = $wpdb->prepare( $sql, $transaction_id );
+		}
+		if( $refund_vendor_filter ) {
+			$sql .= $refund_vendor_filter;
+			$sql = $wpdb->prepare( $sql, $refund_vendor );
+		}
 		$sql .= " ORDER BY `{$the_orderby}` {$the_order}";
 		$sql .= " LIMIT {$length}";
 		$sql .= " OFFSET {$offset}";
@@ -76,7 +96,7 @@ class WCFMmp_Refund_Requests_Controller {
 		// Generate Payments JSON
 		$wcfm_payments_json = '';
 		$wcfm_payments_json = '{
-															"draw": ' . sanitize_text_field( $_POST['draw'] ) . ',
+															"draw": ' . absint( $_POST['draw'] ) . ',
 															"recordsTotal": ' . $filtered_refund_requests_count . ',
 															"recordsFiltered": ' . $filtered_refund_requests_count . ',
 															"data": ';

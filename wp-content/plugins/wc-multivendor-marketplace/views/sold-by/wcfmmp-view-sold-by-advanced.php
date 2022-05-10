@@ -48,7 +48,7 @@ if( !$store_logo ) {
   <div class="wcfmmp_sold_by_label">
 		<?php 
 		if( apply_filters( 'wcfmmp_is_allow_single_product_sold_by_label', true ) ) {
-			echo $sold_by_text; 
+			echo wp_kses_post($sold_by_text); 
 		}	
 		?>
 		
@@ -61,14 +61,14 @@ if( !$store_logo ) {
 			
   <div class="wcfmmp_sold_by_container_left">
     <?php if( apply_filters( 'wcfmmp_is_allow_single_product_sold_by_logo', true ) ) { ?>
-    	<img src="<?php echo $store_logo; ?>" />
+    	<img src="<?php echo esc_url($store_logo); ?>" />
     <?php } ?>
   </div>
   <div class="wcfmmp_sold_by_container_right">
 		<?php do_action('before_wcfmmp_sold_by_label_single_product', $vendor_id ); ?>
 		
 		<div class="wcfmmp_sold_by_wrapper">
-			<div class="wcfmmp_sold_by_store"><?php echo $store_name; ?></div> 
+			<div class="wcfmmp_sold_by_store"><?php echo wp_kses_post($store_name); ?></div> 
 		</div>
 		
 		<?php if( apply_filters( 'wcfm_is_pref_vendor_reviews', true ) && apply_filters( 'wcfmmp_is_allow_single_product_sold_by_review', true ) ) { $WCFMmp->wcfmmp_reviews->show_star_rating( 0, $vendor_id ); } ?>

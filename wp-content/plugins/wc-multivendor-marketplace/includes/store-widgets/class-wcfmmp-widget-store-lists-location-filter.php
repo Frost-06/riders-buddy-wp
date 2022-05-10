@@ -48,7 +48,7 @@ class WCFMmp_Store_Lists_Location_Filter extends WP_Widget {
 		echo $before_widget;
 
 		if ( ! empty( $title ) ) {
-			echo $args['before_title'] . $title . $args['after_title'];
+			echo $args['before_title'] . wp_kses_post($title) . $args['after_title'];
 		}
 		
 		do_action( 'wcfmmp_store_lists_before_sidebar_location_filter' );
@@ -152,8 +152,8 @@ class WCFMmp_Store_Lists_Location_Filter extends WP_Widget {
 			$is_zip    = $instance['is_zip'];
 			?>
 			<p>
-				<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'wc-multivendor-marketplace' ); ?></label>
-				<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
+				<label for="<?php echo esc_attr($this->get_field_id( 'title' )); ?>"><?php _e( 'Title:', 'wc-multivendor-marketplace' ); ?></label>
+				<input class="widefat" id="<?php echo esc_attr($this->get_field_id( 'title' )); ?>" name="<?php echo esc_attr($this->get_field_name( 'title' )); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
 			</p>
 			<p>
 				<input class="checkbox" id="<?php echo esc_attr( $this->get_field_id( 'is_state' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'is_state' ) ); ?>" type="checkbox" value="1" <?php checked( $is_state, 1 ); ?> />

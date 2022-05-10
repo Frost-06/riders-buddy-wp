@@ -154,8 +154,8 @@ class WCFMmp_Shipping_Zone {
   public static function get_shipping_methods( $zone_id, $vendor_id ) {
     global $wpdb;
 
-    $sql = "SELECT * FROM {$wpdb->prefix}wcfm_marketplace_shipping_zone_methods WHERE `zone_id`={$zone_id} AND `vendor_id`={$vendor_id}";
-    $results = $wpdb->get_results( $sql );
+    $sql = "SELECT * FROM {$wpdb->prefix}wcfm_marketplace_shipping_zone_methods WHERE `zone_id`=%d AND `vendor_id`=%d";
+    $results = $wpdb->get_results( $wpdb->prepare($sql, $zone_id, $vendor_id ) );
 
     $method = array();
 
@@ -200,8 +200,8 @@ class WCFMmp_Shipping_Zone {
     // WPML Shipping Class Compatibility - 6.4.4
     if ( defined( 'ICL_SITEPRESS_VERSION' ) && ! ICL_PLUGIN_INACTIVE && class_exists( 'SitePress' ) ) {
 			$old_settings = array();
-			$sql = "SELECT * FROM {$wpdb->prefix}wcfm_marketplace_shipping_zone_methods WHERE `instance_id`={$instance_id}";
-			$results = $wpdb->get_results( $sql );
+			$sql = "SELECT * FROM {$wpdb->prefix}wcfm_marketplace_shipping_zone_methods WHERE `instance_id`=%d";
+			$results = $wpdb->get_results( $wpdb->prepare($sql, $instance_id) );
 			if( !empty( $results ) ) {
 				foreach ( $results as $key => $result ) {
 					$old_settings = ! empty( $result->settings ) ? maybe_unserialize( $result->settings ) : array();
@@ -270,9 +270,9 @@ class WCFMmp_Shipping_Zone {
         $vendor_id  = apply_filters( 'wcfm_current_vendor_id', get_current_user_id() );
     }
 
-    $sql = "SELECT * FROM {$table_name} WHERE zone_id=$zone_id AND vendor_id=$vendor_id";
+    $sql = "SELECT * FROM {$table_name} WHERE zone_id=%d AND vendor_id=%d";
 
-    $results = $wpdb->get_results( $sql );
+    $results = $wpdb->get_results( $wpdb->prepare($sql, $zone_id, $vendor_id )  );
 
     $locations = array();
 

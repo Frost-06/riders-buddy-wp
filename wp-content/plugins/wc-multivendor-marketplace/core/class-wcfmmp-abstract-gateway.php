@@ -17,7 +17,7 @@ abstract class WCFMmp_Abstract_Gateway {
 	public $currency;
 	public $transaction_mode;
 
-	public function gateway_logo() { global $WCFMmp; return $WCFMmp->plugin_url . 'assets/images/gateway_logo.png'; }
+	public function gateway_logo() { global $WCFMmp; return esc_url( $WCFMmp->plugin_url . 'assets/images/gateway_logo.png' ); }
 	
 	public function validate_request() {
 		return true;

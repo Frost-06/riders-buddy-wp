@@ -32,12 +32,12 @@ if( $store_id ) {
 			<?php 
 			if( $store_id ) {
 				if( apply_filters( 'wcfmmp_is_allow_sold_by_linked', true ) ) {
-					echo $WCFM->wcfm_vendor_support->wcfm_get_vendor_store_by_vendor( absint($store_id) );
+					echo wp_kses_post($WCFM->wcfm_vendor_support->wcfm_get_vendor_store_by_vendor( absint($store_id) ));
 				} else {
-					echo $WCFM->wcfm_vendor_support->wcfm_get_vendor_store_name_by_vendor( absint($store_id) );
+					echo wp_kses_post($WCFM->wcfm_vendor_support->wcfm_get_vendor_store_name_by_vendor( absint($store_id) ));
 				}
 			} else {
-				_e( 'Admin Product', 'wc-multivendor-marketplace' );
+				echo apply_filters( 'wcfmmp_more_offers_admin_product_soldby_label', get_bloginfo( 'name' ), $offer_product_id );
 			}
 			?>
 		</div>
@@ -54,14 +54,14 @@ if( $store_id ) {
 	</div>
 	<?php do_action( 'wcfmmp_more_offers_single_line_after_store', $offer_product_id ); ?>
 	<div class="wcfmmp_product_mulvendor_rowsub">
-		<?php echo $_product->get_price_html(); ?>
+		<?php echo wp_kses_post($_product->get_price_html()); ?>
 	</div>
 	<?php do_action( 'wcfmmp_more_offers_single_line_after_price', $offer_product_id ); ?>
 	<div class="wcfmmp_product_mulvendor_rowsub">
 		<?php if( $_product->get_type() == 'simple' ) { ?>
-			<a href="<?php echo '?add-to-cart='.$offer_product_id; ?>" class="buttongap button wcfmmp_product_multivendor_action_button" style="<?php echo $button_style; ?>"><?php echo apply_filters( 'add_to_cart_text', __( 'Add to Cart', 'wc-multivendor-marketplace') ); ?></a>
+			<a href="<?php echo '?add-to-cart='.$offer_product_id; ?>" class="buttongap button wcfmmp_product_multivendor_action_button" style="<?php echo esc_attr($button_style); ?>"><?php echo apply_filters( 'add_to_cart_text', __( 'Add to Cart', 'wc-multivendor-marketplace') ); ?></a>
 		<?php } ?>
-		<a href="<?php echo get_permalink($offer_product_id); ?>" class="buttongap button wcfmmp_product_multivendor_action_button" style="<?php echo $button_style; ?>"><?php echo __( 'Details', 'wc-multivendor-marketplace' ); ?></a>
+		<a href="<?php echo esc_url(get_permalink($offer_product_id)); ?>" class="buttongap button wcfmmp_product_multivendor_action_button" style="<?php echo esc_attr($button_style); ?>"><?php echo __( 'Details', 'wc-multivendor-marketplace' ); ?></a>
 	</div>
 	<?php do_action( 'wcfmmp_more_offers_single_line_after_details', $offer_product_id ); ?>
 	

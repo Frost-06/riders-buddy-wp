@@ -79,7 +79,7 @@ class WCFMmp_Notification_Manager {
 				    <tr>
 				      <th style="width:25%;"></th>
 				      <th colspan="3"><?php _e( 'Admin Notification', 'wc-multivendor-marketplace' ); ?></th>
-				      <th colspan="3"><?php echo apply_filters( 'wcfm_sold_by_label', '', __( 'Vendor', 'wc-frontend-manager' ) ) . ' ' . __( 'Notification', 'wc-multivendor-marketplace' ); ?></th>
+				      <th colspan="3"><?php echo esc_attr(apply_filters( 'wcfm_sold_by_label', '', __( 'Vendor', 'wc-frontend-manager' ) )) . ' ' . esc_html__( 'Notification', 'wc-multivendor-marketplace' ); ?></th>
 				    </tr>
 				    <tr>
 				      <th style="width:25%;text-align:left;"><?php _e( 'Notification Type', 'wc-multivendor-marketplace' ); ?></th>
@@ -368,28 +368,48 @@ class WCFMmp_Notification_Manager {
     $notification_message  = esc_sql( $wcfm_messages );
 		$notification_message  = strip_tags( $wcfm_messages );    
     $message_to = absint($message_to);
-		if( $message_to ) { 
-      $message_to_user = 'vendor';
-      $user_info = get_userdata( $message_to );
-      $to_user = $user_info->user_email;
-    } else {
-      $message_to_user = 'admin';
-    }
-    
-    if( $message_to_user === 'vendor' ) {
-      //$to_user = 'test';
-        $this->send_push_notification($notification_message, $to_user);
-      //wcfm_log(json_encode($response));
-    } 
-    
+    if( $message_to ) {
+			$user_info = get_userdata( $message_to );
+			$user_roles = $user_info->roles;
+			$to_user = $user_info->user_email;
+					
+			// Check if the role you're interested in, is present in the array.
+			if ( in_array( 'administrator', $user_roles, true ) ) {
+					// Do something.
+					$message_to_user = 'admin';
+			}
+			elseif ( in_array( 'wcfm_delivery_boy', $user_roles, true ) ) {
+					// Do something.
+					$message_to_user = 'delivery';
+			}
+			else {
+				$message_to_user = 'vendor';
+			}
+			
+			if( $message_to_user === 'vendor' || $message_to_user === 'delivery' ) {
+				//$to_user = 'test';
+					$this->send_push_notification($notification_message, $to_user, $message_to_user);
+				//wcfm_log(json_encode($response));
+			} 
+		}
   }
 
-  function send_push_notification( $notification_message, $to_user ) {   
+  function send_push_notification( $notification_message, $to_user, $message_to_user ) {   
 		$body = new stdClass();
-		$one_signal_tokens = apply_filters( 'wcfm_one_signal_tokens', array(
-			'app_id'       => "6fc23bb9-ad88-48ee-afd0-d2af425e466c",
-			'rest_api_key' => "YzA3MWY0ZTctZmVkOC00OTE2LWJiMzEtMzM1YzJhNzc1M2Zh"
-		) );
+      	if( $message_to_user === 'vendor' ) {
+            $one_signal_tokens = apply_filters( 'wcfm_one_signal_tokens', array(
+                'app_id'       => "6fc23bb9-ad88-48ee-afd0-d2af425e466c",
+                'rest_api_key' => "YzA3MWY0ZTctZmVkOC00OTE2LWJiMzEtMzM1YzJhNzc1M2Zh",
+            ) ); 
+        } elseif( $message_to_user === 'delivery' ) { 
+        	$one_signal_tokens = apply_filters( 'wcfm_one_signal_delivery_tokens', array(
+                'app_id'       => "ee1b922f-a016-45c6-84c5-fa0ba009f2c6",
+                'rest_api_key' => "YzA3MWY0ZTctZmVkOC00OTE2LWJiMzEtMzM1YzJhNzc1M2Zh",
+            ) ); 
+        }
+      	//$var = print_r( $one_signal_tokens, true);
+        //wcfm_log($var);
+      	
 		$body->app_id = $one_signal_tokens['app_id'];
 		$body->contents = array( 'en' => $notification_message );
 		$body->include_external_user_ids = array($to_user);

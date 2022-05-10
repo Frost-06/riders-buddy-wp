@@ -113,9 +113,9 @@ class WCFMmp_Settings {
 					                                                                        "sold_by_label" => array('label' => __('Sold By Label', 'wc-multivendor-marketplace'), 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title', 'value' => $sold_by_label, 'desc_class' => 'wcfm_page_options_desc', 'desc' => __( 'Sold By label along with store name under product archive pages.', 'wc-multivendor-marketplace' ) ),
 					                                                                        
 					                                                                        "vendor_sold_by_template" => array('label' => __('Sold By Template', 'wc-multivendor-marketplace'), 'type' => 'select', 'options' => array( 'simple' => __( 'Simple', 'wc-multivendor-marketplace' ), 'advanced' => __( 'Advanced', 'wc-multivendor-marketplace' ), 'tab' => __( 'As Tab', 'wc-multivendor-marketplace' ) ), 'class' => 'wcfm-select wcfm_ele', 'label_class' => 'wcfm_title', 'value' => $vendor_sold_by_template, 'desc_class' => 'wcfm_page_options_desc', 'desc' => __( 'Single product page Sold By template.', 'wc-multivendor-marketplace' ) ),
-					                                                                        "sold_by_template_simple" => array( 'type' => 'html', 'class' => 'vendor_sold_by_type vendor_sold_by_type_simple', 'label_class' => 'wcfm_title wcfm_ele', 'value' => '<img src="'.$WCFMmp->plugin_url.'assets/images/sold_by_simple.png" />', 'attributes' => array( 'style' => 'margin-left:35%;border: 1px dotted #ccc;margin-bottom:15px;' ) ),
-					                                                                        "sold_by_template_advanced" => array( 'type' => 'html', 'class' => 'vendor_sold_by_type vendor_sold_by_type_advanced', 'label_class' => 'wcfm_title wcfm_ele', 'value' => '<img src="'.$WCFMmp->plugin_url.'assets/images/sold_by_advanced.png" />', 'attributes' => array( 'style' => 'margin-left:35%;border: 1px dotted #ccc;margin-bottom:15px;' ) ),
-					                                                                        "sold_by_template_tab" => array( 'type' => 'html', 'class' => 'vendor_sold_by_type vendor_sold_by_type_tab', 'label_class' => 'wcfm_title wcfm_ele', 'value' => '<img src="'.$WCFMmp->plugin_url.'assets/images/sold_by_tab.png" />', 'attributes' => array( 'style' => 'margin-left:35%;border: 1px dotted #ccc;margin-bottom:15px;' ) ),
+					                                                                        "sold_by_template_simple" => array( 'type' => 'html', 'class' => 'vendor_sold_by_type vendor_sold_by_type_simple', 'label_class' => 'wcfm_title wcfm_ele', 'value' => '<img src="'.esc_url($WCFMmp->plugin_url).'assets/images/sold_by_simple.png" />', 'attributes' => array( 'style' => 'margin-left:35%;border: 1px dotted #ccc;margin-bottom:15px;' ) ),
+					                                                                        "sold_by_template_advanced" => array( 'type' => 'html', 'class' => 'vendor_sold_by_type vendor_sold_by_type_advanced', 'label_class' => 'wcfm_title wcfm_ele', 'value' => '<img src="'.esc_url($WCFMmp->plugin_url).'assets/images/sold_by_advanced.png" />', 'attributes' => array( 'style' => 'margin-left:35%;border: 1px dotted #ccc;margin-bottom:15px;' ) ),
+					                                                                        "sold_by_template_tab" => array( 'type' => 'html', 'class' => 'vendor_sold_by_type vendor_sold_by_type_tab', 'label_class' => 'wcfm_title wcfm_ele', 'value' => '<img src="'.esc_url($WCFMmp->plugin_url).'assets/images/sold_by_tab.png" />', 'attributes' => array( 'style' => 'margin-left:35%;border: 1px dotted #ccc;margin-bottom:15px;' ) ),
 					                                                                        
 					                                                                        "vendor_sold_by_position" => array( 'label' => __('Sold By Position', 'wc-multivendor-marketplace'), 'type' => 'select', 'options' => array( 'bellow_title' => __( 'Below Title', 'wc-multivendor-marketplace' ), 'bellow_price' => __( 'Below Price', 'wc-multivendor-marketplace' ), 'bellow_sc' => __( 'Below Short Description', 'wc-multivendor-marketplace' ), 'bellow_atc' => __( 'Below Add to Cart', 'wc-multivendor-marketplace' ) ), 'class' => 'wcfm-select wcfm_ele', 'label_class' => 'wcfm_title', 'value' => $vendor_sold_by_position, 'desc_class' => 'wcfm_page_options_desc', 'desc' => __( 'Sold by display position at Single Product Page.', 'wc-multivendor-marketplace' ) ),
 					                                                                        "store_name_position" => array( 'label' => __('Store Name Position', 'wc-multivendor-marketplace'), 'type' => 'select', 'options' => array( 'on_banner' => __( 'On Banner', 'wc-multivendor-marketplace' ), 'on_header' => __( 'At Header', 'wc-multivendor-marketplace' ) ), 'class' => 'wcfm-select wcfm_ele', 'label_class' => 'wcfm_title', 'value' => $store_name_position, 'desc_class' => 'wcfm_page_options_desc', 'desc' => __( 'Store name position at Vendor Store Page.', 'wc-multivendor-marketplace' ) ),
@@ -282,7 +282,7 @@ class WCFMmp_Settings {
 							'<b>', '</b><br/>', '<br/>', '<br/>');
 					  ?>
 					 </p>
-					 <img src="<?php echo $WCFMmp->plugin_url . 'assets/images/'; ?>wcfmmp-storelist.png" />
+					 <img src="<?php echo esc_url( $WCFMmp->plugin_url . 'assets/images/' ); ?>wcfmmp-storelist.png" />
 				</div>
 			</div>
 		</div>
@@ -1052,7 +1052,7 @@ class WCFMmp_Settings {
 		</div>
 		<div class="wcfm-container">
 			<div id="wcfm_settings_form_shipping_expander" class="wcfm-content">
-			  <h2><?php echo apply_filters( 'wcfm_sold_by_label', '', __( 'Vendor', 'wc-frontend-manager' ) ) . ' ' . __('Shipping Settings', 'wc-multivendor-marketplace'); ?></h2>
+			  <h2><?php echo esc_attr(apply_filters( 'wcfm_sold_by_label', '', __( 'Vendor', 'wc-frontend-manager' ) )) . ' ' . esc_html__('Shipping Settings', 'wc-multivendor-marketplace'); ?></h2>
 				<?php wcfm_video_tutorial( 'https://wclovers.com/knowledgebase/wcfm-marketplace-store-shipping/' ); ?>
 				<div class="wcfm_clearfix"></div>
 				<div class="store_address">
@@ -1517,7 +1517,7 @@ class WCFMmp_Settings {
 		</div>
 		<div class="wcfm-container">
 			<div id="wcfm_settings_form_refund_expander" class="wcfm-content">
-			  <h2><?php echo apply_filters( 'wcfm_sold_by_label', '', __( 'Vendor', 'wc-frontend-manager' ) ) . ' ' . __('Refund Settings', 'wc-multivendor-marketplace'); ?></h2>
+			  <h2><?php echo esc_attr(apply_filters( 'wcfm_sold_by_label', '', __( 'Vendor', 'wc-frontend-manager' ) )) . ' ' . esc_html__('Refund Settings', 'wc-multivendor-marketplace'); ?></h2>
 				<?php wcfm_video_tutorial( 'https://wclovers.com/knowledgebase/wcfm-marketplace-refund/' ); ?>
 				<div class="wcfm_clearfix"></div>
 				<?php
@@ -1568,7 +1568,7 @@ class WCFMmp_Settings {
 		</div>
 		<div class="wcfm-container">
 			<div id="wcfm_settings_form_review_expander" class="wcfm-content">
-			  <h2><?php echo apply_filters( 'wcfm_sold_by_label', '', __( 'Vendor', 'wc-frontend-manager' ) ) . ' ' . __('Review Settings', 'wc-multivendor-marketplace'); ?></h2>
+			  <h2><?php echo esc_attr(apply_filters( 'wcfm_sold_by_label', '', __( 'Vendor', 'wc-frontend-manager' ) )) . ' ' . esc_html__('Review Settings', 'wc-multivendor-marketplace'); ?></h2>
 				<?php wcfm_video_tutorial( 'https://wclovers.com/knowledgebase/wcfm-marketplace-reviews/' ); ?>
 				<div class="wcfm_clearfix"></div>
 				<?php
@@ -1631,7 +1631,7 @@ class WCFMmp_Settings {
 		</div>
 		<div class="wcfm-container">
 			<div id="wcfm_settings_form_custom_field_expander" class="wcfm-content">
-				<h2><?php echo apply_filters( 'wcfm_sold_by_label', '', __( 'Vendor', 'wc-frontend-manager' ) ) . ' ' . __( 'Registration Settings', 'wc-multivendor-marketplace' ); ?></h2>
+				<h2><?php echo esc_attr(apply_filters( 'wcfm_sold_by_label', '', __( 'Vendor', 'wc-frontend-manager' ) )) . ' ' . esc_html__( 'Registration Settings', 'wc-multivendor-marketplace' ); ?></h2>
 				<?php wcfm_video_tutorial( 'https://wclovers.com/knowledgebase/wcfm-marketplace-vendor-registration/' ); ?>
 				<div class="wcfm_clearfix"></div>
 				<?php
@@ -1681,7 +1681,7 @@ class WCFMmp_Settings {
 				?>
 				
 				<div class="wcfm_clearfix"></div><br />
-				<a id="wcfm_registration_advanced_settings" style="color:#17a2b8;font-weight:600;float:right;" href="<?php echo get_wcfm_memberships_settings_url(); ?>"><span class="wcfmfa fa-user-plus"></span>&nbsp;<span class="text"><?php _e( 'Registration Advanced Setting', 'wc-frontend-manager'); ?></span></a>
+				<a id="wcfm_registration_advanced_settings" style="color:#17a2b8;font-weight:600;float:right;" href="<?php echo esc_url(get_wcfm_memberships_settings_url()); ?>"><span class="wcfmfa fa-user-plus"></span>&nbsp;<span class="text"><?php esc_html_e( 'Registration Advanced Setting', 'wc-frontend-manager'); ?></span></a>
 				<div class="wcfm_clearfix"></div>
 			</div>
 		</div>
@@ -1774,7 +1774,7 @@ class WCFMmp_Settings {
 		</div>
 		<div class="wcfm-container">
 			<div id="wcfmmp_settings_form_store_style_expander" class="wcfm-content">
-				<h2><?php echo apply_filters( 'wcfm_sold_by_label', '', __( 'Vendor', 'wc-frontend-manager' ) ) . ' ' . __('Page Display Setting', 'wc-multivendor-marketplace'); ?></h2>
+				<h2><?php echo esc_attr(apply_filters( 'wcfm_sold_by_label', '', __( 'Vendor', 'wc-frontend-manager' ) )) . ' ' . esc_html__('Page Display Setting', 'wc-multivendor-marketplace'); ?></h2>
 				<div class="wcfm_clearfix"></div>
 				<?php
 					$color_options = $this->wcfmmp_store_color_setting_options();

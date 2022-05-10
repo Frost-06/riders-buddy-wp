@@ -37,7 +37,7 @@ $followers_arr = get_user_meta( $store_user->get_id(), '_wcfm_following_list', t
 			if ( !$wp_user_avatar ) {
 				$wp_user_avatar = $WCFM->plugin_url . 'assets/images/avatar.png';
 			}
-			echo '<img src="' . $wp_user_avatar . '" />';
+			echo '<img src="' . esc_url($wp_user_avatar) . '" />';
 			echo '<br /><strong>' . $finfo->display_name . '</strong>';
 			echo '</div>';
 			echo '</td>';

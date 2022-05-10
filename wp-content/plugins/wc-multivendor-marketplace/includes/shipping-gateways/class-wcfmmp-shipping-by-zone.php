@@ -246,6 +246,7 @@ class WCFMmp_Shipping_By_Zone extends WC_Shipping_Method {
 		foreach ( $shipping_methods as $key => $method ) {
 			$cost      = 0;
 			$tax_rate  = ( $method['settings']['tax_status'] == 'none' ) ? false : '';
+			$tax_rate  = apply_filters( 'wcfmmp_is_apply_tax_on_shipping_rates', $tax_rate );
 			$has_costs = false;
 
 			if ( 'yes' != $method['enabled'] ) {

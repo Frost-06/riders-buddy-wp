@@ -158,7 +158,7 @@ class WCFMmp_Product {
 		}
 		?>
 		<!-- collapsible 12 - WCV Commission Support -->
-		<div class="page_collapsible products_manage_commission simple variable grouped external booking <?php echo $wcfm_wpml_edit_disable_element; ?>" id="wcfm_products_manage_form_commission_head"><label class="wcfmfa fa-percent"></label><?php _e('Commission', 'wc-frontend-manager'); ?><span></span></div>
+		<div class="page_collapsible products_manage_commission simple variable grouped external booking <?php echo esc_attr($wcfm_wpml_edit_disable_element); ?>" id="wcfm_products_manage_form_commission_head"><label class="wcfmfa fa-percent"></label><?php _e('Commission', 'wc-frontend-manager'); ?><span></span></div>
 		<div class="wcfm-container simple variable external grouped booking">
 			<div id="wcfm_products_manage_form_commission_expander" class="wcfm-content">
 				<?php
@@ -513,7 +513,7 @@ class WCFMmp_Product {
     
     $vendor_shipping_details = get_user_meta( $vendor_id, '_wcfmmp_shipping', true );
     if( !empty($vendor_shipping_details) ) {
-      $enabled = isset( $vendor_shipping_details['_wcfmmp_user_shipping_enable'] ) ? 'yes' : '';
+      $enabled = isset( $vendor_shipping_details['_wcfmmp_user_shipping_enable'] ) ? $vendor_shipping_details['_wcfmmp_user_shipping_enable'] : '';
       $type = !empty( $vendor_shipping_details['_wcfmmp_user_shipping_type'] ) ? $vendor_shipping_details['_wcfmmp_user_shipping_type'] : '';
       if ( ( !empty($enabled) && $enabled == 'yes' ) && ( !empty($type) ) && 'by_country' === $type ) {
         $wcv_shipping_fileds = apply_filters( 'wcfmmp_product_manager_shipping_fileds', array( 

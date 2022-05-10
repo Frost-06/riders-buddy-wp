@@ -55,7 +55,7 @@ class WCFMmp_Gateway_Stripe extends WCFMmp_Abstract_Gateway {
 		
 	}
 	
-	public function gateway_logo() { global $WCFMmp; return $WCFMmp->plugin_url . 'assets/images/'.$this->id.'.png'; }
+	public function gateway_logo() { global $WCFMmp; return esc_url($WCFMmp->plugin_url . 'assets/images/'.$this->id.'.png'); }
 
 	public function process_payment( $withdrawal_id, $vendor_id, $withdraw_amount, $withdraw_charges, $transaction_mode = 'auto', $args = array() ) {
 		global $WCFM, $WCFMmp, $wpdb;
@@ -77,8 +77,8 @@ class WCFMmp_Gateway_Stripe extends WCFMmp_Abstract_Gateway {
 				if( isset( $transfer_data['id'] ) && !empty( $transfer_data['id'] ) ) {
 					$sql = 'SELECT * FROM ' . $wpdb->prefix . 'wcfm_marketplace_withdraw_request';
 					$sql .= ' WHERE 1=1';
-					$sql .= " AND ID = " . $this->withdrawal_id;
-					$withdrawal_infos = $wpdb->get_results( $sql );
+					$sql .= " AND ID = %d";
+					$withdrawal_infos = $wpdb->get_results( $wpdb->prepare($sql, $this->withdrawal_id) );
 					if( !empty( $withdrawal_infos ) ) {
 						foreach( $withdrawal_infos as $withdrawal_info ) {
 							$wi_order_ids  = explode( ",", $withdrawal_info->order_ids );

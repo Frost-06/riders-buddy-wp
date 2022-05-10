@@ -30,7 +30,7 @@ if( $multi_parent ) {
 }
 
 
-$more_offers = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}wcfm_marketplace_product_multivendor` WHERE `parent_product_id` = $parent_product_id" );
+$more_offers = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}wcfm_marketplace_product_multivendor` WHERE `parent_product_id` = %d", $parent_product_id ) );
 
 $more_offers = apply_filters( 'wcfmmp_more_offers_products', $more_offers, $parent_product_id );
 
@@ -58,7 +58,7 @@ if( !empty( $more_offers ) ) {
 	  <?php if( apply_filters( 'wcfmmp_is_allow_sold_by_linked', true ) ) { ?>
 	  	<?php do_action( 'wcfmmp_more_offers_sorting_form_before', $parent_product_id ); ?>
 			<form class="woocommerce-spmv-ordering" method="POST">
-				<select name="spmv_orderby" class="orderby" aria-label="Shop order" data-product_id="<?php echo $product_id; ?>">
+				<select name="spmv_orderby" class="orderby" aria-label="Shop order" data-product_id="<?php echo esc_attr($product_id); ?>">
 					<option value="menu_order"><?php _e( 'Default sorting', 'woocommerce' ); ?></option>
 					<option value="popularity"><?php _e( 'Sort by popularity', 'woocommerce' ); ?></option>
 					<option value="date"><?php _e( 'Sort by latest', 'woocommerce' ); ?></option>
@@ -73,7 +73,7 @@ if( !empty( $more_offers ) ) {
 	  <?php $WCFMmp->template->get_template( 'product_multivendor/wcfmmp-view-more-offers-loop.php', array( 'product_id' => $product_id, 'sorting' => 'price' ) ); ?>
 		
 		<?php if( $hover_color ) { ?>
-			<style>a.wcfmmp_product_multivendor_action_button:hover{background: <?php echo $hover_color; ?> !important;background-color: <?php echo $hover_color; ?> !important;border-bottom-color: <?php echo $hover_color; ?> !important;color: <?php echo $hover_text_color; ?> !important;}</style>
+			<style>a.wcfmmp_product_multivendor_action_button:hover{background: <?php echo esc_attr($hover_color); ?> !important;background-color: <?php echo esc_attr($hover_color); ?> !important;border-bottom-color: <?php echo esc_attr($hover_color); ?> !important;color: <?php echo esc_attr($hover_text_color); ?> !important;}</style>
 		<?php } ?>
 	</div>
 	<?php

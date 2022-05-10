@@ -32,7 +32,7 @@ if( !apply_filters( 'wcfm_is_allow_review_rating', true ) ) return;
 					?>
 					<?php _e( $wcfm_review_category['category'], 'wc-multivendor-marketplace' ); ?>
 				</span>
-				<input type="hidden" class="store_rating_value" name="wcfm_saved_store_review_category[<?php echo $wcfm_review_cat_key; ?>]" value="<?php echo round($avg_category_review_rating); ?>" />
+				<input type="hidden" class="store_rating_value" name="wcfm_saved_store_review_category[<?php echo esc_attr($wcfm_review_cat_key); ?>]" value="<?php echo esc_attr(round($avg_category_review_rating)); ?>" />
 			</div>
 		<?php } ?>
 	</div>

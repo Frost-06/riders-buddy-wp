@@ -475,10 +475,19 @@ class WCFMmp_Vendor {
 	 * Vendor Order Status Condition depending upon Order Sync Comdition
 	 */
 	function wcfmmp_vendor_order_status_condition( $condition, $table_handler ) {
-		global $WCFMmp;
+		global $WCFMmp, $WCFM_Query;
 		$wcfmmp_marketplace_options   = wcfm_get_option( 'wcfm_marketplace_options', array() );
 		$order_sync  = isset( $wcfmmp_marketplace_options['order_sync'] ) ? $wcfmmp_marketplace_options['order_sync'] : 'no';
 		$status = get_wcfm_marketplace_active_withdrwal_order_status_in_comma();
+		
+		// Adding "refunded" status only for reports page
+		if ( ! is_null( $WCFM_Query ) && !is_admin() && is_page() && is_wcfm_page() ) {
+			$current_endpoint = $WCFM_Query->get_current_endpoint();
+			if( (wcfm_is_vendor() && !$current_endpoint) || in_array( $current_endpoint, array( 'wcfm-reports-sales-by-date', 'wcfm-reports-sales-by-vendor' ) ) ) {
+				$status .= ", 'refunded'";
+			}
+		}
+		
 		if( $order_sync == 'yes' ) {
 		  $condition = " AND {$table_handler}.order_status IN ({$status})";
 		} else {
@@ -497,9 +506,9 @@ class WCFMmp_Vendor {
 		if( wcfm_is_vendor() ) {
 			$sql = 'SELECT GROUP_CONCAT(commission_status) commission_statuses, GROUP_CONCAT(is_refunded) is_refundeds, GROUP_CONCAT(refund_status) refund_statuses  FROM ' . $wpdb->prefix . 'wcfm_marketplace_orders AS commission';
 			$sql .= ' WHERE 1=1';
-			$sql .= " AND `order_id` = " . $order_id;
-			$sql .= " AND `vendor_id` = " . $vendor_id;
-			$commissions = $wpdb->get_results( $sql );
+			$sql .= " AND `order_id` = %d";
+			$sql .= " AND `vendor_id` = %d";
+			$commissions = $wpdb->get_results( $wpdb->prepare( $sql, $order_id, $vendor_id ) );
 			$product_id = 0;
 			if( !empty( $commissions ) ) {
 				foreach( $commissions as $commission ) {
@@ -777,8 +786,8 @@ class WCFMmp_Vendor {
 					</div>
 					<?php do_action( 'wcfmmp_admin_wcfm_store_address_settings_after', $vendor_id ); ?> 
 					<script type="text/javascript">
-						var selected_state = '<?php echo $state; ?>';
-						var input_selected_state = '<?php echo $state; ?>';
+						var selected_state = '<?php echo esc_attr($state); ?>';
+						var input_selected_state = '<?php echo esc_attr($state); ?>';
 					</script>
 					
 					<?php
@@ -889,8 +898,8 @@ class WCFMmp_Vendor {
 					<div class="wcfm-message" tabindex="-1"></div>
 					<div class="wcfm-clearfix"></div>
 					<div id="wcfm_messages_submit">
-					  <input type="hidden" name="store_id" value="<?php echo $vendor_id; ?>" />
-						<input type="submit" name="save-shipping-data" value="<?php _e( 'Update', 'wc-frontend-manager' ); ?>" id="wcfm_store_shipping_setting_save_button" class="wcfm_submit_button" />
+					  <input type="hidden" name="store_id" value="<?php echo esc_attr($vendor_id); ?>" />
+						<input type="submit" name="save-shipping-data" value="<?php esc_html_e( 'Update', 'wc-frontend-manager' ); ?>" id="wcfm_store_shipping_setting_save_button" class="wcfm_submit_button" />
 					</div>
 					<div class="wcfm-clearfix"></div>
 				</form>
@@ -1182,7 +1191,7 @@ class WCFMmp_Vendor {
 																																		"routing_number" => array('label' => __('Routing Number', 'wc-frontend-manager'), 'placeholder' => __( 'Routing number', 'wc-frontend-manager' ), 'name' => 'payment[bank][routing_number]', 'type' => 'text', 'class' => 'wcfm-text wcfm_ele paymode_field paymode_bank_transfer', 'label_class' => 'wcfm_title wcfm_ele paymode_field paymode_bank_transfer', 'value' => $routing_number ),
 																																		"iban" => array('label' => __('IBAN', 'wc-frontend-manager'), 'placeholder' => __('IBAN', 'wc-frontend-manager'), 'name' => 'payment[bank][iban]', 'type' => 'text', 'class' => 'wcfm-text wcfm_ele paymode_field paymode_bank_transfer', 'label_class' => 'wcfm_title wcfm_ele paymode_field paymode_bank_transfer', 'value' => $iban ),
 																																		"swift" => array('label' => __('Swift Code', 'wc-frontend-manager'), 'placeholder' => __('Swift code', 'wc-frontend-manager'), 'name' => 'payment[bank][swift]', 'type' => 'text', 'class' => 'wcfm-text wcfm_ele paymode_field paymode_bank_transfer', 'label_class' => 'wcfm_title wcfm_ele paymode_field paymode_bank_transfer', 'value' => $swift ),
-																																		"ifsc" => array('label' => __('IFSC Code', 'wc-frontend-manager'), 'placeholder' => __('Swift code', 'wc-frontend-manager'), 'name' => 'payment[bank][ifsc]', 'type' => 'text', 'class' => 'wcfm-text wcfm_ele paymode_field paymode_bank_transfer', 'label_class' => 'wcfm_title wcfm_ele paymode_field paymode_bank_transfer', 'value' => $ifsc ),
+																																		"ifsc" => array('label' => __('IFSC Code', 'wc-frontend-manager'), 'placeholder' => __('IFSC code', 'wc-frontend-manager'), 'name' => 'payment[bank][ifsc]', 'type' => 'text', 'class' => 'wcfm-text wcfm_ele paymode_field paymode_bank_transfer', 'label_class' => 'wcfm_title wcfm_ele paymode_field paymode_bank_transfer', 'value' => $ifsc ),
 																																		), $vendor_id ) );
 							?>
 						</div>
@@ -1195,8 +1204,8 @@ class WCFMmp_Vendor {
 					<div class="wcfm-message" tabindex="-1"></div>
 					<div class="wcfm-clearfix"></div>
 					<div id="wcfm_messages_submit">
-					  <input type="hidden" name="vendor_id" value="<?php echo $vendor_id; ?>" />
-						<input type="submit" name="save-data" value="<?php _e( 'Update', 'wc-frontend-manager' ); ?>" id="wcfm_store_payment_setting_save_button" class="wcfm_submit_button" />
+					  <input type="hidden" name="vendor_id" value="<?php echo esc_attr($vendor_id); ?>" />
+						<input type="submit" name="save-data" value="<?php esc_html_e( 'Update', 'wc-frontend-manager' ); ?>" id="wcfm_store_payment_setting_save_button" class="wcfm_submit_button" />
 					</div>
 					<div class="wcfm-clearfix"></div>
 				</form>
@@ -1372,7 +1381,7 @@ class WCFMmp_Vendor {
 					<?php } ?>
 					
 					<?php if( $vendor_id != 99999 ) { ?>
-					<input type="hidden" name="vendor_id" value="<?php echo $vendor_id; ?>" />
+					<input type="hidden" name="vendor_id" value="<?php echo esc_attr($vendor_id); ?>" />
 				</form>
 				<?php } ?>
 			</div>
@@ -1529,7 +1538,7 @@ class WCFMmp_Vendor {
 						<?php } ?>
 					<?php } ?>
 					<?php if( $vendor_id != 99999 ) { ?>
-					<input type="hidden" name="vendor_id" value="<?php echo $vendor_id; ?>" />
+					<input type="hidden" name="vendor_id" value="<?php echo esc_attr($vendor_id); ?>" />
 				</form>
 				<?php } ?>
 			</div>
@@ -1672,8 +1681,8 @@ class WCFMmp_Vendor {
 					<div class="wcfm-message" tabindex="-1"></div>
 					<div class="wcfm-clearfix"></div>
 					<div class="wcfm_messages_submit">
-					  <input type="hidden" name="vendor_id" value="<?php echo $vendor_id; ?>" />
-						<input type="submit" name="save-data" value="<?php _e( 'Update', 'wc-frontend-manager' ); ?>" id="wcfm_store_customer_support_setting_save_button" class="wcfm_submit_button" />
+					  <input type="hidden" name="vendor_id" value="<?php echo esc_attr($vendor_id); ?>" />
+						<input type="submit" name="save-data" value="<?php esc_html_e( 'Update', 'wc-frontend-manager' ); ?>" id="wcfm_store_customer_support_setting_save_button" class="wcfm_submit_button" />
 					</div>
 					<div class="wcfm-clearfix"></div>
 				</form>
@@ -1681,8 +1690,8 @@ class WCFMmp_Vendor {
 			</div>
 		</div>
 		<script type="text/javascript">
-			var csd_selected_state = '<?php echo $vendor_csd_return_state; ?>';
-			var input_csd_state = '<?php echo $vendor_csd_return_state; ?>';
+			var csd_selected_state = '<?php echo esc_attr($vendor_csd_return_state); ?>';
+			var input_csd_state = '<?php echo esc_attr($vendor_csd_return_state); ?>';
 		</script>
 		<div class="wcfm_clearfix"></div>
 		<?php if( $vendor_id != 99999 ) { ?>
@@ -1795,7 +1804,7 @@ class WCFMmp_Vendor {
 				<div class="wcfm-clearfix"></div>
 			</div>
 		</div>
-		<input type="hidden" id="wcfmmp_vendor_manager_id" name="wcfmmp_vendor_manager_id" value="<?php echo $vendor_id; ?>" />
+		<input type="hidden" id="wcfmmp_vendor_manager_id" name="wcfmmp_vendor_manager_id" value="<?php echo esc_attr($vendor_id); ?>" />
 		<div class="wcfm_clearfix"></div><br />
 		<!-- end collapsible - Orders -->
 		<?php
@@ -1815,7 +1824,7 @@ class WCFMmp_Vendor {
 					<?php
 					$vendor_arr = $WCFM->wcfm_vendor_support->wcfm_get_vendor_list( true );
 					unset($vendor_arr[0]);
-					echo '<option value="">' . __( '— No change —', 'woocommerce' ) . '</option>';
+					echo '<option value="">' . esc_html__( '— No change —', 'woocommerce' ) . '</option>';
 					foreach ( $vendor_arr as $key => $value ) {
 						echo '<option value="' . esc_attr( $key ) . '">' . esc_html( $value ) . '</option>';
 					}
@@ -1895,13 +1904,13 @@ class WCFMmp_Vendor {
 		<!-- collapsible -->
 		<div class="page_collapsible" id="wcfm_profile_form_additional_info_head">
 			<label class="wcfmfa fa-star"></label>
-			<?php echo apply_filters( 'wcfm_vendor_additional_info_heading', __('Additional Info', 'wc-multivendor-marketplace') ); ?><span></span>
+			<?php echo apply_filters( 'wcfm_vendor_additional_info_heading', esc_html__('Additional Info', 'wc-multivendor-marketplace') ); ?><span></span>
 		</div>
 		<div class="wcfm-container">
 			<div id="wcfm_profile_form_additional_info_expander" class="wcfm-content">
 		<?php } else { ?>
 			<div class="wcfm_clearfix"></div></br/>
-			<h2><?php echo apply_filters('wcfm_vendor_additional_info_heading', __('Additional Info', 'wc-multivendor-marketplace') ); ?></h2>
+			<h2><?php echo apply_filters('wcfm_vendor_additional_info_heading', esc_html__('Additional Info', 'wc-multivendor-marketplace') ); ?></h2>
 			<div class="wcfm_clearfix"></div>
 			<div class="store_address">
 		<?php } ?>
@@ -1955,7 +1964,7 @@ class WCFMmp_Vendor {
 							break;
 							
 							case 'datepicker':
-								$WCFM->wcfm_fields->wcfm_generate_form_field(  array( $field_id => array( 'label' => __($wcfmvm_registration_custom_field['label'], 'wc-multivendor-membership') , 'name' => $field_name, 'custom_attributes' => $custom_attributes, 'type' => 'text', 'placeholder' => 'YYYY-MM-DD', 'class' => 'wcfm-text', 'label_class' => 'wcfm_title', 'value' => $field_value, 'hints' => __($wcfmvm_registration_custom_field['help_text'], 'wc-multivendor-membership') ) ) );
+								$WCFM->wcfm_fields->wcfm_generate_form_field(  array( $field_id => array( 'label' => __($wcfmvm_registration_custom_field['label'], 'wc-multivendor-membership') , 'name' => $field_name, 'custom_attributes' => $custom_attributes, 'type' => 'text', 'placeholder' => get_option( 'date_format' ), 'class' => 'wcfm-text wcfm_datepicker', 'label_class' => 'wcfm_title', 'value' => $field_value, 'hints' => __($wcfmvm_registration_custom_field['help_text'], 'wc-multivendor-membership') ) ) );
 							break;
 							
 							case 'timepicker':
@@ -2212,11 +2221,11 @@ class WCFMmp_Vendor {
 					<h2 style="font-size: 18px; color: #17a2b8; line-height: 20px;margin-top: 6px;margin-bottom: 10px;padding: 0px;text-decoration: underline;">
 					  <?php 
 					    if( apply_filters( 'wcfm_is_allow_order_item_policies_by_vendor', true ) || !apply_filters( 'wcfm_is_show_marketplace_itemwise_orders', true ) ) {
-					    	echo $store_name . ' ';
+					    	echo esc_attr( $store_name ) . ' ';
 					    } else {
-					    	echo get_the_title( $product_id ) . ' ('. $store_name .') ';
+					    	echo esc_attr(get_the_title( $product_id )) . ' ('. esc_attr($store_name) .') ';
 					    }
-					    echo __( 'Policies', 'wc-multivendor-marketplace' ); 
+					    echo esc_html__( 'Policies', 'wc-multivendor-marketplace' ); 
 					  ?>:
 					</h2>
 					<table width="100%" style="width:100%;">
@@ -2226,20 +2235,20 @@ class WCFMmp_Vendor {
 						  
 							<?php if( !wcfm_empty($shipping_policy) ) { ?>
 								<tr>
-									<th colspan="3" style="background-color: #eeeeee;padding: 1em 1.41575em;line-height: 1.5;"><strong><?php echo apply_filters('wcfm_shipping_policies_heading', __('Shipping Policy', 'wc-frontend-manager')); ?></strong></th>
-									<td colspan="5" style="background-color: #f8f8f8;padding: 1em;"><?php echo $shipping_policy; ?></td>
+									<th colspan="3" style="background-color: #eeeeee;padding: 1em 1.41575em;line-height: 1.5;"><strong><?php echo apply_filters('wcfm_shipping_policies_heading', esc_html__('Shipping Policy', 'wc-frontend-manager')); ?></strong></th>
+									<td colspan="5" style="background-color: #f8f8f8;padding: 1em;"><?php echo wp_kses_post($shipping_policy); ?></td>
 								</tr>
 							<?php } ?>
 							<?php if( !wcfm_empty($refund_policy) ) { ?>
 								<tr>
-									<th colspan="3" style="background-color: #eeeeee;padding: 1em 1.41575em;line-height: 1.5;"><strong><?php echo apply_filters('wcfm_refund_policies_heading', __('Refund Policy', 'wc-frontend-manager')); ?></strong></th>
-									<td colspan="5" style="background-color: #f8f8f8;padding: 1em;"><?php echo $refund_policy; ?></td>
+									<th colspan="3" style="background-color: #eeeeee;padding: 1em 1.41575em;line-height: 1.5;"><strong><?php echo apply_filters('wcfm_refund_policies_heading', esc_html__('Refund Policy', 'wc-frontend-manager')); ?></strong></th>
+									<td colspan="5" style="background-color: #f8f8f8;padding: 1em;"><?php echo wp_kses_post($refund_policy); ?></td>
 								</tr>
 							<?php } ?>
 							<?php if( !wcfm_empty($cancellation_policy) ) { ?>
 								<tr>
-									<th colspan="3" style="background-color: #eeeeee;padding: 1em 1.41575em;line-height: 1.5;"><strong><?php echo apply_filters('wcfm_cancellation_policies_heading', __('Cancellation / Return / Exchange Policy', 'wc-frontend-manager')); ?></strong></th>
-									<td colspan="5" style="background-color: #f8f8f8;padding: 1em;"><?php echo $cancellation_policy; ?></td>
+									<th colspan="3" style="background-color: #eeeeee;padding: 1em 1.41575em;line-height: 1.5;"><strong><?php echo apply_filters('wcfm_cancellation_policies_heading', esc_html__('Cancellation / Return / Exchange Policy', 'wc-frontend-manager')); ?></strong></th>
+									<td colspan="5" style="background-color: #f8f8f8;padding: 1em;"><?php echo wp_kses_post($cancellation_policy); ?></td>
 								</tr>
 							<?php } ?>
 							
@@ -2249,8 +2258,8 @@ class WCFMmp_Vendor {
 								if( !wcfm_empty( $customer_support_details ) ) {
 									?>
 									<tr>
-										<th colspan="3" style="background-color: #eeeeee;padding: 1em 1.41575em;line-height: 1.5;"><strong><?php echo apply_filters('wcfm_customer_support_heading', __('Customer Support', 'wc-frontend-manager')); ?></strong></th>
-										<td colspan="5" style="background-color: #f8f8f8;padding: 1em;"><?php echo $customer_support_details; ?></td>
+										<th colspan="3" style="background-color: #eeeeee;padding: 1em 1.41575em;line-height: 1.5;"><strong><?php echo apply_filters('wcfm_customer_support_heading', esc_html__('Customer Support', 'wc-frontend-manager')); ?></strong></th>
+										<td colspan="5" style="background-color: #f8f8f8;padding: 1em;"><?php echo wp_kses_post($customer_support_details); ?></td>
 									</tr>
 								<?php } ?>
 							<?php } ?>
@@ -2662,14 +2671,14 @@ class WCFMmp_Vendor {
 		//print_r($profile_remaining_items);
 		?>
 		<script>
-		var $profile_complete_percent = <?php echo round( $profile_complete_percent, 0 ); ?>;
+		var $profile_complete_percent = <?php echo esc_attr(round( $profile_complete_percent, 0 )); ?>;
 		var $complete = '<?php _e( 'Complete!', 'wc-multivendor-marketplace' ); ?>'; 
 		</script>
 		<div class="wcfm-clearfix"></div>
-		<div id="wcfmmp_profile_complete_progressbar"><div class="wcfmmp_profile_complete_progress_label"><?php _e( 'Loading', 'wc-multivendor-marketplace' ); ?>...</div></div>
+		<div id="wcfmmp_profile_complete_progressbar"><div class="wcfmmp_profile_complete_progress_label"><?php esc_html_e( 'Loading', 'wc-multivendor-marketplace' ); ?>...</div></div>
 		<?php
 		if( !empty( $profile_remaining_items ) ) {
-			echo '<p class="wcfmmp_profile_complete_help description">' . __( 'Suggestion(s)', 'wc-multivendor-marketplace' ) . ': ' . implode( ", ", $profile_remaining_items ) . '</p>' ;
+			echo '<p class="wcfmmp_profile_complete_help description">' . esc_html__( 'Suggestion(s)', 'wc-multivendor-marketplace' ) . ': ' . implode( ", ", $profile_remaining_items ) . '</p>' ;
 		}
 		?>
 		<div class="wcfm-clearfix"></div><br />
@@ -2784,12 +2793,15 @@ class WCFMmp_Vendor {
 		if( $category ) {
 			$search_categories = explode( ",", $category );
 			if( !empty( $search_categories ) ) {
+				$wcfm_allow_vendors_list = array();
 				foreach( $search_categories as $search_category ) {
-					$category_vendors = $wpdb->get_results( "SELECT vendor_id FROM {$wpdb->prefix}wcfm_marketplace_store_taxonomies WHERE term = " . absint($search_category) );
+					$category_vendors = $wpdb->get_results( $wpdb->prepare("SELECT vendor_id FROM {$wpdb->prefix}wcfm_marketplace_store_taxonomies WHERE term = %d", absint($search_category)) );
 					if( !empty( $category_vendors ) ) {
 						foreach( $category_vendors as $category_vendor ) {
 							if( !in_array( $category_vendor->vendor_id, $exclude_vendor_list ) ) {
-								$wcfm_allow_vendors_list[] = $category_vendor->vendor_id;
+								if( !is_array( $allow_vendors_list ) || empty( $allow_vendors_list ) || ( !empty( $allow_vendors_list ) && in_array( $category_vendor->vendor_id, $allow_vendors_list ) ) ) {
+									$wcfm_allow_vendors_list[] = $category_vendor->vendor_id;
+								}
 							}
 						}
 					}
@@ -2833,7 +2845,7 @@ class WCFMmp_Vendor {
 		}
 		
 		if( isset( $_REQUEST['orderby'] ) && !empty( $_REQUEST['orderby'] ) ) {
-			$orderby = sanitize_text_field( $_REQUEST['orderby'] );
+			$orderby = sanitize_sql_orderby( $_REQUEST['orderby'] );
 		}
 		
 		$args = array(
@@ -2979,7 +2991,7 @@ class WCFMmp_Vendor {
 		$all_users = get_users( $args );
 		if( !empty( $all_users ) ) {
 			foreach( $all_users as $all_user ) {
-				$vendor_arr[$all_user->ID] = $all_user->display_name;
+				$vendor_arr[$all_user->ID] = esc_attr($all_user->display_name);
 			}
 		}
 		
@@ -3012,9 +3024,9 @@ class WCFMmp_Vendor {
   	
   	$sql  = "DELETE FROM `{$wpdb->prefix}wcfm_marketplace_store_taxonomies`";
   	$sql .= " WHERE 1=1";
-  	$sql .= " AND `product_id` = {$product_id}";
+  	$sql .= " AND `product_id` = %d";
   	
-  	$wpdb->query($sql);
+  	$wpdb->query( $wpdb->prepare($sql, $product_id));
   	
   }
   
@@ -3172,10 +3184,10 @@ class WCFMmp_Vendor {
 			$sql .= " AND `lang` = '{$lang}'";
 		}
 		
+		$sql .= " GROUP BY term, parent ORDER BY parent";
+		
 		$sql = apply_filters( 'wcfm_vendor_store_taxonomy_query', $sql, $vendor_id, $taxonomy_type );
 		
-		$sql .= " GROUP BY term, parent ORDER BY parent";
-  	
   	$taxonomies = $wpdb->get_results($sql);
   	
   	$vendor_taxonomies = array();
@@ -3270,7 +3282,7 @@ class WCFMmp_Vendor {
   	
   	$sql  = "DELETE FROM `{$wpdb->prefix}wcfm_marketplace_store_taxonomies`";
   	$sql .= " WHERE 1=1";
-  	$sql .= " AND `vendor_id` = {$vendor_id}";
+  	$sql .= " AND `vendor_id` = %d";
   	
   	if( $product_id )
   		$sql .= " AND `product_id` = {$product_id}";
@@ -3278,7 +3290,7 @@ class WCFMmp_Vendor {
   	if( $taxonomy ) 
   		$sql .= " AND `taxonomy` = '{$taxonomy}'";
   	
-  	$wpdb->query($sql);
+  	$wpdb->query( $wpdb->prepare($sql, $vendor_id));
   }
   
 }

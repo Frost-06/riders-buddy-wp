@@ -46,8 +46,8 @@ class WCFMmp_Reviews_Submit_Controller {
 			
 			$review_title       = '';
 			$review_description      = apply_filters( 'wcfm_editor_content_before_save', strip_tags( wcfm_stripe_newline( $wcfm_store_review_data['wcfmmp_store_review_comment'] ) ) );
-			$review_description_mail = wp_unslash( $review_description );
-			$review_description      = esc_sql( wp_unslash( $review_description ) );
+			$review_description_mail = wp_filter_post_kses( wp_unslash( $review_description ) );
+			$review_description      = wp_filter_post_kses( wp_unslash( $review_description ) );
 			
 			
 			$review_rating = 0;
@@ -66,10 +66,11 @@ class WCFMmp_Reviews_Submit_Controller {
 			
 			$current_time = date( 'Y-m-d H:i:s', current_time( 'timestamp', 0 ) );
 	  	
-	  	$wcfm_review_submit = "INSERT into {$wpdb->prefix}wcfm_marketplace_reviews 
+	  		$wcfm_review_submit = $wpdb->prepare( "INSERT into {$wpdb->prefix}wcfm_marketplace_reviews 
 														(`vendor_id`, `author_id`, `author_name`, `author_email`, `review_title`, `review_description`, `review_rating`, `approved`, `created`)
 														VALUES
-														({$vendor_id}, {$author_id}, '{$author_name}', '{$author_email}', '{$review_title}', '{$review_description}', '{$review_rating}', {$approved}, '{$current_time}')";
+														(%d, %d, %s, %s, %s, %s, %s, %d, '{$current_time}')", 
+														$vendor_id, $author_id, $author_name, $author_email, $review_title, $review_description, $review_rating, $approved );
 													
 			$wpdb->query($wcfm_review_submit);
 			$wcfm_review_id = $wpdb->insert_id;
@@ -77,10 +78,11 @@ class WCFMmp_Reviews_Submit_Controller {
 			// Updating Review Meta
 			foreach( $wcfm_review_categories as $wcfm_review_cat_key => $wcfm_review_category ) {
 				if( isset( $wcfm_store_review_categories[$wcfm_review_cat_key] ) ) {
-					$wcfm_review_meta_update = "INSERT into {$wpdb->prefix}wcfm_marketplace_review_rating_meta 
+					$wcfm_review_meta_update = $wpdb->prepare( "INSERT into {$wpdb->prefix}wcfm_marketplace_review_rating_meta 
 																			(`review_id`, `key`, `value`, `type`)
 																			VALUES
-																			({$wcfm_review_id}, '{$wcfm_review_category['category']}', '{$wcfm_store_review_categories[$wcfm_review_cat_key]}', 'rating_category')";
+																			(%d, %s, %s, %s)",
+																			$wcfm_review_id, $wcfm_review_category['category'], $wcfm_store_review_categories[$wcfm_review_cat_key], 'rating_category' );
 					$wpdb->query($wcfm_review_meta_update);
 				}
 			}

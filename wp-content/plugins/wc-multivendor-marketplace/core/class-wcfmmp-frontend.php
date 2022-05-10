@@ -304,26 +304,28 @@ class WCFMmp_Frontend {
 	 */
 	function wcfmmp_checkout_user_location_fields( $fields ) {
 		global $WCFM, $WCFMmp;
-		if( ( true === WC()->cart->needs_shipping() ) && apply_filters( 'wcfmmp_is_allow_checkout_user_location', true ) ) {
-			$fields['billing']['wcfmmp_user_location'] = array(
-					'label'     => __( 'Delivery Location', 'wc-multivendor-marketplace' ),
-					'placeholder'   => _x( 'Insert your address ..', 'placeholder', 'wc-multivendor-marketplace' ),
-					'required'  => true,
-					'class'     => array('form-row-wide'),
-					'clear'     => true,
-					'priority'  => 999,
-					'value'     => WC()->session->get( '_wcfmmp_user_location' )
-			 );
-			$fields['billing']['wcfmmp_user_location_lat'] = array(
-					'required'  => false,
-					'class'     => array('wcfm_custom_hide'),
-					'value'     => WC()->session->get( '_wcfmmp_user_location_lat' )
-			 );
-			$fields['billing']['wcfmmp_user_location_lng'] = array(
-					'required'  => false,
-					'class'     => array('wcfm_custom_hide'),
-					'value'     => WC()->session->get( '_wcfmmp_user_location_lng' )
-			 );
+		if( ! WC()->is_rest_api_request() ) {
+			if( ( true === WC()->cart->needs_shipping() ) && apply_filters( 'wcfmmp_is_allow_checkout_user_location', true ) ) {
+				$fields['billing']['wcfmmp_user_location'] = array(
+						'label'     => __( 'Delivery Location', 'wc-multivendor-marketplace' ),
+						'placeholder'   => _x( 'Insert your address ..', 'placeholder', 'wc-multivendor-marketplace' ),
+						'required'  => true,
+						'class'     => array('form-row-wide'),
+						'clear'     => true,
+						'priority'  => 999,
+						'value'     => WC()->session->get( '_wcfmmp_user_location' )
+				 );
+				$fields['billing']['wcfmmp_user_location_lat'] = array(
+						'required'  => false,
+						'class'     => array('wcfm_custom_hide'),
+						'value'     => WC()->session->get( '_wcfmmp_user_location_lat' )
+				 );
+				$fields['billing']['wcfmmp_user_location_lng'] = array(
+						'required'  => false,
+						'class'     => array('wcfm_custom_hide'),
+						'value'     => WC()->session->get( '_wcfmmp_user_location_lng' )
+				 );
+			}
 		}
 
      return $fields;
@@ -389,8 +391,8 @@ class WCFMmp_Frontend {
 			$lat     = get_post_meta( $order->get_id(), '_wcfmmp_user_location_lat', true );
 			$lng     = get_post_meta( $order->get_id(), '_wcfmmp_user_location_lng', true );
 			if( $address ) {
-				$address = '<a href="https://google.com/maps/place/' . rawurlencode( $address ) . '/@' . $lat . ',' . $lng . '" target="_blank"><span>' . $address . '</span></a>';
-				echo '<p class="wcfm_order_details_delivery_location"><i class="wcfmfa fa-map-marker" style="color:#20c997;"></i>&nbsp;&nbsp;<strong>'.__( 'Delivery Location', 'wc-multivendor-marketplace' ).':</strong> ' . $address . '</p>';
+				$address = '<a href="https://google.com/maps/place/' . rawurlencode( $address ) . '/@' . esc_attr($lat) . ',' . esc_attr($lng) . '" target="_blank"><span>' . esc_attr($address) . '</span></a>';
+				echo '<p class="wcfm_order_details_delivery_location"><i class="wcfmfa fa-map-marker" style="color:#20c997;"></i>&nbsp;&nbsp;<strong>'.esc_html__( 'Delivery Location', 'wc-multivendor-marketplace' ).':</strong> ' . $address . '</p>';
 			}
 		}
 	}
@@ -401,8 +403,8 @@ class WCFMmp_Frontend {
 			$lat     = get_post_meta( $order_id, '_wcfmmp_user_location_lat', true );
 			$lng     = get_post_meta( $order_id, '_wcfmmp_user_location_lng', true );
 			if( $address ) {
-				$address = '<a href="https://google.com/maps/place/' . rawurlencode( $address ) . '/@' . $lat . ',' . $lng . '" target="_blank"><span>' . $address . '</span></a>';
-				$shipping_address .= '<br /><p class="wcfm_order_list_delivery_location"><i class="wcfmfa fa-map-marker" style="color:#20c997;"></i>&nbsp;&nbsp;<strong>'.__( 'Location', 'wc-multivendor-marketplace' ).':</strong> ' . $address . '</p>';
+				$address = '<a href="https://google.com/maps/place/' . rawurlencode( $address ) . '/@' . esc_attr($lat) . ',' . esc_attr($lng) . '" target="_blank"><span>' . esc_attr($address) . '</span></a>';
+				$shipping_address .= '<br /><p class="wcfm_order_list_delivery_location"><i class="wcfmfa fa-map-marker" style="color:#20c997;"></i>&nbsp;&nbsp;<strong>'.esc_html__( 'Location', 'wc-multivendor-marketplace' ).':</strong> ' . $address . '</p>';
 			}
 		}
 		return $shipping_address;
@@ -457,11 +459,11 @@ class WCFMmp_Frontend {
 		if( wcfm_is_vendor() ) {
 			$sql = 'SELECT ID FROM ' . $wpdb->prefix . 'wcfm_marketplace_orders AS commission';
 			$sql .= ' WHERE 1=1';
-			$sql .= " AND `vendor_id` = {$WCFMmp->vendor_id}";
-			$sql .= " AND `order_id` = {$order_id}";
+			$sql .= " AND `vendor_id` = %d";
+			$sql .= " AND `order_id` = %d";
 			
 			$commission_id = 0;
-			$commissions = $wpdb->get_results( $sql );
+			$commissions = $wpdb->get_results( $wpdb->prepare( $sql, $WCFMmp->vendor_id, $order_id ) );
 			if( !empty( $commissions ) ) {
 				foreach( $commissions as $commission ) {
 					$commission_id = $commission->ID;
@@ -474,34 +476,34 @@ class WCFMmp_Frontend {
 				
 				$sql = 'SELECT order_id FROM ' . $wpdb->prefix . 'wcfm_marketplace_orders AS commission';
 				$sql .= ' WHERE 1=1';
-				$sql .= " AND `vendor_id` = {$WCFMmp->vendor_id}";
-				$sql .= " AND `order_id` != {$order_id}";
+				$sql .= " AND `vendor_id` = %d";
+				$sql .= " AND `order_id` != %d";
 				if( apply_filters( 'wcfmmp_is_allow_order_status_filter', false ) ) {
 					$sql .= " AND commission.order_status IN ({$allowed_status})";
 				}
 				$sql .= ' AND `is_trashed` = 0';
 				
-				$next_sql = $sql . " AND ID = (select min(ID) from {$wpdb->prefix}wcfm_marketplace_orders where ID > {$commission_id})";
-				$next_orders = $wpdb->get_results( $next_sql );
+				$next_sql = $sql . " AND ID = (select min(ID) from {$wpdb->prefix}wcfm_marketplace_orders where ID > %d)";
+				$next_orders = $wpdb->get_results( $wpdb->prepare( $next_sql, $WCFMmp->vendor_id, $order_id, $commission_id ) );
 				
 				echo '<div class="wcfm-clearfix"></div><br />';
 				if( !empty( $next_orders ) ) {
 					foreach( $next_orders as $next_order ) {
 						$next_order_id = $next_order->order_id;
 						if( $next_order_id ) {
-							echo '<a href="' . get_wcfm_view_order_url($next_order_id) . '" class="wcfm_submit_button wcfm_store_next_order">' . __( 'Next', 'wc-frontend-manager' ) . ' >></a>';
+							echo '<a href="' . esc_url(get_wcfm_view_order_url($next_order_id)) . '" class="wcfm_submit_button wcfm_store_next_order">' . esc_html__( 'Next', 'wc-frontend-manager' ) . ' >></a>';
 						}
 					}
 				}
 				
-				$pre_sql = $sql . " AND ID = (select max(ID) from {$wpdb->prefix}wcfm_marketplace_orders where ID < {$commission_id})";
-				$pre_orders = $wpdb->get_results( $pre_sql );
+				$pre_sql = $sql . " AND ID = (select max(ID) from {$wpdb->prefix}wcfm_marketplace_orders where ID < %d)";
+				$pre_orders = $wpdb->get_results( $wpdb->prepare( $pre_sql, $WCFMmp->vendor_id, $order_id, $commission_id ) );
 				
 				if( !empty( $pre_orders ) ) {
 					foreach( $pre_orders as $pre_order ) {
 						$pre_order_id = $pre_order->order_id;
 						if( $pre_order_id ) {
-							echo '<a href="' . get_wcfm_view_order_url($pre_order_id) . '" class="wcfm_submit_button wcfm_store_previous_order" style="float:left;"><< ' . __( 'Previous', 'wc-frontend-manager' ) . '</a>';
+							echo '<a href="' . esc_url(get_wcfm_view_order_url($pre_order_id)) . '" class="wcfm_submit_button wcfm_store_previous_order" style="float:left;"><< ' . esc_html__( 'Previous', 'wc-frontend-manager' ) . '</a>';
 						}
 					}
 				}
@@ -523,9 +525,9 @@ class WCFMmp_Frontend {
 				echo '<div class="wcfmmp_become_vendor_link">';
 				$wcfm_memberships = get_wcfm_memberships();
 				if( apply_filters( 'wcfm_is_pref_membership', true ) && !empty( $wcfm_memberships ) && apply_filters( 'wcfm_is_allow_my_account_membership_subscribe', true ) ) {
-					echo '<a href="' . apply_filters( 'wcfm_change_membership_url', get_wcfm_membership_url() ) . '">' . apply_filters( 'wcfm_become_vendor_label', __( 'Become a Vendor', 'wc-multivendor-marketplace' ) ) . '</a>';
+					echo '<a href="' . esc_url(apply_filters( 'wcfm_change_membership_url', get_wcfm_membership_url() )) . '">' . apply_filters( 'wcfm_become_vendor_label', esc_html__( 'Become a Vendor', 'wc-multivendor-marketplace' ) ) . '</a>';
 				} else {
-					echo '<a href="' . get_wcfm_registration_page() . '">' . apply_filters( 'wcfm_become_vendor_label', __( 'Become a Vendor', 'wc-multivendor-marketplace' ) ) . '</a>';
+					echo '<a href="' . esc_url(get_wcfm_registration_page()) . '">' . apply_filters( 'wcfm_become_vendor_label', esc_html__( 'Become a Vendor', 'wc-multivendor-marketplace' ) ) . '</a>';
 				}
 				echo '</div>';
 			}
@@ -691,7 +693,7 @@ class WCFMmp_Frontend {
 		$radius_lng = isset( $_GET['radius_lng'] ) ? wc_clean( $_GET['radius_lng'] ) : '';
 		
 		$available_vendors = array();
-		if( !empty( $radius_lat ) && !empty( $radius_lng ) && !empty( $radius_range ) ) {
+		if( ( !empty( $radius_lat ) && !empty( $radius_lng ) && !empty( $radius_range ) ) || is_product_taxonomy() ) {
 			$wcfmmp_radius_lat = $radius_lat;
 			$wcfmmp_radius_lng = $radius_lng;
 			$wcfmmp_radius_range = $radius_range;
@@ -701,14 +703,46 @@ class WCFMmp_Frontend {
 				'count_total'  => false,
 				'fields'       => array( 'ID', 'display_name' ),
 			 ); 
+			
+			// For Taxonomy Page
+			if( is_product_taxonomy() ) {
+				$term = get_term_by( 'slug', get_query_var( 'term' ), get_query_var( 'taxonomy' ) ); 
+				$term_id = $term->term_id;
+				$wcfm_allow_vendors_list = array();
+				$category_vendors = $wpdb->get_results( $wpdb->prepare( "SELECT vendor_id FROM {$wpdb->prefix}wcfm_marketplace_store_taxonomies WHERE term = %d", absint($term_id) ) );
+				if( !empty( $category_vendors ) ) {
+					foreach( $category_vendors as $category_vendor ) {
+						$wcfm_allow_vendors_list[] = $category_vendor->vendor_id;
+					}
+				}
+				if( empty( $wcfm_allow_vendors_list ) ) {
+					$wcfm_allow_vendors_list = array( 0 => -1 );
+				}
+				$user_args['include'] = array_filter($wcfm_allow_vendors_list);
+			}
+			
 			$all_users = get_users( $user_args );
 			
 			if( !empty( $all_users ) ) {
 				foreach( $all_users as $all_user ) {
 					$available_vendors[$all_user->ID] = $all_user->ID;
 				}
+				if( isset( $_REQUEST['filter_vendor'] ) && !empty( $_REQUEST['filter_vendor'] ) ) {
+					$filter_vendor = absint( $_REQUEST['filter_vendor'] );
+					if( in_array( $filter_vendor, $available_vendors ) ) {
+						$available_vendors = array();
+						$available_vendors[$filter_vendor] = $filter_vendor;
+					}
+				}
 			} else {
 				$available_vendors = array(-1);
+			}
+		} else {
+			if( isset( $_REQUEST['filter_vendor'] ) && !empty( $_REQUEST['filter_vendor'] ) ) {
+				$filter_vendor = absint( $_REQUEST['filter_vendor'] );
+				$available_vendors[$filter_vendor] = $filter_vendor;
+			} else {
+				
 			}
 		}
 		
@@ -861,7 +895,7 @@ class WCFMmp_Frontend {
 		$default_lat         = isset( $default_geolocation['lat'] ) ? esc_attr( $default_geolocation['lat'] ) : apply_filters( 'wcfmmp_map_default_lat', 30.0599153 );
 		$default_lng         = isset( $default_geolocation['lng'] ) ? esc_attr( $default_geolocation['lng'] ) : apply_filters( 'wcfmmp_map_default_lng', 31.2620199 );
 		$default_zoom        =  apply_filters( 'wcfmmp_map_default_zoom_level', 17 );
-		$store_icon          = apply_filters( 'wcfmmp_map_store_icon', $WCFMmp->plugin_url . 'assets/images/wcfmmp_map_icon.png', 0, '' );
+		$store_icon          = apply_filters( 'wcfmmp_map_store_icon', esc_url($WCFMmp->plugin_url . 'assets/images/wcfmmp_map_icon.png'), 0, '' );
 		
 		$max_radius_to_search = isset( $WCFMmp->wcfmmp_marketplace_options['max_radius_to_search'] ) ? $WCFMmp->wcfmmp_marketplace_options['max_radius_to_search'] : '100';
 		$radius_unit          = isset( $WCFMmp->wcfmmp_marketplace_options['radius_unit'] ) ? $WCFMmp->wcfmmp_marketplace_options['radius_unit'] : 'km';
@@ -927,7 +961,7 @@ class WCFMmp_Frontend {
     	$WCFMmp->library->load_map_lib();
     	wp_enqueue_script( 'wcfmmp_checkout_location_js', $WCFMmp->library->js_lib_url_min . 'checkout/wcfmmp-script-checkout-location.js', array('jquery' ), $WCFMmp->version, true );
     	
-    	wp_localize_script( 'wcfmmp_checkout_location_js', 'wcfmmp_checkout_map_options', array( 'search_location' => __( 'Insert your address ..', 'wc-multivendor-marketplace' ), 'locate_svg' => $WCFMmp->plugin_url. 'assets/images/locate.svg', 'is_geolocate' => apply_filters( 'wcfmmp_is_allow_store_list_by_user_location', true ), 'max_radius' => apply_filters( 'wcfmmp_radius_filter_max_distance', $max_radius_to_search ), 'radius_unit' => ucfirst( $radius_unit ), 'start_radius' => apply_filters( 'wcfmmp_radius_filter_start_distance', 10 ), 'default_lat' => $default_lat, 'default_lng' => $default_lng, 'default_zoom' => absint( $default_zoom ), 'store_icon' => $store_icon, 'icon_width' => apply_filters( 'wcfmmp_map_icon_width', 40 ), 'icon_height' => apply_filters( 'wcfmmp_map_icon_height', 57 ), 'is_poi' => apply_filters( 'wcfmmp_is_allow_map_poi', true ), 'is_allow_scroll_zoom' => apply_filters( 'wcfmmp_is_allow_map_scroll_zoom', true ), 'is_cluster' => apply_filters( 'wcfmmp_is_allow_map_pointer_cluster', true ), 'cluster_image' => apply_filters( 'wcfmmp_is_cluster_image', 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' ), 'is_rtl' => is_rtl() ) );
+    	wp_localize_script( 'wcfmmp_checkout_location_js', 'wcfmmp_checkout_map_options', array( 'search_location' => __( 'Insert your address ..', 'wc-multivendor-marketplace' ), 'locate_svg' => esc_url($WCFMmp->plugin_url. 'assets/images/locate.svg'), 'is_geolocate' => apply_filters( 'wcfmmp_is_allow_store_list_by_user_location', true ), 'max_radius' => apply_filters( 'wcfmmp_radius_filter_max_distance', $max_radius_to_search ), 'radius_unit' => ucfirst( $radius_unit ), 'start_radius' => apply_filters( 'wcfmmp_radius_filter_start_distance', 10 ), 'default_lat' => $default_lat, 'default_lng' => $default_lng, 'default_zoom' => absint( $default_zoom ), 'store_icon' => $store_icon, 'icon_width' => apply_filters( 'wcfmmp_map_icon_width', 40 ), 'icon_height' => apply_filters( 'wcfmmp_map_icon_height', 57 ), 'is_poi' => apply_filters( 'wcfmmp_is_allow_map_poi', true ), 'is_allow_scroll_zoom' => apply_filters( 'wcfmmp_is_allow_map_scroll_zoom', true ), 'is_cluster' => apply_filters( 'wcfmmp_is_allow_map_pointer_cluster', true ), 'cluster_image' => apply_filters( 'wcfmmp_is_cluster_image', 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' ), 'is_rtl' => is_rtl() ) );
     }
  	}
  	

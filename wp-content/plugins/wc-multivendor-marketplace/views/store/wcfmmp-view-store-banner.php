@@ -16,7 +16,7 @@ if( !apply_filters( 'wcfm_is_allow_store_banner', true ) ) return;
 
 $banner_type    = $store_user->get_banner_type();
 $banner         = '';
-$default_banner = !empty( $WCFMmp->wcfmmp_marketplace_options['store_default_banner'] ) ? wcfm_get_attachment_url($WCFMmp->wcfmmp_marketplace_options['store_default_banner']) : $WCFMmp->plugin_url . 'assets/images/default_banner.jpg';
+$default_banner = !empty( $WCFMmp->wcfmmp_marketplace_options['store_default_banner'] ) ? wcfm_get_attachment_url($WCFMmp->wcfmmp_marketplace_options['store_default_banner']) : esc_url($WCFMmp->plugin_url . 'assets/images/default_banner.jpg');
 
 if( $banner_type == 'slider' ) {
 	$banner_sliders = $store_user->get_banner_slider();
@@ -48,23 +48,23 @@ $store_banner_mheight = isset( $WCFMmp->wcfmmp_marketplace_options['store_banner
 
 <style>
 #wcfmmp-store .banner_img, #wcfmmp-store .wcfm_slideshow_container {
-	max-height: <?php echo $store_banner_height; ?>px;
+	max-height: <?php echo esc_attr($store_banner_height); ?>px;
 }
 #wcfmmp-store .banner_img {
-	height: <?php echo $store_banner_height; ?>px;
-	background-image: url(<?php echo $banner; ?>);
+	height: <?php echo esc_attr($store_banner_height); ?>px;
+	background-image: url(<?php echo esc_url($banner); ?>);
 }
 #wcfmmp-store .banner_area_mobile .banner_img {
-	height: <?php echo $store_banner_height; ?>px;
-	background-image: url(<?php echo $mobile_banner; ?>);
+	height: <?php echo esc_attr($store_banner_height); ?>px;
+	background-image: url(<?php echo esc_url($mobile_banner); ?>);
 }
 .banner_area_mobile{display:none !important;}
 @media screen and (max-width: 640px) {
 	#wcfmmp-store .banner_img, #wcfmmp-store .wcfm_slideshow_container {
-		max-height: <?php echo $store_banner_mheight; ?>px;
+		max-height: <?php echo esc_attr($store_banner_mheight); ?>px;
 	}
 	#wcfmmp-store .banner_img {
-		height: <?php echo $store_banner_mheight; ?>px;
+		height: <?php echo esc_attr($store_banner_mheight); ?>px;
 	}
 	.banner_area_desktop{display:none !important;}
 	.banner_area_mobile{display:block !important;}
@@ -83,11 +83,11 @@ $store_banner_mheight = isset( $WCFMmp->wcfmmp_marketplace_options['store_banner
 					<?php foreach( $banner_sliders as $banner_slider_key => $banner_slider ) { ?>
 						<?php if( !empty( $banner_slider['image'] ) ) { ?>
 							<div class="wcfmSlides wcfm_slide_fade">
-								<a href="<?php echo $banner_slider['link'] ? $banner_slider['link'] : wcfm_get_attachment_url($banner_slider['image']); ?>" target="_blank">
-									<div class="numbertext"><?php echo $banner_slider_key; ?> / <?php echo count($banner_sliders); ?></div>
-									<img src="<?php echo wcfm_get_attachment_url($banner_slider['image']); ?>" style="width:100%" alt="<?php echo $store_info['store_name']; ?>" title="<?php echo $store_info['store_name']; ?>">
+								<a href="<?php echo $banner_slider['link'] ? esc_url($banner_slider['link']) : esc_url(wcfm_get_attachment_url($banner_slider['image'])); ?>" target="_blank">
+									<div class="numbertext"><?php echo esc_attr($banner_slider_key); ?> / <?php echo count($banner_sliders); ?></div>
+									<img src="<?php echo esc_url(wcfm_get_attachment_url($banner_slider['image'])); ?>" style="width:100%" alt="<?php echo esc_html($store_info['store_name']); ?>" title="<?php echo esc_html($store_info['store_name']); ?>">
 									<?php if( ( $WCFMmp->wcfmmp_vendor->get_vendor_name_position( $store_user->get_id() ) == 'on_banner' ) && apply_filters( 'wcfm_is_allow_store_name_on_banner', true ) ) { ?>
-										<div class="slider_text"><h1><?php echo apply_filters( 'wcfmmp_store_title', $store_info['store_name'], $store_user->get_id() ); ?></h1></div>
+										<div class="slider_text"><h1><?php echo wp_kses_post(apply_filters( 'wcfmmp_store_title', $store_info['store_name'], $store_user->get_id() )); ?></h1></div>
 									<?php } ?>
 								</a>
 							</div>
@@ -137,7 +137,7 @@ $store_banner_mheight = isset( $WCFMmp->wcfmmp_marketplace_options['store_banner
 						<div class="video_text">
 							<?php do_action( 'wcfmmp_store_before_bannar_text', $store_user->get_id() ); ?>
 							
-							<h1><?php echo apply_filters( 'wcfmmp_store_title', $store_info['store_name'], $store_user->get_id() ); ?></h1>
+							<h1><?php echo apply_filters( 'wcfmmp_store_title', esc_html( $store_info['store_name'] ), $store_user->get_id() ); ?></h1>
 							
 							<?php do_action( 'wcfmmp_store_after_bannar_text', $store_user->get_id() ); ?>
 						</div>
@@ -148,7 +148,7 @@ $store_banner_mheight = isset( $WCFMmp->wcfmmp_marketplace_options['store_banner
 			<section class="banner_area banner_area_desktop">
 				<?php do_action( 'wcfmmp_store_before_bannar_image', $store_user->get_id() ); ?>
 				
-				<div class="banner_img"><img src="<?php echo $banner; ?>" alt="<?php echo $store_info['store_name']; ?>" title="<?php echo $store_info['store_name']; ?>" /></div>
+				<div class="banner_img"><img src="<?php echo esc_url($banner); ?>" alt="<?php echo esc_html($store_info['store_name']); ?>" title="<?php echo esc_html($store_info['store_name']); ?>" /></div>
 				
 				<?php do_action( 'wcfmmp_store_after_bannar_image', $store_user->get_id() ); ?>
 				
@@ -167,7 +167,7 @@ $store_banner_mheight = isset( $WCFMmp->wcfmmp_marketplace_options['store_banner
 			<section class="banner_area banner_area_mobile">
 				<?php do_action( 'wcfmmp_store_before_bannar_image', $store_user->get_id() ); ?>
 				
-				<div class="banner_img"><img src="<?php echo $mobile_banner; ?>" alt="<?php echo $store_info['store_name']; ?>" title="<?php echo $store_info['store_name']; ?>" /></div>
+				<div class="banner_img"><img src="<?php echo esc_url($mobile_banner); ?>" alt="<?php echo esc_html($store_info['store_name']); ?>" title="<?php echo esc_html($store_info['store_name']); ?>" /></div>
 				
 				<?php do_action( 'wcfmmp_store_after_bannar_image', $store_user->get_id() ); ?>
 				

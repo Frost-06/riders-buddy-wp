@@ -106,7 +106,8 @@ class WCFMmp_Shipping_By_Weight extends WC_Shipping_Method {
      if ( $products ) {
 				$amount = $this->calculate_per_seller( $products, $destination_country, $destination_state, $weight_array_for_country, $default_cost_for_country, $weight_mode_for_country, $unit_cost_for_country, $wcfmmp_free_shipping_amount );
 	
-			 $tax_rate = ( $this->tax_status == 'none' ) ? false : '';
+			 $tax_rate  = ( $this->tax_status == 'none' ) ? false : '';
+			 $tax_rate  = apply_filters( 'wcfmmp_is_apply_tax_on_shipping_rates', $tax_rate );
 			 
 			 if( !$amount ) {
 				 $this->title = __('Free Shipping', 'wc-multivendor-marketplace');

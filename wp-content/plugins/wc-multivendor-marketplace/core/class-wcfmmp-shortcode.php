@@ -124,7 +124,7 @@ class WCFMmp_Shortcode {
 			}
 		}
 
-		$orderby          = isset( $_GET['orderby'] ) ? sanitize_text_field( $_GET['orderby'] ) : apply_filters( 'wcfmmp_stores_default_orderby', $attr['orderby'] );
+		$orderby          = isset( $_GET['orderby'] ) ? sanitize_sql_orderby( $_GET['orderby'] ) : apply_filters( 'wcfmmp_stores_default_orderby', $attr['orderby'] );
 		$search_term      = isset( $_GET['wcfmmp_store_search'] ) ? sanitize_text_field( $_GET['wcfmmp_store_search'] ) : $attr['search_term'];
 		
 		$search_country   = isset( $_GET['wcfmmp_store_country'] ) ? sanitize_text_field( $_GET['wcfmmp_store_country'] ) : '';
@@ -184,8 +184,9 @@ class WCFMmp_Shortcode {
 		}
 		if( isset( $_POST['search_data'] ) ) {
 			parse_str($_POST['search_data'], $search_data);
+			$search_data = wc_clean( wp_unslash( $search_data ) );
 		} elseif( isset( $_GET['orderby'] ) ) {
-			$search_data = wp_unslash($_GET);
+			$search_data = wc_clean( wp_unslash($_GET) );
 		} else {
 			$search_data['orderby'] = $orderby;
 		}
@@ -384,6 +385,7 @@ class WCFMmp_Shortcode {
 		}
 		if( isset( $_POST['search_data'] ) ) {
 			parse_str($_POST['search_data'], $search_data);
+			$search_data = wc_clean( wp_unslash( $search_data ) );
 		}
 		
 		// Exclude Membership
@@ -591,6 +593,7 @@ class WCFMmp_Shortcode {
 		}
 		if( isset( $_POST['search_data'] ) ) {
 			parse_str($_POST['search_data'], $search_data);
+			$search_data = wc_clean( wp_unslash( $search_data ) );
 		}
 		
 		// Exclude Membership
@@ -708,7 +711,7 @@ class WCFMmp_Shortcode {
 		$store_id = '';
 		if ( isset( $attr['id'] ) && !empty( $attr['id'] ) ) { $store_id = absint($attr['id']); }
 		
-		if (  wcfm_is_store_page() ) {
+		if ( !$store_id && wcfm_is_store_page() ) {
 			$wcfm_store_url = wcfm_get_option( 'wcfm_store_url', 'store' );
 			$store_name = apply_filters( 'wcfmmp_store_query_var', get_query_var( $wcfm_store_url ) );
 			$store_id  = 0;
@@ -718,7 +721,7 @@ class WCFMmp_Shortcode {
 			$store_id   		= $store_user->ID;
 		}
 		
-		if( is_product() ) {
+		if( !$store_id && is_product() ) {
 			$store_id = $post->post_author;
 		}
 		
@@ -766,23 +769,23 @@ class WCFMmp_Shortcode {
 				break;
 				
 			case 'store_address':
-				$content .= '<span style="display:inline-block" class="wcfmmp_store_info_content wcfmmp_store_info_content_' . $data_info . '">' . $store_user->get_address_string();
+				$content .= '<span style="display:inline-block" class="wcfmmp_store_info_content wcfmmp_store_info_content_' . $data_info . '">' . apply_filters( 'wcfmmp_additional_store_info', $store_user->get_address_string(), $data_info, $store_id ) . '</span>';
 				break;
 				
 		  case 'store_email':
-				$content .= '<span style="display:inline-block" class="wcfmmp_store_info_content wcfmmp_store_info_content_' . $data_info . '">' . $store_user->get_email() . '</span>';
+				$content .= '<span style="display:inline-block" class="wcfmmp_store_info_content wcfmmp_store_info_content_' . $data_info . '">' . apply_filters( 'wcfmmp_additional_store_info', apply_filters( 'wcfmmp_mailto_email', $store_user->get_email(), $store_id ), $data_info, $store_id ) . '</span>';
 				break;
 			
 			case 'store_phone':
-				$content .=  '<span style="display:inline-block" class="wcfmmp_store_info_content wcfmmp_store_info_content_' . $data_info . '">' . $store_user->get_phone() . '</span>';
+				$content .=  '<span style="display:inline-block" class="wcfmmp_store_info_content wcfmmp_store_info_content_' . $data_info . '">' . apply_filters( 'wcfmmp_additional_store_info', $store_user->get_phone(), $data_info, $store_id ) . '</span>';
 				break;
 				
 			case 'store_gravatar':
-				$content .=  '<img src="' . $store_user->get_avatar() . '" />';
+				$content .=  '<img src="' . esc_url( $store_user->get_avatar() ) . '" />';
 				break;
 				
 			case 'store_banner':
-				$content .=  '<img src="' . $store_user->get_banner() . '" />';
+				$content .=  '<img src="' . esc_url( $store_user->get_banner() ) . '" />';
 				break;
 				
 			case 'store_support':
@@ -839,7 +842,7 @@ class WCFMmp_Shortcode {
 			case 'register_on':
 				$data_value = get_user_meta( $store_id, 'wcfm_register_on', true );
 				if( $data_value ) {
-					$content .=  '<span style="display:inline-block" class="wcfmmp_store_info_content wcfmmp_store_info_content_' . $data_info . '">' . date( wc_date_format(), $data_value ) . '</span>';
+					$content .=  '<span style="display:inline-block" class="wcfmmp_store_info_content wcfmmp_store_info_content_' . $data_info . '">' . apply_filters( 'wcfmmp_additional_store_info', date( wc_date_format(), $data_value ), $data_info, $store_id ) . '</span>';
 				}
 				break;
 				
@@ -1019,7 +1022,7 @@ class WCFMmp_Shortcode {
 		echo '<div class="wcfm_store_fb_widget" style="margin-bottom:50px;">';
 		
 		echo '<div id="fb-root"></div>';
-    echo '<div class="fb-page" data-href="' . $facebook_url . '" 
+    echo '<div class="fb-page" data-href="' . esc_url($facebook_url) . '" 
                                data-width="400" 
                                data-height="500" 
                                data-small-header="true" 
@@ -1090,9 +1093,9 @@ class WCFMmp_Shortcode {
           <a class="twitter-timeline" data-lang="en" 
                                       data-width="100%" 
                                       data-height="400" 
-                                      href="' . $twitter_url . '?ref_src=twsrc%5Etfw">Recent Tweets</a></div>';
+                                      href="' . esc_url($twitter_url) . '?ref_src=twsrc%5Etfw">Recent Tweets</a></div>';
                                       
-		echo '<script>' . $script . '</script>';
+		echo '<script>' . esc_js($script) . '</script>';
 		
 		echo '</div>';
 		

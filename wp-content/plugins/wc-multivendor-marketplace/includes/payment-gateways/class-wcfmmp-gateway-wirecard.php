@@ -158,7 +158,7 @@ class WCFMmp_Gateway_Wirecard extends WC_Payment_Gateway {
 	 * @return void
 	 */
 	public function get_wirecard_access_token() {
-		$post_data = wp_unslash( $_POST );
+		$post_data = wc_clean( wp_unslash( $_POST ) );
 		$field_key = "woocommerce_{$this->id}_";
 
 		if ( ! isset( $post_data["{$field_key}enabled"] ) || $post_data["{$field_key}enabled"] != 1 ) {
@@ -394,7 +394,7 @@ class WCFMmp_Gateway_Wirecard extends WC_Payment_Gateway {
 					
 					wcfm_wirecard_log("Before creating transfer with Wirecard. Wirecard Transfer Data: " . serialize($transfer_data));
 					
-					$commission_id_list = $wpdb->get_col("SELECT ID FROM `{$wpdb->prefix}wcfm_marketplace_orders` WHERE order_id =" . $order_id . " AND vendor_id = " . $vendor_id);
+					$commission_id_list = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM `{$wpdb->prefix}wcfm_marketplace_orders` WHERE order_id = %d AND vendor_id = %d", $order_id, $vendor_id ) );
 					
 					// Creating Withdrawal Instance
 					$withdrawal_id = $WCFMmp->wcfmmp_withdraw->wcfmmp_withdrawal_processed( $vendor_id, $order_id, implode( ',', $commission_id_list ), 'wirecard', $distribution_info['gross_sales'], $distribution_info['commission'], 0, 'pending', 'by_wirecard', 0 );
@@ -520,8 +520,8 @@ class WCFMmp_Gateway_Wirecard extends WC_Payment_Gateway {
     
     $sql = "SELECT item_id, commission_id, vendor_id, order_id, is_partially_refunded, refunded_amount, refund_reason FROM {$wpdb->prefix}wcfm_marketplace_refund_request";
 		$sql .= " WHERE 1=1";
-		$sql .= " AND ID = {$refund_id}";
-		$refund_infos = $wpdb->get_results( $sql );
+		$sql .= " AND ID = %d";
+		$refund_infos = $wpdb->get_results( $wpdb->prepare( $sql, $refund_id ) );
 		if( !empty( $refund_infos ) ) {
 			foreach( $refund_infos as $refund_info ) {
 				$stripe_refund_id      = '';
@@ -797,7 +797,7 @@ class WCFMmp_Gateway_Wirecard extends WC_Payment_Gateway {
 										<tr>
 											<th></th>
 											<td>
-												<a href=<?php echo $wirecard_connect_url; ?> target="_self"><?php _e('Connect Wirecard Account', 'wc-multivendor-marketplace'); ?></a>
+												<a href=<?php echo esc_url($wirecard_connect_url); ?> target="_self"><?php _e('Connect Wirecard Account', 'wc-multivendor-marketplace'); ?></a>
 											</td>
 										</tr>
 									</tbody>

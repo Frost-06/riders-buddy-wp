@@ -163,6 +163,11 @@ class WCFMmp_Media {
   public function wcfm_media_ajax_controller() {
   	global $WCFM, $WCFMmp;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
   	$controllers_path = $WCFMmp->plugin_path . 'controllers/media/';
   	
   	$controller = '';
@@ -170,6 +175,11 @@ class WCFMmp_Media {
   		$controller = sanitize_text_field( $_POST['controller'] );
   		switch( $controller ) {
   			case 'wcfm-media':
+  				if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+		
 					include_once( $controllers_path . 'wcfmmp-controller-media.php' );
 					new WCFMmp_Media_Controller();
   			break;
@@ -183,16 +193,26 @@ class WCFMmp_Media {
   function wcfmmp_media_delete() {
   	global $WCFM, $WCFMmp, $_POST, $wpdb;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( __( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	$mediaid = absint($_POST['mediaid']);
   	
   	if( $mediaid ) {
   		if( wp_delete_post( $mediaid, true ) ) {
-  			echo 'success';
+  			echo esc_attr('success');
   		} else {
-  			echo 'failed';	
+  			echo esc_attr('failed');	
   		}
   	} else {
-  		echo 'failed';
+  		echo esc_attr('failed');
   	}
   	die;
   }
@@ -205,8 +225,18 @@ class WCFMmp_Media {
   function wcfmmp_bulk_media_delete() {
   	global $WCFM, $wpdb, $_POST;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( __( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	if( isset($_POST['selected_media']) ) {
-			$selected_medias = wp_unslash($_POST['selected_media']);
+			$selected_medias = wc_clean( wp_unslash($_POST['selected_media']) );
 			if( is_array( $selected_medias ) && !empty( $selected_medias ) ) {
 				foreach( $selected_medias as $mediaid ) {
 					if( wp_delete_post( $mediaid, true ) ) {

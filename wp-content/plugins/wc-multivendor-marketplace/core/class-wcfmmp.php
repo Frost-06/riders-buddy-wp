@@ -417,14 +417,14 @@ class WCFMmp {
 								
 								$sql  = "SELECT * FROM {$wpdb->prefix}wcfm_marketplace_orders AS commission";
 								$sql .= " WHERE 1=1";
-								$sql .= " AND `vendor_id` = {$vendor->ID}";
+								$sql .= " AND `vendor_id` = %d";
 								$sql .= apply_filters( 'wcfm_order_status_condition', '', 'commission' );
 								$sql .= " AND commission.withdraw_status IN ('pending', 'cancelled')";
 								$sql .= " AND commission.refund_status != 'requested'";
 								$sql .= ' AND `is_withdrawable` = 1 AND `is_auto_withdrawal` = 0 AND `is_refunded` = 0 AND `is_trashed` = 0';
 								if( $withdrawal_thresold ) $sql .= " AND commission.created <= NOW() - INTERVAL {$withdrawal_thresold} DAY";
 								
-								$wcfm_commissions = $wpdb->get_results( $sql );
+								$wcfm_commissions = $wpdb->get_results( $wpdb->prepare( $sql, $vendor->ID ) );
 								
 								if( !empty( $wcfm_commissions ) ) {
 									$order_ids = '';
@@ -553,10 +553,10 @@ class WCFMmp {
 				$messages = $wpdb->get_results( "SELECT ID, created FROM {$wpdb->prefix}wcfm_messages WHERE `created` <= DATE_SUB(SYSDATE(), INTERVAL {$messages_data_cleanup_more_than} DAY)" );
 				if( !empty( $messages ) ) {
 					foreach( $messages as $message ) {
-						$wpdb->query( "DELETE FROM {$wpdb->prefix}wcfm_messages WHERE ID = {$message->ID}" );
+						$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}wcfm_messages WHERE ID = %d", $message->ID ) );
 						
 						// Meta Cleanup
-						$wpdb->query( "DELETE FROM {$wpdb->prefix}wcfm_messages_modifier WHERE `message` = {$message->ID}" );
+						$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}wcfm_messages_modifier WHERE `message` = %d", $message->ID ) );
 						
 						wcfm_cleanup_log( "Notification data cleanup processed. ID :: " . $message->ID . " Created :: " . date_i18n( wc_date_format() . ' ' . wc_time_format() , strtotime( $message->created ) ) );
 					}
@@ -575,19 +575,19 @@ class WCFMmp {
 				$inquiries = $wpdb->get_results( "SELECT ID, posted FROM {$wpdb->prefix}wcfm_enquiries WHERE `posted` <= DATE_SUB(SYSDATE(), INTERVAL {$inquiry_data_cleanup_more_than} DAY)" );
 				if( !empty( $inquiries ) ) {
 					foreach( $inquiries as $inquiry ) {
-						$wpdb->query( "DELETE FROM {$wpdb->prefix}wcfm_enquiries WHERE ID = {$inquiry->ID}" );
+						$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}wcfm_enquiries WHERE ID = %d", $inquiry->ID ) );
 						
 						// Meta Cleanup
-						$wpdb->query( "DELETE FROM {$wpdb->prefix}wcfm_enquiries_meta WHERE `enquiry_id` = {$inquiry->ID}" );
+						$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}wcfm_enquiries_meta WHERE `enquiry_id` = %d", $inquiry->ID ) );
 						
 						// Inquiry Reply Cleanup
-						$inquiry_replies = $wpdb->get_results( "SELECT ID FROM {$wpdb->prefix}wcfm_enquiries_response WHERE `enquiry_id` = {$inquiry->ID}" );
+						$inquiry_replies = $wpdb->get_results( $wpdb->prepare( "SELECT ID FROM {$wpdb->prefix}wcfm_enquiries_response WHERE `enquiry_id` = %d", $inquiry->ID ) );
 						if( !empty( $inquiry_replies ) ) {
 							foreach( $inquiry_replies as $inquiry_reply ) {
-								$wpdb->query( "DELETE FROM {$wpdb->prefix}wcfm_enquiries_response WHERE `ID` = {$inquiry_reply->ID}" );
+								$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}wcfm_enquiries_response WHERE `ID` = %d", $inquiry_reply->ID ) );
 								
 								// Reply Meta Cleanup
-								$wpdb->query( "DELETE FROM {$wpdb->prefix}wcfm_enquiries_response_meta WHERE `enquiry_response_id` = {$inquiry_reply->ID}" );
+								$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}wcfm_enquiries_response_meta WHERE `enquiry_response_id` = %d", $inquiry_reply->ID ) );
 							}
 						}
 						
@@ -609,7 +609,7 @@ class WCFMmp {
 					$analytics = $wpdb->get_results( "SELECT ID, visited FROM {$wpdb->prefix}wcfm_daily_analysis WHERE `visited` <= DATE_SUB(SYSDATE(), INTERVAL {$analytics_data_cleanup_more_than} DAY)" );
 					if( !empty( $analytics ) ) {
 						foreach( $analytics as $analytic ) {
-							$wpdb->query( "DELETE FROM {$wpdb->prefix}wcfm_daily_analysis WHERE ID = {$analytic->ID}" );
+							$wpdb->query( $wpdb->prepare("DELETE FROM {$wpdb->prefix}wcfm_daily_analysis WHERE ID = %d", $analytic->ID ) );
 							wcfm_cleanup_log( "Daily Analytics data cleanup processed. ID :: " . $analytic->ID . " Created :: " . date_i18n( wc_date_format() . ' ' . wc_time_format() , strtotime( $analytic->visited ) ) );
 						}
 					}
@@ -618,7 +618,7 @@ class WCFMmp {
 					$analytics = $wpdb->get_results( "SELECT ID, visited FROM {$wpdb->prefix}wcfm_detailed_analysis WHERE `visited` <= DATE_SUB(SYSDATE(), INTERVAL {$analytics_data_cleanup_more_than} DAY)" );
 					if( !empty( $analytics ) ) {
 						foreach( $analytics as $analytic ) {
-							$wpdb->query( "DELETE FROM {$wpdb->prefix}wcfm_detailed_analysis WHERE ID = {$analytic->ID}" );
+							$wpdb->query( $wpdb->prepare("DELETE FROM {$wpdb->prefix}wcfm_detailed_analysis WHERE ID = %d", $analytic->ID ) );
 							wcfm_cleanup_log( "Detailed Analytics data cleanup processed. ID :: " . $analytic->ID . " Created :: " . date_i18n( wc_date_format() . ' ' . wc_time_format() , strtotime( $analytic->visited ) ) );
 						}
 					}

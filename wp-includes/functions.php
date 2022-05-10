@@ -7841,20 +7841,3 @@ All at ###SITENAME###
 	{
 		return abs((float) $expected - (float) $actual) <= $precision;
 	}
-
-	add_action('rest_api_init', function () {
-		register_rest_field('user', 'uuid', [
-			'get_callback'    => 'get_user_uuid',
-			'update_callback' => 'update_user_uuid',
-			'schema'          => [
-				'type'        => 'string',
-				'description' => 'The UUID passed in by FileMaker',
-				'context'     => ['view', 'edit'],
-			],
-		]);
-	});
-
-	function get_user_uuid($user, $field_name, $request)
-	{
-		return get_user_meta($user['id'], $field_name, true);
-	}

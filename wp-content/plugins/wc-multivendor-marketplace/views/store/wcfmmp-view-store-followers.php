@@ -38,7 +38,7 @@ $followers_arr = get_user_meta( $store_user->get_id(), '_wcfm_followers_list', t
 			if ( !$wp_user_avatar ) {
 				$wp_user_avatar = $WCFM->plugin_url . 'assets/images/avatar.png';
 			}
-			$wcfm_vendor_follower .= '<img width="100" src="' . $wp_user_avatar . '" />';
+			$wcfm_vendor_follower .= '<img width="100" src="' . esc_url($wp_user_avatar) . '" />';
 			$wcfm_vendor_follower .= '<br /><strong>' . $finfo->display_name . '</strong>';
 			$wcfm_vendor_follower .= '</div>';
 			echo apply_filters( 'wcfm_vendor_follower', $wcfm_vendor_follower, $follower );

@@ -44,7 +44,7 @@ if( wcfm_is_vendor() ) {
 	  <div class="wcfm-container wcfm-top-element-container">
 			<ul class="wcfm_reviews_menus">
 			  <li class="wcfm_reviews_menu_item">
-			    <a class="<?php echo ( !$reviews_status ) ? 'active' : ''; ?>" href="<?php echo wcfm_reviews_url(); ?>"><?php printf( __( 'All (%s)', 'wc-multivendor-marketplace' ), ($review_counts['approved']+$review_counts['pending']) ); ?></a>
+			    <a class="<?php echo ( !$reviews_status ) ? 'active' : ''; ?>" href="<?php echo esc_url(wcfm_reviews_url()); ?>"><?php printf( __( 'All (%s)', 'wc-multivendor-marketplace' ), ($review_counts['approved']+$review_counts['pending']) ); ?></a>
 			  </li>
 				<?php
 				foreach( $wcfmu_reviews_menus as $wcfmu_reviews_menu_key => $wcfmu_reviews_menu) {
@@ -53,7 +53,7 @@ if( wcfm_is_vendor() ) {
 						<?php
 						echo " | ";
 						?>
-						<a class="<?php echo ( $wcfmu_reviews_menu_key == $reviews_status ) ? 'active' : ''; ?>" href="<?php echo wcfm_reviews_url( $wcfmu_reviews_menu_key ); ?>"><?php echo $wcfmu_reviews_menu . ' ('.$review_counts[$wcfmu_reviews_menu_key].')'; ?></a>
+						<a class="<?php echo ( $wcfmu_reviews_menu_key == $reviews_status ) ? 'active' : ''; ?>" href="<?php echo esc_url(wcfm_reviews_url( $wcfmu_reviews_menu_key )); ?>"><?php echo wp_kses_post($wcfmu_reviews_menu . ' ('.$review_counts[$wcfmu_reviews_menu_key].')'); ?></a>
 					</li>
 					<?php
 				}
@@ -62,7 +62,7 @@ if( wcfm_is_vendor() ) {
 			
 			<?php
 			if( apply_filters( 'wcfm_is_allow_manage_product_reviews', true ) ) {
-				echo '<a id="add_new_product_dashboard" class="add_new_wcfm_ele_dashboard text_tip" href="'.wcfm_product_reviews_url().'" data-tip="' . __('Product Reviews', 'wc-multivendor-marketplace') . '"><span class="wcfmfa fa-cube"></span><span class="text">' . __( 'Product Reviews', 'wc-multivendor-marketplace' ) . '</span></a>';
+				echo '<a id="add_new_product_dashboard" class="add_new_wcfm_ele_dashboard text_tip" href="'.esc_url(wcfm_product_reviews_url()).'" data-tip="' . __('Product Reviews', 'wc-multivendor-marketplace') . '"><span class="wcfmfa fa-cube"></span><span class="text">' . __( 'Product Reviews', 'wc-multivendor-marketplace' ) . '</span></a>';
 			}
 			?>
 			<div class="wcfm-clearfix"></div>

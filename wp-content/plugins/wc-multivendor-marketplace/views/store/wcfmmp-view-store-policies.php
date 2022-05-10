@@ -37,17 +37,17 @@ if( wcfm_empty($cancellation_policy) ) $cancellation_policy = $_wcfm_cancellatio
 		<?php if( !wcfm_empty($shipping_policy) ) { ?>
 			<div class="policies_area wcfm-shipping-policies">
 				<h2 class="wcfm_policies_heading"><?php echo apply_filters('wcfm_shipping_policies_heading', __('Shipping Policy', 'wc-frontend-manager')); ?></h2>
-				<div class="wcfm_policies_description" ><?php echo $shipping_policy; ?></div>
+				<div class="wcfm_policies_description" ><?php echo wp_kses_post($shipping_policy); ?></div>
 			</div>
 		<?php } if( !wcfm_empty( $refund_policy ) ){ ?>
 			<div class="policies_area wcfm-refund-policies">
 				<h2 class="wcfm_policies_heading"><?php echo apply_filters('wcfm_refund_policies_heading', __('Refund Policy', 'wc-frontend-manager')); ?></h2>
-				<div class="wcfm_policies_description" ><?php echo $refund_policy; ?></div>
+				<div class="wcfm_policies_description" ><?php echo wp_kses_post($refund_policy); ?></div>
 			</div>
 		<?php } if( !wcfm_empty( $cancellation_policy ) ){ ?>
 			<div class="policies_area wcfm-cancellation-policies">
 				<h2 class="wcfm_policies_heading"><?php echo apply_filters('wcfm_cancellation_policies_heading', __('Cancellation / Return / Exchange Policy', 'wc-frontend-manager')); ?></h2>
-				<div class="wcfm_policies_description" ><?php echo $cancellation_policy; ?></div>
+				<div class="wcfm_policies_description" ><?php echo wp_kses_post($cancellation_policy); ?></div>
 			</div>
 		<?php } ?>
 		

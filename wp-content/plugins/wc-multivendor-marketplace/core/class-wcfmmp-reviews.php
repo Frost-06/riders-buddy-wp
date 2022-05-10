@@ -228,6 +228,11 @@ class WCFMmp_Reviews {
   public function wcfm_reviews_ajax_controller() {
   	global $WCFM, $WCFMmp;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
   	$controllers_path = $WCFMmp->plugin_path . 'controllers/reviews/';
   	
   	$controller = '';
@@ -235,6 +240,11 @@ class WCFMmp_Reviews {
   		$controller = sanitize_text_field( $_POST['controller'] );
   		switch( $controller ) {
   			case 'wcfm-reviews':
+  				if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+  				
 					include_once( $controllers_path . 'wcfmmp-controller-reviews.php' );
 					if( defined('WCFM_REST_API_CALL') ) {
 						$wcfm_review_object = new WCFMmp_Reviews_Controller();
@@ -245,6 +255,11 @@ class WCFMmp_Reviews {
   			break;
   			
   			case 'wcfm-product-reviews':
+  				if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+		
 					include_once( $controllers_path . 'wcfmmp-controller-product-reviews.php' );
 					if( defined('WCFM_REST_API_CALL') ) {
 						$wcfm_review_object = new WCFMmp_Product_Reviews_Controller();
@@ -255,6 +270,11 @@ class WCFMmp_Reviews {
   			break;
   			
   			case 'wcfm-reviews-manage':
+  				if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+		
 					include_once( $controllers_path . 'wcfmmp-controller-reviews-manage.php' );
 					new WCFMmp_Reviews_Manage_Controller();
   			break;
@@ -273,14 +293,24 @@ class WCFMmp_Reviews {
   function wcfmmp_reviews_status_update() {
   	global $WCFM, $WCFMmp, $_POST, $wpdb;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( __( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	$reviewid = absint($_POST['reviewid']);
   	$status   = absint($_POST['status']);
   	
   	$wcfm_review_categories = get_wcfm_marketplace_active_review_categories();
   	
   	if( $reviewid ) {
-  		$review_data = $wpdb->get_row( "SELECT * FROM {$wpdb->prefix}wcfm_marketplace_reviews WHERE `ID`= " . $reviewid ); 
-  		$review_meta = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}wcfm_marketplace_review_rating_meta WHERE `type` = 'rating_category' AND `review_id`= " . $reviewid . " ORDER BY ID ASC" );
+  		$review_data = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wcfm_marketplace_reviews WHERE `ID`= %d", $reviewid ) ); 
+  		$review_meta = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wcfm_marketplace_review_rating_meta WHERE `type` = 'rating_category' AND `review_id`= %d ORDER BY ID ASC", $reviewid ) );
   		if( $review_data && !empty( $review_data ) && is_object( $review_data ) ) {
 				if( $status ) { // On Approve
 					$total_review_count = get_user_meta( $review_data->vendor_id, '_wcfmmp_total_review_count', true );
@@ -380,7 +410,7 @@ class WCFMmp_Reviews {
 			}
   	}
   	
-  	echo 'success';
+  	echo esc_attr('success');
   	die;
   }
   
@@ -389,6 +419,16 @@ class WCFMmp_Reviews {
    */
   function wcfmmp_product_reviews_status_update() {
     global $WCFM, $WCFMmp, $_POST, $wpdb;
+    
+    if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( __( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
   	
    	$reviewid = absint($_POST['reviewid']);
 		$status   = absint($_POST['status']);
@@ -404,7 +444,7 @@ class WCFMmp_Reviews {
 				wp_set_comment_status( $reviewid, 'hold' );
 			}
 		}
-		echo 'success';
+		echo esc_attr('success');
   	die;
   }
   
@@ -414,13 +454,23 @@ class WCFMmp_Reviews {
   function wcfmmp_reviews_delete() {
   	global $WCFM, $WCFMmp, $_POST, $wpdb;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( __( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	$reviewid = absint($_POST['reviewid']);
   	
   	$wcfm_review_categories = get_wcfm_marketplace_active_review_categories();
   	
   	if( $reviewid ) {
-  		$review_data = $wpdb->get_row( "SELECT * FROM {$wpdb->prefix}wcfm_marketplace_reviews WHERE `ID`= " . $reviewid ); 
-  		$review_meta = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}wcfm_marketplace_review_rating_meta WHERE `type` = 'rating_category' AND `review_id`= " . $reviewid . " ORDER BY ID ASC" );
+  		$review_data = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wcfm_marketplace_reviews WHERE `ID`= %d", $reviewid ) ); 
+  		$review_meta = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wcfm_marketplace_review_rating_meta WHERE `type` = 'rating_category' AND `review_id`= %d ORDER BY ID ASC", $reviewid ) );
   		if( $review_data && !empty( $review_data ) && is_object( $review_data ) ) {
 				if( $review_data->approved == 1 ) { // On Approve Review Delete reset Stats
 					$total_review_count = get_user_meta( $review_data->vendor_id, '_wcfmmp_total_review_count', true );
@@ -473,7 +523,7 @@ class WCFMmp_Reviews {
 			}
   	}
   	
-  	echo 'success';
+  	echo esc_attr('success');
   	die;
   }
   
@@ -535,14 +585,19 @@ class WCFMmp_Reviews {
 				$reviews_count = get_user_meta( $vendor_id, '_wcfmmp_total_review_count', true );
 				$rating_label = sprintf( __( 'Rated %s out of 5 based on %s review(s)', 'wc-multivendor-marketplace' ), $store_rating, $reviews_count );
 			}
+			
+			$store_rating_width = $store_rating ? ( ( $store_rating/5 ) * 100 - 1 ) : 0;
+			if ( $store_rating && apply_filters( 'wcfm_is_allow_vendor_review_count', false ) ) {
+				$store_rating_width = ($store_rating_width/6) * ( 6 - ( apply_filters( 'wcfm_vendor_review_count_size_number', 7.5) - 6 ) );
+			}
 		  ?>
-			<div style="<?php if ( $store_rating && apply_filters( 'wcfm_is_allow_vendor_review_count', false ) ) { echo 'width:7.5em!important;'; } ?>" class="wcfmmp-store-rating" title="<?php if( $store_rating ) { echo $rating_label; } else { _e( 'No reviews yet!', 'wc-multivendor-marketplace' ); } ?>">
-				<span style="width: <?php echo $store_rating ? ( ( $store_rating/5 ) * 100 - 1 ) : 0; ?>%">
-					<strong class="rating"><?php echo $store_rating; ?></strong> <?php _e( 'out of 5', 'wc-multivendor-marketplace' ); ?>
+			<div style="<?php if ( $store_rating && apply_filters( 'wcfm_is_allow_vendor_review_count', false ) ) { echo apply_filters( 'wcfm_vendor_review_count_size', 'width:7.5em!important;' ); } ?>" class="wcfmmp-store-rating" title="<?php if( $store_rating ) { echo esc_attr($rating_label); } else { esc_html_e( 'No reviews yet!', 'wc-multivendor-marketplace' ); } ?>">
+				<span style="width: <?php echo apply_filters( 'wcfm_vendor_star_rating_display_width', $store_rating_width, $store_rating ); ?>%">
+					<strong class="rating"><?php echo esc_attr($store_rating); ?></strong> <?php esc_html_e( 'out of 5', 'wc-multivendor-marketplace' ); ?>
 				</span>
 				<?php 
 				if ( $store_rating && apply_filters( 'wcfm_is_allow_vendor_review_count', false ) ) {
-				  echo '<label style="display:inline-block;float:right;">&nbsp;('.$reviews_count.')</label>';	
+				  echo '<label style="display:inline-block;float:right;">&nbsp;('.esc_attr($reviews_count).')</label>';	
 				} 
 				?>
 			</div>
@@ -583,9 +638,9 @@ class WCFMmp_Reviews {
   	
   	$sql = "SELECT COUNT(ID) from {$wpdb->prefix}wcfm_marketplace_reviews";
 		$sql .= " WHERE 1=1";
-		$sql .= " AND `vendor_id` = " . $vendor_id;
-		$sql .= " AND `author_id` = " . $author_id;
-		$wcfm_review_added = $wpdb->get_var($sql);
+		$sql .= " AND `vendor_id` = %d";
+		$sql .= " AND `author_id` = %d";
+		$wcfm_review_added = $wpdb->get_var( $wpdb->prepare( $sql, $vendor_id, $author_id ) );
 		
 		if( $wcfm_review_added ) $is_allow = false;
 		
@@ -593,9 +648,9 @@ class WCFMmp_Reviews {
 		if( $is_allow && ( $review_only_store_user == 'yes' ) ) {
 			$sql = "SELECT COUNT(ID) from {$wpdb->prefix}wcfm_marketplace_orders";
 			$sql .= " WHERE 1=1";
-			$sql .= " AND `vendor_id` = " . $vendor_id;
-			$sql .= " AND `customer_id` = " . $author_id;
-			$wcfm_has_order = $wpdb->get_var($sql);
+			$sql .= " AND `vendor_id` = %d";
+			$sql .= " AND `customer_id` = %d";
+			$wcfm_has_order = $wpdb->get_var( $wpdb->prepare($sql, $vendor_id, $author_id ) );
 			
 			if( !$wcfm_has_order ) $is_allow = false;
 		}
@@ -620,13 +675,13 @@ class WCFMmp_Reviews {
 		$review_title = '';
 		
 		$vendor_reviews =  $wpdb->get_results(
-																					"SELECT c.comment_content, c.comment_ID, c.comment_author,
+																					$wpdb->prepare( "SELECT c.comment_content, c.comment_ID, c.comment_author,
 																							c.comment_author_email, c.comment_author_url,
 																							c.user_id, c.comment_post_ID, c.comment_approved,
 																							c.comment_date
 																					FROM $wpdb->comments as c
 																					WHERE 
-																							c.comment_ID={$comment_id}"
+																							c.comment_ID=%d", $comment_id )
 																			);
 		
 		
@@ -649,10 +704,12 @@ class WCFMmp_Reviews {
 				
 				$current_time = date( 'Y-m-d H:i:s', current_time( 'timestamp', 0 ) );
 				
-				$wcfm_review_submit = "INSERT into {$wpdb->prefix}wcfm_marketplace_reviews 
+				$wcfm_review_submit = $wpdb->prepare("INSERT into {$wpdb->prefix}wcfm_marketplace_reviews 
 													(`vendor_id`, `author_id`, `author_name`, `author_email`, `review_title`, `review_description`, `review_rating`, `approved`, `created`)
 													VALUES
-													({$vendor_id}, {$vendor_review->user_id}, '{$vendor_review->comment_author}', '{$vendor_review->comment_author_email}', '{$review_title}', '{$vendor_review->comment_content}', '{$review_rating}', {$approved}, '{$current_time}')";
+													(%d, %d, %s, %s, %s, %s, %s, %d, %s)",
+													$vendor_id, $vendor_review->user_id, $vendor_review->comment_author, $vendor_review->comment_author_email, $review_title, $vendor_review->comment_content, $review_rating, $approved, $current_time
+													);
 												
 				$wpdb->query($wcfm_review_submit);
 				$wcfm_review_id = $wpdb->insert_id;
@@ -661,18 +718,22 @@ class WCFMmp_Reviews {
 				
 					// Updating Review Meta
 					foreach( $wcfm_review_categories as $wcfm_review_cat_key => $wcfm_review_category ) {
-						$wcfm_review_meta_update = "INSERT into {$wpdb->prefix}wcfm_marketplace_review_rating_meta 
+						$wcfm_review_meta_update = $wpdb->prepare("INSERT into {$wpdb->prefix}wcfm_marketplace_review_rating_meta 
 																				(`review_id`, `key`, `value`, `type`)
 																				VALUES
-																				({$wcfm_review_id}, '{$wcfm_review_category['category']}', '{$review_rating}', 'rating_category')";
+																				(%d, %s, %s, %s)",
+																				$wcfm_review_id, $wcfm_review_category['category'], $review_rating, 'rating_category'
+																				);
 						$wpdb->query($wcfm_review_meta_update);
 					}
 					
 					// Updating Review Meta - Product
-					$wcfm_review_meta_update = "INSERT into {$wpdb->prefix}wcfm_marketplace_review_rating_meta 
+					$wcfm_review_meta_update = $wpdb->prepare("INSERT into {$wpdb->prefix}wcfm_marketplace_review_rating_meta 
 																				(`review_id`, `key`, `value`, `type`)
 																				VALUES
-																				({$wcfm_review_id}, 'product', '{$product_id}', 'rating_product')";
+																				(%d, %s, %s, %s)",
+																				$wcfm_review_id, 'product', $product_id, 'rating_product'
+																				);
 					$wpdb->query($wcfm_review_meta_update);
 					
 					// Update user review data

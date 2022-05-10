@@ -78,7 +78,7 @@ class WCFMmp_Store_Shipping_Rules extends WP_Widget {
 		echo $before_widget;
 
 		if ( ! empty( $title ) ) {
-			echo $args['before_title'] . '<span class="wcfmfa fa-truck"></span>&nbsp;' . $title . $args['after_title'];
+			echo $args['before_title'] . '<span class="wcfmfa fa-truck"></span>&nbsp;' . wp_kses_post($title) . $args['after_title'];
 		}
 		
 		do_action( 'wcfmmp_store_before_sidebar_store_shipping_rules', $store_id );
@@ -128,8 +128,8 @@ class WCFMmp_Store_Shipping_Rules extends WP_Widget {
 			$title = $instance['title'];
 			?>
 			<p>
-				<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'wc-multivendor-marketplace' ); ?></label>
-				<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
+				<label for="<?php echo esc_attr($this->get_field_id( 'title' )); ?>"><?php _e( 'Title:', 'wc-multivendor-marketplace' ); ?></label>
+				<input class="widefat" id="<?php echo esc_attr($this->get_field_id( 'title' )); ?>" name="<?php echo esc_attr($this->get_field_name( 'title' )); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
 			</p>
 			<?php
 	}

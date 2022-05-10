@@ -33,7 +33,7 @@ $store_address_info_class = '';
 			
 				<?php do_action( 'wcfmmp_store_before_avatar', $store_user->get_id() ); ?>
 				
-				<div class="logo_area lft"><a href="#"><img src="<?php echo $gravatar; ?>" alt="Logo"/></a></div>
+				<div class="logo_area lft"><a href="#"><img src="<?php echo esc_url($gravatar); ?>" alt="Logo"/></a></div>
 				
 				<div class="logo_area_after">
 					<?php do_action( 'wcfmmp_store_after_avatar', $store_user->get_id() ); ?>
@@ -52,7 +52,7 @@ $store_address_info_class = '';
 				<div class="address rgt">
 				  <?php if( ( $WCFMmp->wcfmmp_vendor->get_vendor_name_position( $store_user->get_id() ) == 'on_header' ) || apply_filters( 'wcfm_is_allow_store_name_on_header', false ) ) { ?>
 				  	<h1 class="wcfm_store_title">
-				  	  <?php echo apply_filters( 'wcfmmp_store_title', $store_info['store_name'], $store_user->get_id() ); ?>
+				  	  <?php echo apply_filters( 'wcfmmp_store_title', esc_html( $store_info['store_name'] ), $store_user->get_id() ); ?>
 				  	  <?php if( apply_filters( 'wcfm_is_allow_badges_with_store_name', false ) ) { ?>
 								<div class="wcfmmp_store_mobile_badges wcfmmp_store_mobile_badges_with_store_name">
 									<?php do_action( 'wcfmmp_store_mobile_badges', $store_user->get_id() ); ?>
@@ -66,7 +66,7 @@ $store_address_info_class = '';
 					<?php do_action( 'wcfmmp_store_before_address', $store_user->get_id() ); ?>
 					
 					<?php if( $address && ( $store_info['store_hide_address'] == 'no' ) && wcfm_vendor_has_capability( $store_user->get_id(), 'vendor_address' ) ) { ?>
-						<p class="<?php echo $store_address_info_class; ?> wcfmmp_store_header_address">
+						<p class="<?php echo esc_attr($store_address_info_class); ?> wcfmmp_store_header_address">
 						  <i class="wcfmfa fa-map-marker" aria-hidden="true"></i>
 						  <?php if( apply_filters( 'wcfmmp_is_allow_address_map_linked', true ) ) { 
 						  	$map_search_link = 'https://google.com/maps/place/' . rawurlencode( $address ) . '/@' . $store_lat . ',' . $store_lng . '&z=16';
@@ -74,16 +74,16 @@ $store_address_info_class = '';
 						  		$map_search_link = 'https://maps.google.com/?q=' . rawurlencode( $address ) . '&z=16';
 						  	}
 						  	?>
-						    <a href="<?php echo $map_search_link; ?>" target="_blank"><span><?php echo $address; ?></span></a>
+						    <a href="<?php echo esc_url($map_search_link); ?>" target="_blank"><span><?php echo esc_attr($address); ?></span></a>
 						  <?php } else { ?>
-								<?php echo $address; ?>
+								<?php echo esc_attr($address); ?>
 							<?php } ?>
 						</p>
 					<?php } ?>
 					
 					<?php do_action( 'wcfmmp_store_after_address', $store_user->get_id() ); ?>
 					
-					<div class="<?php echo $store_address_info_class; ?>">
+					<div class="<?php echo esc_attr($store_address_info_class); ?>">
 						
 					  <?php do_action( 'wcfmmp_store_before_phone', $store_user->get_id() ); ?>
 						
@@ -92,9 +92,9 @@ $store_address_info_class = '';
 							  <i class="wcfmfa fa-phone" aria-hidden="true"></i>
 							  <span>
 							    <?php if( apply_filters( 'wcfmmp_is_allow_tel_linked', true ) ) { ?>
-							      <a href="tel:<?php echo $phone; ?>"><?php echo $phone; ?></a>
+							      <a href="tel:<?php echo esc_attr($phone); ?>"><?php echo esc_attr($phone); ?></a>
 							    <?php } else { ?>
-							    	<?php echo $phone; ?>
+							    	<?php echo esc_attr($phone); ?>
 							   <?php } ?>
 							  </span>
 							</div>
@@ -108,9 +108,9 @@ $store_address_info_class = '';
 							  <i class="wcfmfa fa-envelope" aria-hidden="true"></i>
 							  <span>
 							    <?php if( apply_filters( 'wcfmmp_is_allow_mailto_linked', true ) ) { ?>
-							      <a href="mailto:<?php echo apply_filters( 'wcfmmp_mailto_email', $email, $store_user->get_id() ); ?>"><?php echo $email; ?></a>
+							      <a href="mailto:<?php echo apply_filters( 'wcfmmp_mailto_email', $email, $store_user->get_id() ); ?>"><?php echo esc_attr($email); ?></a>
 							    <?php } else { ?>
-							    	<?php echo $email; ?>
+							    	<?php echo esc_attr($email); ?>
 							    <?php } ?>
 							  </span>
 							</div>

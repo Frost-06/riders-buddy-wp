@@ -35,7 +35,8 @@ jQuery(document).ready(function($) {
 				d.action          = 'wcfm_ajax_controller',
 				d.controller      = 'wcfm-reviews',
 				d.reviews_vendor  = $reviews_vendor,
-				d.status_type     = GetURLParameter( 'reviews_status' )
+				d.status_type     = GetURLParameter( 'reviews_status' ),
+				d.wcfm_ajax_nonce = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -69,7 +70,8 @@ jQuery(document).ready(function($) {
 		var data = {
 			action : 'wcfmmp_reviews_status_update',
 			reviewid : item.data('reviewid'),
-			status   : item.data('status')
+			status   : item.data('status'),
+			wcfm_ajax_nonce : wcfm_params.wcfm_ajax_nonce
 		}	
 		jQuery.ajax({
 			type:		'POST',
@@ -105,6 +107,7 @@ jQuery(document).ready(function($) {
 		var data = {
 			action : 'wcfmmp_reviews_delete',
 			reviewid : item.data('reviewid'),
+			wcfm_ajax_nonce : wcfm_params.wcfm_ajax_nonce
 		}	
 		jQuery.ajax({
 			type:		'POST',

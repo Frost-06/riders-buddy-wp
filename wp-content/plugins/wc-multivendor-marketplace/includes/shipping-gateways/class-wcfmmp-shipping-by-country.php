@@ -135,7 +135,7 @@ class WCFMmp_Shipping_By_Country extends WC_Shipping_Method {
        return;
     }
 
-    if( apply_filters('hide_country_shiping_default_zero_cost', false ) ) {
+    if( apply_filters('hide_country_shiping_default_zero_cost', false ) || apply_filters('wcfm_hide_country_shiping_default_zero_cost', false ) ) {
       $wcfmmp_state_rates   = get_user_meta( $vendor_id, '_wcfmmp_state_rates', true );
       $wcfmmp_country_rates = get_user_meta( $vendor_id, '_wcfmmp_country_rates', true );
       if ( isset( $wcfmmp_state_rates[$destination_country] ) ) { 
@@ -154,7 +154,8 @@ class WCFMmp_Shipping_By_Country extends WC_Shipping_Method {
      if ( $products ) {
        $amount = $this->calculate_per_seller( $products, $destination_country, $destination_state );
 
-			 $tax_rate = ( $this->tax_status == 'none' ) ? false : '';
+			 $tax_rate  = ( $this->tax_status == 'none' ) ? false : '';
+			 $tax_rate  = apply_filters( 'wcfmmp_is_apply_tax_on_shipping_rates', $tax_rate );
 			 
 			 if( !$amount ) {
 				 $this->title = __('Free Shipping', 'wc-multivendor-marketplace');

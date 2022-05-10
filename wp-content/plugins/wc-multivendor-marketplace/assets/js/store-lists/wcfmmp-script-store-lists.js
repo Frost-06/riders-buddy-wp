@@ -99,6 +99,7 @@ jQuery(document).ready(function($) {
 			search_term             : $('.wcfmmp-store-search').val(),
 			wcfmmp_store_category   : $('#wcfmmp_store_category').val(),
 			search_data             : jQuery('.wcfmmp-store-search-form').serialize(),
+			wcfm_ajax_nonce         : wcfm_params.wcfm_ajax_nonce,
 			_wpnonce                : form.find('#nonce').val()
 		};
 
@@ -179,7 +180,8 @@ jQuery(document).ready(function($) {
 							}
 						});
 						var data = {
-							action  : 'wcfm_login_popup_form'
+							action  : 'wcfm_login_popup_form',
+							wcfm_ajax_nonce          : wcfm_params.wcfm_ajax_nonce
 						}	
 						
 						jQuery.ajax({
@@ -219,7 +221,8 @@ jQuery(document).ready(function($) {
 													jQuery('#wcfm_login_popup_button').hide();
 													var data = {
 														action : 'wcfm_login_popup_submit', 
-														wcfm_login_popup_form : jQuery('#wcfm_login_popup_form').serialize()
+														wcfm_login_popup_form : jQuery('#wcfm_login_popup_form').serialize(),
+														wcfm_ajax_nonce       : wcfm_params.wcfm_ajax_nonce
 													}	
 													jQuery.post(wcfm_params.ajax_url, data, function(response) {
 														if(response) {
@@ -525,6 +528,7 @@ jQuery(document).ready(function($) {
 				wcfmmp_store_country    : $('#wcfmmp_store_country').val(),
 				wcfmmp_store_state      : $('#wcfmmp_store_state').val(),
 				search_data             : jQuery('.wcfmmp-store-search-form').serialize(),
+				wcfm_ajax_nonce         : wcfm_params.wcfm_ajax_nonce
 			};
 			
 			xhr = $.post(wcfm_params.ajax_url, data, function(response) {
@@ -652,7 +656,7 @@ jQuery(document).ready(function($) {
 			var mapOptions = {
 					zoom: $map_zoom,
 					center: new google.maps.LatLng(wcfmmp_store_list_options.default_lat,wcfmmp_store_list_options.default_lng,13),
-					mapTypeId: google.maps.MapTypeId.ROADMAP,
+					mapTypeId: wcfm_maps.map_type,
 					styles: myStyles
 			}
     

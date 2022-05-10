@@ -67,13 +67,21 @@ table.wcfm-order-total-table th{border-right:0px;}
 table.wcfm-order-total-table td{border-left:0px;}
 </style>
 
-<p><?php printf(__('A new order was received from %s. Order details is as follows:', 'wc-multivendor-marketplace'), $order->get_billing_first_name() . ' ' . $order->get_billing_last_name()); ?></p>
+<p>
+  <?php 
+  if( wcfm_vendor_has_capability( $vendor_id, 'view_customers' ) && wcfm_vendor_has_capability( $vendor_id, 'view_name' ) ) {
+  	printf(__('A new order was received from %s. Order details is as follows:', 'wc-multivendor-marketplace'), $order->get_billing_first_name() . ' ' . $order->get_billing_last_name());
+  } else {
+  	_e('A new order was received. Order details is as follows:', 'wc-multivendor-marketplace');
+  }
+  ?>
+ </p>
 
 <h2 class="woocommerce-order-details__title" style="color: #00798b;">
   <?php if( wcfm_vendor_has_capability( $vendor_id, 'view_orders' ) && wcfm_vendor_has_capability( $vendor_id, 'view_order_details' ) ) { ?>
-  	<a href="<?php echo get_wcfm_view_order_url( $order->get_id() ); ?>"><?php _e('Order', 'wc-multivendor-marketplace'); ?> #<?php echo $order->get_order_number() . ' ('.date_i18n(wc_date_format(), strtotime($order->get_date_created())).')'; ?></a>
+  	<a href="<?php echo get_wcfm_view_order_url( $order->get_id() ); ?>"><?php _e('Order', 'wc-multivendor-marketplace'); ?> #<?php echo wp_kses_post($order->get_order_number() . ' ('.date_i18n(wc_date_format(), strtotime($order->get_date_created())).')'); ?></a>
   <?php } else { ?>
-  	<?php _e('Order', 'wc-multivendor-marketplace'); ?> #<?php echo $order->get_order_number() . ' ('.date_i18n(wc_date_format(), strtotime($order->get_date_created())).')'; ?>
+  	<?php _e('Order', 'wc-multivendor-marketplace'); ?> #<?php echo wp_kses_post($order->get_order_number() . ' ('.date_i18n(wc_date_format(), strtotime($order->get_date_created())).')'); ?>
   <?php } ?>
 </h2>
 
@@ -234,7 +242,7 @@ if( apply_filters( 'wcfm_is_allow_email_before_order_table', true ) ) {
 				$shipping_methods = WC()->shipping() ? WC()->shipping->load_shipping_methods() : array();
 				foreach ( $line_items_shipping as $item_id => $item ) {
 					?>
-					<tr class="shipping <?php echo ( ! empty( $class ) ) ? $class : ''; ?>" data-order_item_id="<?php echo $item_id; ?>">
+					<tr class="shipping <?php echo ( ! empty( $class ) ) ? $class : ''; ?>" data-order_item_id="<?php echo esc_attr($item_id); ?>">
 						<td class="name" colspan="3">
 							<div class="view">
 								<?php echo ! empty( $item->get_name() ) ? wc_clean( $item->get_name() ) : __( 'Shipping', 'wc-multivendor-marketplace' ); ?>
@@ -301,7 +309,7 @@ if( apply_filters( 'wcfm_is_allow_email_before_order_table', true ) ) {
 				<?php
 					foreach ( $line_items_fee as $item_id => $item ) {
 						?>
-						<tr class="fee <?php echo ( ! empty( $class ) ) ? $class : ''; ?>" data-order_item_id="<?php echo $item_id; ?>">
+						<tr class="fee <?php echo ( ! empty( $class ) ) ? $class : ''; ?>" data-order_item_id="<?php echo wp_kses_post($item_id); ?>">
 							<td class="name" colspan="3">
 								<div class="view">
 									<?php echo ! empty( $item->get_name() ) ? esc_html( $item->get_name() ) : __( 'Fee', 'wc-multivendor-marketplace' ); ?>
@@ -392,12 +400,12 @@ if( apply_filters( 'wcfm_is_allow_email_before_order_table', true ) ) {
 				<?php if ( wc_tax_enabled() ) : ?>
 					<?php foreach ( $order->get_tax_totals() as $code => $tax ) : ?>
 						<tr>
-							<td class="label description" colspan="2" style="text-align:right; width:75%; border-bottom: 1px solid #eee;"><?php echo $tax->label; ?>:</td>
+							<td class="label description" colspan="2" style="text-align:right; width:75%; border-bottom: 1px solid #eee;"><?php echo wp_kses_post($tax->label); ?>:</td>
 							<td class="total price" style="text-align:center; border-bottom: 1px solid #eee;"><?php
 								if ( ( $refunded = $order->get_total_tax_refunded_by_rate_id( $tax->rate_id ) ) > 0 ) {
 									echo '<del>' . strip_tags( $tax->formatted_amount ) . '</del> <ins>' . wc_price( WC_Tax::round( $tax->amount, wc_get_price_decimals() ) - WC_Tax::round( $refunded, wc_get_price_decimals() ), array( 'currency' => $order->get_currency() ) ) . '</ins>';
 								} else {
-									echo $tax->formatted_amount;
+									echo wp_kses_post($tax->formatted_amount);
 								}
 							?></td>
 						</tr>
@@ -411,7 +419,7 @@ if( apply_filters( 'wcfm_is_allow_email_before_order_table', true ) ) {
 			<tr>
 				<td class="label description" colspan="2" style="text-align:right; width:75%; border-bottom: 1px solid #eee;"><?php _e( 'Order Total', 'wc-multivendor-marketplace' ); ?>:</td>
 				<td class="total price" style="text-align:center; border-bottom: 1px solid #eee;">
-					<div class="view"><?php echo $order->get_formatted_order_total(); ?></div>
+					<div class="view"><?php echo wp_kses_post($order->get_formatted_order_total()); ?></div>
 				</td>
 			</tr>
 			<?php } ?>
@@ -434,11 +442,11 @@ if( apply_filters( 'wcfm_is_allow_email_before_order_table', true ) ) {
 <?php if( wcfm_vendor_has_capability( $vendor_id, 'view_customers' ) && wcfm_vendor_has_capability( $vendor_id, 'view_email' ) ) { ?>
 	<h2 class="woocommerce-order-details__title" style="color: #00798b;"><?php _e('Customer Details', 'wc-multivendor-marketplace'); ?></h2>
 	<?php if ($order->get_billing_email() ) { ?>
-		<p><strong><?php _e('Customer Name:', 'wc-multivendor-marketplace'); ?></strong> <?php echo $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(); ?></p>
-		<p><strong><?php _e('Email:', 'wc-multivendor-marketplace'); ?></strong> <?php echo $order->get_billing_email(); ?></p>
+		<p><strong><?php _e('Customer Name:', 'wc-multivendor-marketplace'); ?></strong> <?php echo wp_kses_post($order->get_billing_first_name() . ' ' . $order->get_billing_last_name()); ?></p>
+		<p><strong><?php _e('Email:', 'wc-multivendor-marketplace'); ?></strong> <?php echo wp_kses_post($order->get_billing_email()); ?></p>
 	<?php } ?>
 	<?php if ($order->get_billing_phone()) { ?>
-		<p><strong><?php _e('Telephone:', 'wc-multivendor-marketplace'); ?></strong> <?php echo $order->get_billing_phone(); ?></p>
+		<p><strong><?php _e('Telephone:', 'wc-multivendor-marketplace'); ?></strong> <?php echo wp_kses_post($order->get_billing_phone()); ?></p>
 	<?php
 	}
 }
@@ -457,16 +465,16 @@ if( apply_filters( 'wcfm_is_allow_wc_default_email_customer_details', false ) ) 
 	<table id="addresses" cellspacing="0" cellpadding="0" style="width: 100%; vertical-align: top; margin-bottom: 40px; padding:0;" border="0">
 		<tr>
 			<?php if( wcfm_vendor_has_capability( $vendor_id, 'view_billing_details' ) ) { ?>
-				<td style="text-align:<?php echo $text_align; ?>; border:0; padding:0 2px;" valign="top" width="50%">
+				<td style="text-align:<?php echo esc_attr($text_align); ?>; border:0; padding:0 2px;" valign="top" width="50%">
 					<h2><?php _e( 'Billing address', 'wc-multivendor-marketplace' ); ?></h2>
-					<address class="address"><?php echo $order->get_formatted_billing_address(); ?></address>
+					<address class="address"><?php echo wp_kses_post($order->get_formatted_billing_address()); ?></address>
 				</td>
 			<?php } ?>
 			
 			<?php if( ( $shipping = $order->get_formatted_shipping_address() ) && $order->needs_shipping_address() && wcfm_vendor_has_capability( $vendor_id, 'view_shipping_details' ) ) { ?>
-				<td style="text-align:<?php echo $text_align; ?>; padding:0 2px;" valign="top" width="50%">
+				<td style="text-align:<?php echo esc_attr($text_align); ?>; padding:0 2px;" valign="top" width="50%">
 					<h2><?php _e( 'Shipping address', 'wc-multivendor-marketplace' ); ?></h2>
-					<address class="address"><?php echo $shipping; ?></address>
+					<address class="address"><?php echo wp_kses_post($shipping); ?></address>
 				</td>
 			<?php } ?>
 		</tr>

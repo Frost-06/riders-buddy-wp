@@ -65,12 +65,12 @@ class WCFMmp_Store_Hours {
 		<!-- collapsible -->
 		<div class="page_collapsible" id="wcfm_settings_form_store_hours_head">
 			<label class="wcfmfa fa-clock fa-clock-o"></label>
-			<?php echo apply_filters( 'wcfm_sold_by_label', '', __( 'Store', 'wc-frontend-manager' ) ) . ' ' . __('Hours', 'wc-multivendor-marketplace'); ?><span></span>
+			<?php echo esc_attr( apply_filters( 'wcfm_sold_by_label', '', __( 'Store', 'wc-frontend-manager' ) ) ) . ' ' . esc_html__('Hours', 'wc-multivendor-marketplace'); ?><span></span>
 		</div>
 		<div class="wcfm-container">
 			<div id="wcfm_settings_form_store_hours_expander" class="wcfm-content">
 			  <div class="wcfm_clearfix"></div>
-			  <h2><?php echo apply_filters( 'wcfm_sold_by_label', '', __( 'Store', 'wc-frontend-manager' ) ) . ' ' . __('Default Store Hours Setting', 'wc-multivendor-marketplace'); ?></h2>
+			  <h2><?php echo esc_attr(apply_filters( 'wcfm_sold_by_label', '', __( 'Store', 'wc-frontend-manager' ) )) . ' ' . esc_html__('Default Store Hours Setting', 'wc-multivendor-marketplace'); ?></h2>
 				<div class="wcfm_clearfix"></div>
 				<div class="store_address">
 				  <?php
@@ -317,7 +317,7 @@ class WCFMmp_Store_Hours {
 					
 					if( !wcfm_is_store_page() && apply_filters( 'wcfm_is_allow_product_loop_store_close_message', false ) ) {
 						echo '<div class="wcfm_store_close_msg">';
-						echo apply_filters( 'wcfm_store_close_message', __( 'This store is now closed!', 'wc-multivendor-marketplace' ) );
+						echo esc_attr(apply_filters( 'wcfm_store_close_message', __( 'This store is now closed!', 'wc-multivendor-marketplace' ) ));
 						echo '</div>';
 					}
 				} elseif( !has_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart') && $WCFMmp->wcfm_is_store_close ) {
@@ -369,7 +369,7 @@ class WCFMmp_Store_Hours {
 				remove_action( 'wc_quick_view_pro_quick_view_product_details', 'woocommerce_template_single_add_to_cart', 30 );
 				
 				echo '<div class="wcfm_store_close_msg">';
-				echo apply_filters( 'wcfm_store_close_message', __( 'This store is now closed!', 'wc-multivendor-marketplace' ) );
+				echo esc_attr(apply_filters( 'wcfm_store_close_message', __( 'This store is now closed!', 'wc-multivendor-marketplace' ) ));
 				echo '</div>';
 			}
 		}

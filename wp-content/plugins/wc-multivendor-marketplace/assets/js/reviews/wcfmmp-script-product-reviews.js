@@ -37,7 +37,8 @@ jQuery(document).ready(function($) {
 				d.controller      = 'wcfm-product-reviews',
 				d.reviews_vendor  = $reviews_vendor,
 				d.review_product  = $review_product,
-				d.status_type     = GetURLParameter( 'reviews_status' )
+				d.status_type     = GetURLParameter( 'reviews_status' ),
+				d.wcfm_ajax_nonce = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -71,7 +72,8 @@ jQuery(document).ready(function($) {
 		var data = {
 			action : 'wcfmmp_product_reviews_status_update',
 			reviewid : item.data('reviewid'),
-			status   : item.data('status')
+			status   : item.data('status'),
+			wcfm_ajax_nonce : wcfm_params.wcfm_ajax_nonce
 		}	
 		jQuery.ajax({
 			type:		'POST',
@@ -107,6 +109,7 @@ jQuery(document).ready(function($) {
 		var data = {
 			action : 'wcfmmp_product_reviews_status_update',
 			reviewid : item.data('reviewid'),
+			wcfm_ajax_nonce : wcfm_params.wcfm_ajax_nonce,
 			status   : 2
 		}	
 		jQuery.ajax({

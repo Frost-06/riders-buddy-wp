@@ -11,7 +11,8 @@ jQuery(document).ready( function($) {
       //console.log(custCountry);
       data = {
         action: 'wcfmmp-remove-cart-vendor-product',
-        custCountry : custCountry
+        custCountry : custCountry,
+        wcfm_ajax_nonce         : wcfm_params.wcfm_ajax_nonce
       };
       $.post(woocommerce_params.ajax_url, data, function (resp) {
         //console.log(resp);

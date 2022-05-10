@@ -205,7 +205,7 @@ class WCFM_Stripe_Order_Handler extends WCFMmp_Gateway_Stripe_Split {
 			return;
 		}
 
-		$order_id = wc_clean( $_GET['order_id'] );
+		$order_id = absint( $_GET['order_id'] );
 
 		$this->process_redirect_payment( $order_id );
 	}

@@ -22,8 +22,8 @@ class WCFMmp_Media_Controller {
 		
 		$vendor_id = $WCFMmp->vendor_id;
 		
-		$length = sanitize_text_field( $_POST['length'] );
-		$offset = sanitize_text_field( $_POST['start'] );
+		$length = absint( $_POST['length'] );
+		$offset = absint( $_POST['start'] );
 		
 		$args = array(
 							'posts_per_page'   => $length,
@@ -51,7 +51,7 @@ class WCFMmp_Media_Controller {
 			$args['author'] = $vendor_id;
 		} else {
 			if ( ! empty( $_POST['media_vendor'] ) ) {
-				$args['author'] = sanitize_text_field( $_POST['media_vendor'] );
+				$args['author'] = absint( $_POST['media_vendor'] );
 			}
 		}
 		
@@ -67,7 +67,7 @@ class WCFMmp_Media_Controller {
 		// Generate Media JSON
 		$wcfm_media_json = '';
 		$wcfm_media_json = '{
-															"draw": ' . sanitize_text_field( $_POST['draw'] ) . ',
+															"draw": ' . absint( $_POST['draw'] ) . ',
 															"recordsTotal": ' . $filtered_media_count . ',
 															"recordsFiltered": ' . $filtered_media_count . ',
 															"data": ';
@@ -114,7 +114,7 @@ class WCFMmp_Media_Controller {
 					default:
 						$media =  $base . "default.png";
 				}
-				$wcfm_media_json_arr[$index][] = '<a class="wcfmmp-author-img" target="_blank" href="' . wp_get_attachment_url( $wcfm_media_single->ID ) . '" ><img width="75" src="' . $media. '" /></a>';
+				$wcfm_media_json_arr[$index][] = '<a class="wcfmmp-author-img" target="_blank" href="' . wp_get_attachment_url( $wcfm_media_single->ID ) . '" ><img width="75" src="' . esc_url($media) . '" /></a>';
 				
 				// File
 				$wcfm_media_json_arr[$index][] = '<span class="wcfmmp_media_name">' . $wcfm_media_single->post_title . "</span><br />(" . $type . ")";

@@ -40,7 +40,7 @@ get_header( 'shop' );
 <style>
 @media screen and (max-width: 480px) {
 	#wcfmmp-store .header_right {
-		background: <?php echo $mob_wcfmmp_header_background_color; ?>;
+		background: <?php echo esc_attr($mob_wcfmmp_header_background_color); ?>;
 	}
 }
 </style>		
@@ -48,7 +48,7 @@ get_header( 'shop' );
 <?php echo '<div id="primary" class="content-area"><main id="main" class="site-main" role="main">'; ?>
 <?php do_action( 'wcfmmp_before_store', $store_user->data, $store_info ); ?>
 
-<div id="wcfmmp-store" class="wcfmmp-single-store-holder <?php echo $wcfm_store_wrapper_class; ?>">
+<div id="wcfmmp-store" class="wcfmmp-single-store-holder <?php echo esc_attr($wcfm_store_wrapper_class); ?>">
 	<div id="wcfmmp-store-content" class="wcfmmp-store-page-wrap woocommerce" role="main">
 			
 		<?php $WCFMmp->template->get_template( 'store/wcfmmp-view-store-banner.php', array( 'store_user' => $store_user, 'store_info' => $store_info ) ); ?>

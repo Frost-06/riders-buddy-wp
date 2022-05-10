@@ -53,17 +53,17 @@ class WCFMmp_Ajax {
 		if( !wcfm_is_vendor() ) return;
 		
 		if( !$order_id ) {
-			echo '{"status": false, "message": "' . __( 'No Order ID found.', 'wc-frontend-manager' ) . '"}';
+			echo '{"status": false, "message": "' . esc_html__( 'No Order ID found.', 'wc-frontend-manager' ) . '"}';
 			die;
 		}
 		
 		if( $order_status == 'wc-refunded' ) {
-			echo '{"status": false, "message": "' . __( 'This status not allowed, please go through Refund Request.', 'wc-multivendor-marketplace' ) . '"}';
+			echo '{"status": false, "message": "' . esc_html__( 'This status not allowed, please go through Refund Request.', 'wc-multivendor-marketplace' ) . '"}';
 			die;
 		}
 		
 		if( $order_status == 'wc-shipped' ) {
-			echo '{"status": false, "message": "' . __( 'This status not allowed, please go through Shipment Tracking.', 'wc-multivendor-marketplace' ) . '"}';
+			echo '{"status": false, "message": "' . esc_html__( 'This status not allowed, please go through Shipment Tracking.', 'wc-multivendor-marketplace' ) . '"}';
 			die;
 		}
 		
@@ -98,9 +98,9 @@ class WCFMmp_Ajax {
 			if( apply_filters( 'wcfm_is_allow_itemwise_notification', true ) ) {
 				$sql = 'SELECT product_id  FROM ' . $wpdb->prefix . 'wcfm_marketplace_orders AS commission';
 				$sql .= ' WHERE 1=1';
-				$sql .= " AND `order_id` = " . $order_id;
-				$sql .= " AND `vendor_id` = " . $vendor_id;
-				$commissions = $wpdb->get_results( $sql );
+				$sql .= " AND `order_id` = %d";
+				$sql .= " AND `vendor_id` = %d";
+				$commissions = $wpdb->get_results( $wpdb->prepare( $sql, $order_id, $vendor_id ) );
 				$product_id = 0;
 				if( !empty( $commissions ) ) {
 					foreach( $commissions as $commission ) {
@@ -143,8 +143,8 @@ class WCFMmp_Ajax {
 					$is_all_complete = true;
 					$sql = 'SELECT commission_status  FROM ' . $wpdb->prefix . 'wcfm_marketplace_orders AS commission';
 					$sql .= ' WHERE 1=1';
-					$sql .= " AND `order_id` = " . $order_id;
-					$commissions = $wpdb->get_results( $sql );
+					$sql .= " AND `order_id` = %d";
+					$commissions = $wpdb->get_results( $wpdb->prepare( $sql, $order_id ) );
 					if( !empty( $commissions ) ) {
 						foreach( $commissions as $commission ) {
 							if( $commission->commission_status != $status ) {
@@ -170,7 +170,7 @@ class WCFMmp_Ajax {
 				}
 			}
 			
-			echo '{"status": true, "message": "' . __( 'Order status updated.', 'wc-frontend-manager' ) . '"}';
+			echo '{"status": true, "message": "' . esc_html__( 'Order status updated.', 'wc-frontend-manager' ) . '"}';
 			die;
 		}
 	}
@@ -178,9 +178,10 @@ class WCFMmp_Ajax {
 	function wcfmmp_stores_list_search() {
 		global $WCFM, $WCFMmp, $wpdb;
 		
-		//if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'wcfmmp-stores-list-search' ) ) {
-			//wp_send_json_error( __( 'Error: Nonce verification failed', 'wc-multivendor-marketplace' ) );
-		//}
+		if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
 
 
 		$search_term     = isset( $_REQUEST['search_term'] ) ? sanitize_text_field( $_REQUEST['search_term'] ) : '';
@@ -191,7 +192,7 @@ class WCFMmp_Ajax {
 		$per_page        = isset( $_REQUEST['per_page'] ) ? absint( $_REQUEST['per_page'] ) : 10;
 		$includes        = isset( $_REQUEST['includes'] ) ? sanitize_text_field( $_REQUEST['includes'] ) : '';
 		$excludes        = isset( $_REQUEST['excludes'] ) ? sanitize_text_field( $_REQUEST['excludes'] ) : '';
-		$orderby         = isset( $_REQUEST['orderby'] ) ? sanitize_text_field( $_REQUEST['orderby'] ) : 'newness_asc';
+		$orderby         = isset( $_REQUEST['orderby'] ) ? sanitize_sql_orderby( $_REQUEST['orderby'] ) : 'newness_asc';
 		$has_orderby     = isset( $_REQUEST['has_orderby'] ) ? sanitize_text_field( $_REQUEST['has_orderby'] ) : '';
 		$has_product     = isset( $_REQUEST['has_product'] ) ? sanitize_text_field( $_REQUEST['has_product'] ) : '';
 		$sidebar         = isset( $_REQUEST['sidebar'] ) ? sanitize_text_field( $_REQUEST['sidebar'] ) : '';
@@ -200,6 +201,8 @@ class WCFMmp_Ajax {
 		
 		if( isset( $_REQUEST['search_data'] ) )
 			parse_str($_REQUEST['search_data'], $search_data);
+		
+		$search_data = wc_clean( wp_unslash( $search_data ) );
 		
 		$length  = absint( $per_page );
 		$offset  = ( $paged - 1 ) * $length;
@@ -247,6 +250,11 @@ class WCFMmp_Ajax {
 	function wcfmmp_stores_list_map_markers() {
 		global $WCFM, $WCFMmp, $wpdb;
 		
+		if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+		
 		$search_term     = isset( $_REQUEST['search_term'] ) ? sanitize_text_field( $_REQUEST['search_term'] ) : '';
 		$search_category = isset( $_REQUEST['wcfmmp_store_category'] ) ? sanitize_text_field( $_REQUEST['wcfmmp_store_category'] ) : '';
 		$pagination_base = isset( $_REQUEST['pagination_base'] ) ? sanitize_text_field( $_REQUEST['pagination_base'] ) : '';
@@ -260,6 +268,8 @@ class WCFMmp_Ajax {
 		
 		if( isset( $_POST['search_data'] ) )
 			parse_str($_POST['search_data'], $search_data);
+		
+		$search_data = wc_clean( wp_unslash( $search_data ) );
 		
 		$search_data['excludes'] = $excludes;
 		
@@ -279,7 +289,7 @@ class WCFMmp_Ajax {
 				$store_info      = $store_user->get_shop_info();
 				
 				$store_name      = wcfm_get_vendor_store_name( $store_id );
-				$store_name      = apply_filters( 'wcfmmp_store_title', $store_name , $store_id );
+				$store_name      = apply_filters( 'wcfmmp_store_title', esc_attr($store_name), $store_id );
 				$store_url       = wcfmmp_get_store_url( $store_id );
 				$store_address   = $store_user->get_address_string(); 
 				$store_description = $store_user->get_shop_description();
@@ -300,7 +310,7 @@ class WCFMmp_Ajax {
 																																				"</div>" .
 																																				"</div>", $store_id, $store_user );
 				
-				$store_icon = apply_filters( 'wcfmmp_map_store_icon', $WCFMmp->plugin_url . 'assets/images/wcfmmp_map_icon.png', $store_id, $store_user );
+				$store_icon = apply_filters( 'wcfmmp_map_store_icon', esc_url($WCFMmp->plugin_url . 'assets/images/wcfmmp_map_icon.png'), $store_id, $store_user );
 				
 				if( $store_lat && $store_lng ) {
 					if( $store_list_markers ) $store_list_markers .= ", ";
@@ -322,16 +332,26 @@ class WCFMmp_Ajax {
    * @return void
    */
   public function wcfmmp_get_shipping_zone() {
-
     global $WCFM, $WCFMmp;
+    
+    if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+    
+    if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+    
     if ( isset( $_POST['zoneID'] ) ) {
-      $zones = WCFMmp_Shipping_Zone::get_zone( sanitize_text_field($_POST['zoneID']), sanitize_text_field($_POST['userID']) );
+      $zones = WCFMmp_Shipping_Zone::get_zone( absint($_POST['zoneID']), absint($_POST['userID']) );
       //print_r($zones); die;
     } 
     $show_post_code_list = $show_state_list = $show_post_code_list = false; 
     //print_r($zones);die;
     $zone_id = $zones['data']['id']; 
-    $user_id =  sanitize_text_field($_POST['userID']);
+    $user_id =  absint($_POST['userID']);
     $zone_locations = $zones['data']['zone_locations'];
     //print_r($zone_locations);
     $zone_location_types = array_column(array_map('wcfmmp_convert_to_array', $zone_locations) , 'type' , 'code');
@@ -608,8 +628,8 @@ class WCFMmp_Ajax {
                     <td>
                       <?php _e($vendor_shipping_method['title'], 'wc-multivendor-marketplace' ); ?>
                       <div 
-                        data-instance_id="<?php echo $vendor_shipping_method['instance_id']; ?>" 
-                        data-method_id="<?php echo $vendor_shipping_method['id']; ?>" 
+                        data-instance_id="<?php echo esc_attr($vendor_shipping_method['instance_id']); ?>" 
+                        data-method_id="<?php echo esc_attr($vendor_shipping_method['id']); ?>" 
                         data-method-settings='<?php echo esc_attr( json_encode($vendor_shipping_method) ); ?>'
                         class="row-actions edit_del_actions"
                         
@@ -682,10 +702,21 @@ class WCFMmp_Ajax {
     * @return void
     */
   public function wcfmmp_add_shipping_method() {
+  	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+		
     $data = array(
-                'zone_id'   => sanitize_text_field($_POST['zoneID']),
+                'zone_id'   => absint($_POST['zoneID']),
                 'method_id' => sanitize_text_field($_POST['method']),
-                'user_id' => isset($_POST['userID']) ? sanitize_text_field($_POST['userID']) : 0
+                'user_id' => isset($_POST['userID']) ? absint($_POST['userID']) : 0
             );
 
     $result = WCFMmp_Shipping_Zone::add_shipping_methods( $data );
@@ -706,11 +737,22 @@ class WCFMmp_Ajax {
     * @return void
     */
   public function wcfmmp_toggle_shipping_method() {
+  	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+		
     //print_r($_POST);
     $data = array(
        'instance_id' => sanitize_text_field($_POST['instance_id']),
-       'zone_id'     => sanitize_text_field($_POST['zoneID']),
-       'user_id'     => sanitize_text_field($_POST['userID']),
+       'zone_id'     => absint($_POST['zoneID']),
+       'user_id'     => absint($_POST['userID']),
        'checked'     => ( $_POST['checked'] == 'true' ) ? 1 : 0
     );
     $result = WCFMmp_Shipping_Zone::toggle_shipping_method( $data );
@@ -729,10 +771,21 @@ class WCFMmp_Ajax {
     * @return void
     */
   public function wcfmmp_delete_shipping_method() {
+  	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+		
     $data = array(
-      'zone_id'     => sanitize_text_field($_POST['zoneID']),
+      'zone_id'     => absint($_POST['zoneID']),
       'instance_id' => sanitize_text_field($_POST['instance_id']),
-      'user_id'     => sanitize_text_field($_POST['userID'])
+      'user_id'     => absint($_POST['userID'])
     );
 
     $result = WCFMmp_Shipping_Zone::delete_shipping_methods( $data );
@@ -753,23 +806,41 @@ class WCFMmp_Ajax {
     * @return void
     */
   public function wcfmmp_update_shipping_method() {
-    //print_r($_POST); die;
-    $args =  wp_unslash($_POST['args']);
-    if ( empty( $args['settings']['title'] ) ) {
-      wp_send_json_error( __( 'Shipping title must be required', 'wc-multivendor-marketplace' ) );
-    }
+  	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
+		//print_r($_POST); die;
+		$args =  wc_clean( wp_unslash($_POST['args']) );
+		if ( empty( $args['settings']['title'] ) ) {
+			wp_send_json_error( __( 'Shipping title must be required', 'wc-multivendor-marketplace' ) );
+		}
 
-    $result = WCFMmp_Shipping_Zone::update_shipping_method( $args );
-    if ( is_wp_error( $result ) ) {
+		$result = WCFMmp_Shipping_Zone::update_shipping_method( $args );
+		if ( is_wp_error( $result ) ) {
 			wp_send_json_error( $result->get_error_message() , 'wc-multivendor-marketplace' );
-    }
-    $resp['msg'] = __( 'Shipping method updated', 'wc-multivendor-marketplace' );
-    $resp['user_id'] = $args['user_id'];
-    wp_send_json_success( $resp );
+		}
+		$resp['msg'] = __( 'Shipping method updated', 'wc-multivendor-marketplace' );
+		$resp['user_id'] = $args['user_id'];
+		wp_send_json_success( $resp );
+			
   }
   
   public function wcfmmp_remove_cart_vendor_product() {
     global $WCFM;
+    
+    if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+    
     $removed_products = array();
     
     foreach ( WC()->cart->get_cart() as $cart_item_key => $item) {
@@ -806,9 +877,19 @@ class WCFMmp_Ajax {
 	function wcfm_vendor_store_offline() {
 		global $WCFM, $_POST, $wpdb;
 		
+		if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( ! current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+		
 		if( isset( $_POST['memberid'] ) ) {
 			$member_id = absint( $_POST['memberid'] );
-			$vendor_store = $WCFM->wcfm_vendor_support->wcfm_get_vendor_store_by_vendor( $member_id );
+			$vendor_store = wcfm_get_vendor_store( $member_id );
 			
 			update_user_meta( $member_id, '_wcfm_store_offline', 'yes' );
 			
@@ -818,7 +899,7 @@ class WCFMmp_Ajax {
 			
 			do_action( 'wcfm_store_offline_after', $member_id );
 			
-			echo '{"status": true, "message": "' . __( 'Vendor Store Off-line.', 'wc-multivendor-marketplace' ) . '"}';
+			echo '{"status": true, "message": "' . esc_html__( 'Vendor Store Off-line.', 'wc-multivendor-marketplace' ) . '"}';
 			die;
 		}
 	}
@@ -829,9 +910,19 @@ class WCFMmp_Ajax {
 	function wcfm_vendor_store_online() {
 		global $WCFM, $_POST, $wpdb;
 		
+		if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( __( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( ! current_user_can( 'manage_woocommerce' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+		
 		if( isset( $_POST['memberid'] ) ) {
 			$member_id = absint( $_POST['memberid'] );
-			$vendor_store = $WCFM->wcfm_vendor_support->wcfm_get_vendor_store_by_vendor( $member_id );
+			$vendor_store = wcfm_get_vendor_store( $member_id );
 			
 			delete_user_meta( $member_id, '_wcfm_store_offline' );
 			
@@ -841,7 +932,7 @@ class WCFMmp_Ajax {
 			
 			do_action( 'wcfm_store_online_after', $member_id );
 			
-			echo '{"status": true, "message": "' . __( 'Vendor Store On-line.', 'wc-multivendor-marketplace' ) . '"}';
+			echo '{"status": true, "message": "' . esc_html__( 'Vendor Store On-line.', 'wc-multivendor-marketplace' ) . '"}';
 			die;
 		}
 	}

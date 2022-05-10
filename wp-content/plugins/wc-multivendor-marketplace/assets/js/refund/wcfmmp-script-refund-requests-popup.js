@@ -32,7 +32,8 @@ jQuery(document).ready(function($) {
 			item_id         : $item_id,
 			order_id        : $order_id,
 			commission_id   : $commission_id, 
-			customer_refund : $is_customer_refund
+			customer_refund : $is_customer_refund,
+			wcfm_ajax_nonce : wcfm_params.wcfm_ajax_nonce
 		}	
 		
 		jQuery.ajax({
@@ -80,7 +81,8 @@ jQuery(document).ready(function($) {
 								var data = {
 									action                     : 'wcfm_ajax_controller',
 									controller                 : 'wcfm-refund-requests-form', 
-									wcfm_refund_requests_form  : jQuery('#wcfm_refund_requests_form').serialize()
+									wcfm_refund_requests_form  : jQuery('#wcfm_refund_requests_form').serialize(),
+									wcfm_ajax_nonce            : wcfm_params.wcfm_ajax_nonce
 								}	
 								jQuery.post(wcfm_params.ajax_url, data, function(response) {
 									if(response) {
@@ -190,7 +192,8 @@ function wcfm_refund_requests_form_submit($refund_form) {
 		var data = {
 			action                   : 'wcfm_ajax_controller',
 			controller               : 'wcfm-refund-tab',
-			wcfm_refund_tab_form    : $refund_form.serialize(),
+			wcfm_refund_tab_form     : $refund_form.serialize(),
+			wcfm_ajax_nonce          : wcfm_params.wcfm_ajax_nonce,
 			status                   : 'submit'
 		}	
 		jQuery.post(wcfm_params.ajax_url, data, function(response) {

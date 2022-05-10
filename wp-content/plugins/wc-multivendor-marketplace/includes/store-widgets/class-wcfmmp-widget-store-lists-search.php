@@ -43,7 +43,7 @@ class WCFMmp_Store_Lists_Search extends WP_Widget {
 		echo $before_widget;
 
 		if ( ! empty( $title ) ) {
-			echo $args['before_title'] . $title . $args['after_title'];
+			echo $args['before_title'] . wp_kses_post($title) . $args['after_title'];
 		}
 		
 		do_action( 'wcfmmp_store_lists_before_sidebar_search' );
@@ -51,7 +51,7 @@ class WCFMmp_Store_Lists_Search extends WP_Widget {
 		$wcfmmp_store_search     = isset( $_REQUEST['wcfmmp_store_search'] ) ? sanitize_text_field( $_REQUEST['wcfmmp_store_search'] ) : '';
 		
 		?>
-		<input type="search" id="search" class="search-field wcfmmp-store-search" placeholder="<?php esc_attr_e( 'Search &hellip;', 'wc-multivendor-marketplace' ); ?>" value="<?php echo $wcfmmp_store_search; ?>" name="wcfmmp_store_search" title="<?php esc_attr_e( 'Search store &hellip;', 'wc-multivendor-marketplace' ); ?>" />
+		<input type="search" id="search" class="search-field wcfmmp-store-search" placeholder="<?php esc_attr_e( 'Search &hellip;', 'wc-multivendor-marketplace' ); ?>" value="<?php echo esc_html($wcfmmp_store_search); ?>" name="wcfmmp_store_search" title="<?php esc_attr_e( 'Search store &hellip;', 'wc-multivendor-marketplace' ); ?>" />
 		<?php
 		
 		do_action( 'wcfmmp_store_lists_after_sidebar_search' );
@@ -90,8 +90,8 @@ class WCFMmp_Store_Lists_Search extends WP_Widget {
 			$title = $instance['title'];
 			?>
 			<p>
-				<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'wc-multivendor-marketplace' ); ?></label>
-				<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
+				<label for="<?php echo esc_attr($this->get_field_id( 'title' )); ?>"><?php _e( 'Title:', 'wc-multivendor-marketplace' ); ?></label>
+				<input class="widefat" id="<?php echo esc_attr($this->get_field_id( 'title' )); ?>" name="<?php echo esc_attr($this->get_field_name( 'title' )); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
 			</p>
 			<?php
 	}

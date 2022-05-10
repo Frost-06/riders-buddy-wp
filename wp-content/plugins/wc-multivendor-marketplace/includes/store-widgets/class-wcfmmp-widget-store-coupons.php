@@ -95,12 +95,12 @@ class WCFMmp_Store_Coupons extends WP_Widget {
 		echo $before_widget;
 
 		if ( ! empty( $title ) ) {
-			echo $args['before_title'] . $title . $args['after_title'];
+			echo $args['before_title'] . wp_kses_post($title) . $args['after_title'];
 		}
 		
 		do_action( 'wcfmmp_store_before_sidebar_store_coupons', $store_id );
 		
-		$content = '<div class="wcfmmp_store_coupons">';
+		echo '<div class="wcfmmp_store_coupons">';
 		
 		foreach( $wcfm_store_coupons as $wcfm_store_coupon ) {
 			$wc_coupon = new WC_Coupon( $wcfm_store_coupon->ID );
@@ -110,16 +110,14 @@ class WCFMmp_Store_Coupons extends WP_Widget {
 			$free_shipping = ( get_post_meta( $wcfm_store_coupon->ID, 'free_shipping', true) == 'yes' ) ? 'enable' : '';
 			
 			if( $free_shipping ) {
-				$content .= '<span class="wcfmmp-store-coupon-single tips text_tip" data-tip="' . __( 'FREE Shipping Coupon', 'wc-multivendor-marketplace' ) . ($wc_coupon->get_date_expires() ? '<br>' . __( 'Expiry Date: ', 'wc-multivendor-marketplace' ) . $wc_coupon->get_date_expires()->date_i18n( 'F j, Y' ) : '' ) . '<br>' . $wcfm_store_coupon->post_excerpt . '">' . $wcfm_store_coupon->post_title . '</span>';
+				echo '<span class="wcfmmp-store-coupon-single tips text_tip" data-tip="' . __( 'FREE Shipping Coupon', 'wc-multivendor-marketplace' ) . ($wc_coupon->get_date_expires() ? '<br>' . __( 'Expiry Date: ', 'wc-multivendor-marketplace' ) . $wc_coupon->get_date_expires()->date_i18n( 'F j, Y' ) : '' ) . '<br>' . wp_kses_post($wcfm_store_coupon->post_excerpt) . '">' . wp_kses_post($wcfm_store_coupon->post_title) . '</span>';
 			} else {
-				$content .= '<span class="wcfmmp-store-coupon-single tips text_tip" data-tip="' . esc_html( wc_get_coupon_type( $wc_coupon->get_discount_type() ) ) . ': ' . esc_html( wc_format_localized_price( $wc_coupon->get_amount() ) ) . ($wc_coupon->get_date_expires() ? '<br>' . __( 'Expiry Date: ', 'wc-multivendor-marketplace' ) . $wc_coupon->get_date_expires()->date_i18n( 'F j, Y' ) : '' ) . '<br>' . $wcfm_store_coupon->post_excerpt . '">' . $wcfm_store_coupon->post_title . '</span>';
+				echo '<span class="wcfmmp-store-coupon-single tips text_tip" data-tip="' . esc_html( wc_get_coupon_type( $wc_coupon->get_discount_type() ) ) . ': ' . esc_html( wc_format_localized_price( $wc_coupon->get_amount() ) ) . ($wc_coupon->get_date_expires() ? '<br>' . __( 'Expiry Date: ', 'wc-multivendor-marketplace' ) . $wc_coupon->get_date_expires()->date_i18n( 'F j, Y' ) : '' ) . '<br>' . wp_kses_post($wcfm_store_coupon->post_excerpt) . '">' . wp_kses_post($wcfm_store_coupon->post_title) . '</span>';
 			}
 		}
 		
-		$content .= '</div>';
+		echo '</div>';
 		
-		echo $content;
-
 		do_action( 'wcfmmp_store_after_sidebar_store_coupons', $store_id );
 
 		echo $after_widget;
@@ -156,8 +154,8 @@ class WCFMmp_Store_Coupons extends WP_Widget {
 			$title = $instance['title'];
 			?>
 			<p>
-				<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'wc-multivendor-marketplace' ); ?></label>
-				<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
+				<label for="<?php echo esc_attr($this->get_field_id( 'title' )); ?>"><?php _e( 'Title:', 'wc-multivendor-marketplace' ); ?></label>
+				<input class="widefat" id="<?php echo esc_attr($this->get_field_id( 'title' )); ?>" name="<?php echo esc_attr($this->get_field_name( 'title' )); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
 			</p>
 			<?php
 	}

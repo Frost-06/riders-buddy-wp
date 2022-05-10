@@ -44,7 +44,7 @@ class WCFMmp_Gateway_Paypal extends WCFMmp_Abstract_Gateway {
 		}
 	}
 	
-	public function gateway_logo() { global $WCFMmp; return $WCFMmp->plugin_url . 'assets/images/'.$this->id.'.png'; }
+	public function gateway_logo() { global $WCFMmp; return esc_url($WCFMmp->plugin_url . 'assets/images/'.$this->id.'.png'); }
 
 	public function process_payment( $withdrawal_id, $vendor_id, $withdraw_amount, $withdraw_charges, $transaction_mode = 'auto' ) {
 		global $WCFM, $WCFMmp;
@@ -81,22 +81,31 @@ class WCFMmp_Gateway_Paypal extends WCFMmp_Abstract_Gateway {
 	}
 
 	private function generate_access_token() {
-		$curl = curl_init();
-		curl_setopt($curl, CURLOPT_HEADER, false);
-		curl_setopt($curl, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Accept-Language: en_US'));
-		curl_setopt($curl, CURLOPT_VERBOSE, 1);
-		curl_setopt($curl, CURLOPT_TIMEOUT, 30);
-		curl_setopt($curl, CURLOPT_URL, $this->token_endpoint);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl, CURLOPT_USERPWD, $this->client_id . ':' . $this->client_secret);
-		curl_setopt($curl, CURLOPT_POSTFIELDS, 'grant_type=client_credentials');
-		curl_setopt($curl, CURLOPT_SSLVERSION, 6);
-		$response = curl_exec($curl);
-		curl_close($curl);
-		$response_array = json_decode($response, true);
-		//wcfmmp_log( sprintf( '#%s - PayPal payment Access Token: %s %s %s', $this->withdrawal_id, json_encode($response_array) ) );
-		$this->access_token = isset($response_array['access_token']) ? $response_array['access_token'] : '';
-		$this->token_type = isset($response_array['token_type']) ? $response_array['token_type'] : '';
+		
+		$headers = array(
+			'User-Agent'      => 'WCFM Marketplace PayPal Token',
+			'Content-type'    => 'application/json',
+			'Accept-Language' => 'en_US',
+			'Authorization'   => 'Basic ' . base64_encode( $this->client_id . ':' . $this->client_secret ),
+		);
+		$response    = wp_remote_post( $this->token_endpoint, array(
+			'sslverify'   => apply_filters( 'https_local_ssl_verify', false ),
+			'timeout'     => 70,
+			'redirection' => 5,
+			'blocking'    => true,
+			'headers'     => $headers,
+			'body'        => 'grant_type=client_credentials'
+			)
+		);
+
+		if ( !is_wp_error( $response ) ) {
+			$response_array = json_decode( wp_remote_retrieve_body( $response ), true);
+			//wcfmmp_log( sprintf( '#%s - PayPal payment Access Token: %s %s %s', $this->withdrawal_id, json_encode($response_array) ) );
+			$this->access_token = isset($response_array['access_token']) ? $response_array['access_token'] : '';
+			$this->token_type = isset($response_array['token_type']) ? $response_array['token_type'] : '';
+		} else {
+			wcfmmp_log( sprintf( 'PayPal token generation failed: %s', $response ), 'error' );
+		}
 	}
 
 	private function process_paypal_payout() {
@@ -104,51 +113,62 @@ class WCFMmp_Gateway_Paypal extends WCFMmp_Abstract_Gateway {
 		$api_authorization = "Authorization: {$this->token_type} {$this->access_token}";
 		$note = sprintf( __('Payment recieved from %1$s as commission at %2$s on %3$s', 'wc-multivendor-marketplace'), get_bloginfo('name'), date('H:i:s'), date('d-m-Y'));
 		$request_params = '{
-												"sender_batch_header": {
-														"sender_batch_id":"' . uniqid() . '",
-														"email_subject": "You have a payment",
-														"recipient_type": "EMAIL"
-												},
-												"items": [
-													{
-														"recipient_type": "EMAIL",
-														"amount": {
-															"value": ' . $this->withdraw_amount . ',
-															"currency": "' . $this->currency . '"
-														},
-														"receiver": "' . $this->reciver_email . '",
-														"note": "' . $note . '",
-														"sender_item_id": "' . $this->vendor_id . '"
-													}
-												]
-											}';
-		$curl = curl_init();
-		curl_setopt($curl, CURLOPT_HEADER, false);
-		curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-type:application/json', $api_authorization));
-		curl_setopt($curl, CURLOPT_VERBOSE, 1);
-		curl_setopt($curl, CURLOPT_TIMEOUT, 30);
-		curl_setopt($curl, CURLOPT_URL, $this->api_endpoint);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl, CURLOPT_POSTFIELDS, $request_params);
-		curl_setopt($curl, CURLOPT_SSLVERSION, 6);
-		$result = curl_exec($curl);
-		curl_close($curl);
-		$result_array = json_decode($result, true);
-		$batch_status = $result_array['batch_header']['batch_status'];
+			"sender_batch_header": {
+					"sender_batch_id":"' . uniqid() . '",
+					"email_subject": "You have a payment",
+					"recipient_type": "EMAIL"
+			},
+			"items": [
+				{
+					"recipient_type": "EMAIL",
+					"amount": {
+						"value": ' . $this->withdraw_amount . ',
+						"currency": "' . $this->currency . '"
+					},
+					"receiver": "' . $this->reciver_email . '",
+					"note": "' . $note . '",
+					"sender_item_id": "' . $this->vendor_id . '"
+				}
+			]
+		}';
 		
-		$batch_payout_status = apply_filters('wcfmmp_paypal_payout_batch_status', array('PENDING', 'PROCESSING', 'SUCCESS', 'NEW'));
-		if (in_array($batch_status, $batch_payout_status) ) {
-			// Updating withdrawal meta
-			$WCFMmp->wcfmmp_withdraw->wcfmmp_update_withdrawal_meta( $this->withdrawal_id, 'withdraw_amount', $this->withdraw_amount );
-			$WCFMmp->wcfmmp_withdraw->wcfmmp_update_withdrawal_meta( $this->withdrawal_id, 'currency', $this->currency );
-			$WCFMmp->wcfmmp_withdraw->wcfmmp_update_withdrawal_meta( $this->withdrawal_id, 'reciver_email', $this->reciver_email );
-			$WCFMmp->wcfmmp_withdraw->wcfmmp_update_withdrawal_meta( $this->withdrawal_id, 'payout_batch_id', $result_array['batch_header']['payout_batch_id'] );
-			$WCFMmp->wcfmmp_withdraw->wcfmmp_update_withdrawal_meta( $this->withdrawal_id, 'batch_status', $batch_status );
-			$WCFMmp->wcfmmp_withdraw->wcfmmp_update_withdrawal_meta( $this->withdrawal_id, 'sender_batch_id', $result_array['batch_header']['sender_batch_header']['sender_batch_id'] );
-			//wcfmmp_log( sprintf( '#%s - PayPal payment processing success: %s', $this->withdrawal_id, json_encode($result_array) ), 'info' );
-			return $result_array;
+		
+		$headers = array(
+			'User-Agent'    => 'WCFM Marketplace PayPal Payout',
+			'Content-type'  => 'application/json',
+			'Authorization' => $this->token_type . ' ' . $this->access_token,
+		);
+		$result    = wp_remote_post( $this->api_endpoint, array(
+			'sslverify'   => apply_filters( 'https_local_ssl_verify', false ),
+			'timeout'     => 70,
+			'redirection' => 5,
+			'blocking'    => true,
+			'headers'     => $headers,
+			'body'        => $request_params
+			)
+		);
+
+		if ( !is_wp_error( $result ) ) {
+			$result_array = json_decode( wp_remote_retrieve_body( $result ), true);
+			$batch_status = $result_array['batch_header']['batch_status'];
+			
+			$batch_payout_status = apply_filters('wcfmmp_paypal_payout_batch_status', array('PENDING', 'PROCESSING', 'SUCCESS', 'NEW'));
+			if (in_array($batch_status, $batch_payout_status) ) {
+				// Updating withdrawal meta
+				$WCFMmp->wcfmmp_withdraw->wcfmmp_update_withdrawal_meta( $this->withdrawal_id, 'withdraw_amount', $this->withdraw_amount );
+				$WCFMmp->wcfmmp_withdraw->wcfmmp_update_withdrawal_meta( $this->withdrawal_id, 'currency', $this->currency );
+				$WCFMmp->wcfmmp_withdraw->wcfmmp_update_withdrawal_meta( $this->withdrawal_id, 'reciver_email', $this->reciver_email );
+				$WCFMmp->wcfmmp_withdraw->wcfmmp_update_withdrawal_meta( $this->withdrawal_id, 'payout_batch_id', $result_array['batch_header']['payout_batch_id'] );
+				$WCFMmp->wcfmmp_withdraw->wcfmmp_update_withdrawal_meta( $this->withdrawal_id, 'batch_status', $batch_status );
+				$WCFMmp->wcfmmp_withdraw->wcfmmp_update_withdrawal_meta( $this->withdrawal_id, 'sender_batch_id', $result_array['batch_header']['sender_batch_header']['sender_batch_id'] );
+				//wcfmmp_log( sprintf( '#%s - PayPal payment processing success: %s', $this->withdrawal_id, json_encode($result_array) ), 'info' );
+				return $result_array;
+			} else {
+				wcfmmp_log( sprintf( '#%s - PayPal payment processing failed: %s', sprintf( '%06u', $this->withdrawal_id ), json_encode($result_array) ), 'error' );
+				return false;
+			}
 		} else {
-			wcfmmp_log( sprintf( '#%s - PayPal payment processing failed: %s', sprintf( '%06u', $this->withdrawal_id ), json_encode($result_array) ), 'error' );
+			wcfmmp_log( sprintf( '#%s - PayPal payment processing failed due to CURL: %s', sprintf( '%06u', $this->withdrawal_id ), $result ), 'error' );
 			return false;
 		}
   }

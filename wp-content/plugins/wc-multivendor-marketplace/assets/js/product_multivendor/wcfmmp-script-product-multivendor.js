@@ -12,6 +12,7 @@ jQuery(document).ready(function($) {
 		var data = {
 			action        : 'wcfmmp_product_multivendor_clone',
 			product_id    : $('.wcfm_product_multivendor').data('product_id'),
+			wcfm_ajax_nonce          : wcfm_params.wcfm_ajax_nonce
 		}	
 		jQuery.post(wcfm_params.ajax_url, data, function(response) {
 			if(response) {
@@ -39,7 +40,8 @@ jQuery(document).ready(function($) {
 			var data = {
 				action       : 'wcfmmp_more_offers_sorting',
 				product_id   : $spmv_sroter.data('product_id'),
-				sorting      : $spmv_sroter.val()
+				sorting      : $spmv_sroter.val(),
+				wcfm_ajax_nonce  : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.ajax({
 				type:		'POST',

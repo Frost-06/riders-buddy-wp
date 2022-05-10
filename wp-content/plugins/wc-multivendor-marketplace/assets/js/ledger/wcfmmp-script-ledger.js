@@ -36,7 +36,8 @@ jQuery(document).ready(function($) {
 				d.action          = 'wcfm_ajax_controller',
 				d.controller      = 'wcfm-ledger',
 				d.status_type     = $status_type,
-				d.type            = $reference_type
+				d.type            = $reference_type,
+				d.wcfm_ajax_nonce   = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();

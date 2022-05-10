@@ -101,7 +101,7 @@ class WCFMmp_Withdraw {
 		
 		$auto_withdrawal_status = isset( $WCFMmp->wcfmmp_withdrawal_options['auto_withdrawal_status'] ) ? $WCFMmp->wcfmmp_withdrawal_options['auto_withdrawal_status'] : 'wc-processing';
 		$auto_withdrawal_status = str_replace( 'wc-', '', $auto_withdrawal_status );
-		$auto_withdrawal_status = apply_filters( 'wcfmmp_auto_withdrawal_status', array( $auto_withdrawal_status ) );
+		$auto_withdrawal_status = apply_filters( 'wcfmmp_auto_withdrawal_status', array( $auto_withdrawal_status, 'wc-'.$auto_withdrawal_status ) );
 		
 		if( !in_array( $order_status, $auto_withdrawal_status ) ) return;
 		
@@ -112,9 +112,9 @@ class WCFMmp_Withdraw {
 		
 		$sql = 'SELECT GROUP_CONCAT(ID) commission_ids, COALESCE( SUM( commission.total_commission ), 0 ) AS total_commission, vendor_id, withdraw_status, order_status  FROM ' . $wpdb->prefix . 'wcfm_marketplace_orders AS commission';
 		$sql .= ' WHERE 1=1';
-		$sql .= " AND `order_id` = " . $order_id;
+		$sql .= " AND `order_id` = %d";
 		$sql .= " GROUP BY vendor_id";
-		$commission_infos = $wpdb->get_results( $sql );
+		$commission_infos = $wpdb->get_results( $wpdb->prepare($sql, $order_id) );
 		
 		if( !empty( $commission_infos ) ) {
 			foreach( $commission_infos as $commission_info ) {
@@ -194,8 +194,8 @@ class WCFMmp_Withdraw {
 		if( $withdrawal_reverse ) {
 			$sql = 'SELECT commission.total_commission, vendor_id, withdraw_status, order_status  FROM ' . $wpdb->prefix . 'wcfm_marketplace_orders AS commission';
 			$sql .= ' WHERE 1=1';
-			$sql .= " AND `ID` = " . $commission_id;
-			$commission_infos = $wpdb->get_results( $sql );
+			$sql .= " AND `ID` = %d";
+			$commission_infos = $wpdb->get_results( $wpdb->prepare($sql, $commission_id) );
 			
 			if( !empty( $commission_infos ) ) {
 				foreach( $commission_infos as $commission_info ) {
@@ -233,8 +233,8 @@ class WCFMmp_Withdraw {
 				
 				$sql = 'SELECT commission.total_commission, refunded_amount, vendor_id, withdraw_status, order_status, payment_method, is_auto_withdrawal  FROM ' . $wpdb->prefix . 'wcfm_marketplace_orders AS commission';
 				$sql .= ' WHERE 1=1';
-				$sql .= " AND `ID` = " . $commission_id;
-				$commission_infos = $wpdb->get_results( $sql );
+				$sql .= " AND `ID` = %d";
+				$commission_infos = $wpdb->get_results( $wpdb->prepare($sql, $commission_id) );
 				
 				if( !empty( $commission_infos ) ) {
 					foreach( $commission_infos as $commission_info ) {
@@ -373,8 +373,8 @@ class WCFMmp_Withdraw {
 		$sql = "SELECT SUM( commission.balance ) AS total_due FROM {$wpdb->prefix}wcfm_marketplace_reverse_withdrawal AS commission";
 		$sql .= " WHERE 1=1";
 		$sql .= " AND commission.withdraw_status = 'pending'";
-		$sql .= " AND commission.vendor_id = {$vendor_id}";
-		$reverse_withdrawal = $wpdb->get_results( $sql );
+		$sql .= " AND commission.vendor_id = %d";
+		$reverse_withdrawal = $wpdb->get_results( $wpdb->prepare($sql, $vendor_id) );
 		if( !empty( $reverse_withdrawal ) ) {
 			foreach( $reverse_withdrawal as $reverse_withdrawa ) {
 				$reverse_balance = $reverse_withdrawa->total_due;
@@ -472,8 +472,8 @@ class WCFMmp_Withdraw {
 		// Commission table update
 		$sql = 'SELECT commission_ids, vendor_id FROM ' . $wpdb->prefix . 'wcfm_marketplace_withdraw_request';
 		$sql .= ' WHERE 1=1';
-		$sql .= " AND ID = " . $withdrawal_id;
-		$withdrawal_infos = $wpdb->get_results( $sql );
+		$sql .= " AND ID = %d";
+		$withdrawal_infos = $wpdb->get_results( $wpdb->prepare($sql, $withdrawal_id) );
 		if( !empty( $withdrawal_infos ) ) {
 			foreach( $withdrawal_infos as $withdrawal_info ) {
 				$vendor_id = $withdrawal_info->vendor_id;
@@ -520,8 +520,8 @@ class WCFMmp_Withdraw {
 		// ledge entry status update
 		$sql = 'SELECT ID, vendor_id  FROM ' . $wpdb->prefix . 'wcfm_marketplace_withdraw_request AS withdraw';
 		$sql .= ' WHERE 1=1';
-		$sql .= " AND `commission_ids` = '" . $commission_id . "'";
-		$withdrawals = $wpdb->get_results( $sql );
+		$sql .= " AND `commission_ids` = %s";
+		$withdrawals = $wpdb->get_results( $wpdb->prepare($sql, $commission_id) );
 		
 		if( !empty( $withdrawals ) ) {
 			foreach( $withdrawals as $withdrawal ) {
@@ -562,8 +562,8 @@ class WCFMmp_Withdraw {
 		// Commission table update
 		$sql = 'SELECT order_id, commission_id, vendor_id FROM ' . $wpdb->prefix . 'wcfm_marketplace_reverse_withdrawal';
 		$sql .= ' WHERE 1=1';
-		$sql .= " AND ID = " . $reverse_withdrawal_id;
-		$withdrawal_infos = $wpdb->get_results( $sql );
+		$sql .= " AND ID = %d";
+		$withdrawal_infos = $wpdb->get_results( $wpdb->prepare($sql, $reverse_withdrawal_id) );
 		if( !empty( $withdrawal_infos ) ) {
 			foreach( $withdrawal_infos as $withdrawal_info ) {
 				$vendor_id     = $withdrawal_info->vendor_id;
@@ -610,8 +610,8 @@ class WCFMmp_Withdraw {
 		// Commission table update
 		$sql = 'SELECT ID, order_id, vendor_id FROM ' . $wpdb->prefix . 'wcfm_marketplace_reverse_withdrawal';
 		$sql .= ' WHERE 1=1';
-		$sql .= " AND commission_id = " . $commission_id;
-		$withdrawal_infos = $wpdb->get_results( $sql );
+		$sql .= " AND commission_id = %d";
+		$withdrawal_infos = $wpdb->get_results( $wpdb->prepare($sql, $commission_id) );
 		if( !empty( $withdrawal_infos ) ) {
 			foreach( $withdrawal_infos as $withdrawal_info ) {
 				$vendor_id             = $withdrawal_info->vendor_id;

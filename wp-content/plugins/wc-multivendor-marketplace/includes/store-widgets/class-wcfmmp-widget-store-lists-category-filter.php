@@ -48,7 +48,7 @@ class WCFMmp_Store_Lists_Category_Filter extends WP_Widget {
 		echo $before_widget;
 
 		if ( ! empty( $title ) ) {
-			echo $args['before_title'] . $title . $args['after_title'];
+			echo $args['before_title'] . wp_kses_post($title) . $args['after_title'];
 		}
 		
 		do_action( 'wcfmmp_store_lists_before_sidebar_category_filter' );
@@ -71,7 +71,7 @@ class WCFMmp_Store_Lists_Category_Filter extends WP_Widget {
 							$tax_toggle_class = '';
 							if( $vendor_term && $vendor_term->term_id && $vendor_term->name ) {
 								?>
-								<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>><?php echo $vendor_term->name; ?></option>
+								<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>><?php echo esc_html($vendor_term->name); ?></option>
 								<?php
 							}
 							foreach( $vendor_category as $vendor_category_child_id => $vendor_category_child ) {
@@ -82,12 +82,12 @@ class WCFMmp_Store_Lists_Category_Filter extends WP_Widget {
 										if( in_array( $vendor_term->term_id, $display_vendor_term) ) continue;
 										$display_vendor_term[$vendor_term->term_id] = $vendor_term->term_id;
 										?>
-										<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>><?php echo $vendor_term->name; ?></option>
+										<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>><?php echo esc_html($vendor_term->name); ?></option>
 										<?php
 									}
 								} else {
 									?>
-									<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>><?php echo $vendor_term->name; ?></option>
+									<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>><?php echo esc_html($vendor_term->name); ?></option>
 									<?php
 									foreach( $vendor_category_child as $vendor_category_child2_id => $vendor_category_child2 ) {
 										if( !apply_filters( 'wcfm_is_allow_store_list_taxomony_by_id', true, $vendor_category_child2_id, $preferred_taxonomy ) ) continue;
@@ -97,12 +97,12 @@ class WCFMmp_Store_Lists_Category_Filter extends WP_Widget {
 												if( in_array( $vendor_term->term_id, $display_vendor_term) ) continue;
 												$display_vendor_term[$vendor_term->term_id] = $vendor_term->term_id;
 												?>
-												<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;<?php echo $vendor_term->name; ?></option>
+												<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 												<?php
 											}
 										} else {
 											?>
-											<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;<?php echo $vendor_term->name; ?></option>
+											<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 											<?php
 											foreach( $vendor_category_child2 as $vendor_category_child3_id => $vendor_category_child3 ) {
 												if( !apply_filters( 'wcfm_is_allow_store_list_taxomony_by_id', true, $vendor_category_child3_id, $preferred_taxonomy ) ) continue;
@@ -112,12 +112,12 @@ class WCFMmp_Store_Lists_Category_Filter extends WP_Widget {
 														if( in_array( $vendor_term->term_id, $display_vendor_term) ) continue;
 														$display_vendor_term[$vendor_term->term_id] = $vendor_term->term_id;
 														?>
-														<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;<?php echo $vendor_term->name; ?></option>
+														<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 														<?php
 													}
 												} else {
 													?>
-													<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;<?php echo $vendor_term->name; ?></option>
+													<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 													<?php
 													foreach( $vendor_category_child3 as $vendor_category_child4_id => $vendor_category_child4 ) {
 														if( !apply_filters( 'wcfm_is_allow_store_list_taxomony_by_id', true, $vendor_category_child4_id, $preferred_taxonomy ) ) continue;
@@ -127,12 +127,12 @@ class WCFMmp_Store_Lists_Category_Filter extends WP_Widget {
 																if( in_array( $vendor_term->term_id, $display_vendor_term) ) continue;
 																$display_vendor_term[$vendor_term->term_id] = $vendor_term->term_id;
 																?>
-																<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;<?php echo $vendor_term->name; ?></option>
+																<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 																<?php
 															}
 														} else {
 															?>
-															<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;<?php echo $vendor_term->name; ?></option>
+															<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 															<?php
 															foreach( $vendor_category_child4 as $vendor_category_child5_id => $vendor_category_child5 ) {
 																if( !apply_filters( 'wcfm_is_allow_store_list_taxomony_by_id', true, $vendor_category_child5_id, $preferred_taxonomy ) ) continue;
@@ -142,12 +142,12 @@ class WCFMmp_Store_Lists_Category_Filter extends WP_Widget {
 																		if( in_array( $vendor_term->term_id, $display_vendor_term) ) continue;
 																		$display_vendor_term[$vendor_term->term_id] = $vendor_term->term_id;
 																		?>
-																		<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $vendor_term->name; ?></option>
+																		<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 																		<?php
 																	}
 																} else {
 																	?>
-																	<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $vendor_term->name; ?></option>
+																	<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 																	<?php
 																	foreach( $vendor_category_child5 as $vendor_category_child6_id => $vendor_category_child6 ) {
 																		if( !apply_filters( 'wcfm_is_allow_store_list_taxomony_by_id', true, $vendor_category_child6_id, $preferred_taxonomy ) ) continue;
@@ -157,12 +157,12 @@ class WCFMmp_Store_Lists_Category_Filter extends WP_Widget {
 																				if( in_array( $vendor_term->term_id, $display_vendor_term) ) continue;
 																				$display_vendor_term[$vendor_term->term_id] = $vendor_term->term_id;
 																				?>
-																				<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $vendor_term->name; ?></option>
+																				<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 																				<?php
 																			}
 																		} else {
 																			?>
-																			<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $vendor_term->name; ?></option>
+																			<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 																			<?php
 																			foreach( $vendor_category_child6 as $vendor_category_child7_id => $vendor_category_child7 ) {
 																				if( !apply_filters( 'wcfm_is_allow_store_list_taxomony_by_id', true, $vendor_category_child7_id, $preferred_taxonomy ) ) continue;
@@ -172,12 +172,12 @@ class WCFMmp_Store_Lists_Category_Filter extends WP_Widget {
 																						if( in_array( $vendor_term->term_id, $display_vendor_term) ) continue;
 																						$display_vendor_term[$vendor_term->term_id] = $vendor_term->term_id;
 																						?>
-																						<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $vendor_term->name; ?></option>
+																						<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 																						<?php
 																					}
 																				} else {
 																					?>
-																					<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $vendor_term->name; ?></option>
+																					<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 																					<?php
 																				}
 																			}
@@ -199,7 +199,7 @@ class WCFMmp_Store_Lists_Category_Filter extends WP_Widget {
 								if( in_array( $vendor_term->term_id, $display_vendor_term) ) continue;
 								$display_vendor_term[$vendor_term->term_id] = $vendor_term->term_id;
 								?>
-								<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>><?php echo $vendor_term->name; ?></option>
+								<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>><?php echo esc_html($vendor_term->name); ?></option>
 								<?php 
 							}
 						}
@@ -246,8 +246,8 @@ class WCFMmp_Store_Lists_Category_Filter extends WP_Widget {
 			$title       = $instance['title'];
 			?>
 			<p>
-				<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'wc-multivendor-marketplace' ); ?></label>
-				<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
+				<label for="<?php echo esc_attr($this->get_field_id( 'title' )); ?>"><?php _e( 'Title:', 'wc-multivendor-marketplace' ); ?></label>
+				<input class="widefat" id="<?php echo esc_attr($this->get_field_id( 'title' )); ?>" name="<?php echo esc_attr($this->get_field_name( 'title' )); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
 			</p>
 			<?php
 	}

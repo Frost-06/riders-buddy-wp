@@ -49,8 +49,8 @@ $widget_args = apply_filters( 'wcfmmp_store_lists_sidebar_args', array(
 		
 		<?php do_action( 'wcfmmp_store_lists_after_sidebar' ); ?>
 		
-		<input type="hidden" id="pagination_base" name="pagination_base" value="<?php echo $pagination_base ?>" />
-		<input type="hidden" id="wcfm_paged" name="wcfm_paged" value="<?php echo $paged ?>" />
+		<input type="hidden" id="pagination_base" name="pagination_base" value="<?php echo esc_attr($pagination_base) ?>" />
+		<input type="hidden" id="wcfm_paged" name="wcfm_paged" value="<?php echo esc_attr($paged) ?>" />
 		<input type="hidden" id="nonce" name="nonce" value="<?php echo wp_create_nonce( 'wcfmmp-stores-list-search' ); ?>" />
 		<div class="wcfmmp-overlay" style="display: none;"><span class="wcfmmp-ajax-loader"></span></div>
 	</form>

@@ -28,13 +28,13 @@ echo wp_kses_post( apply_filters( 'wcfmmp_before_widget_best_selling_vendor_list
 
     $store_logo = $WCFM->wcfm_vendor_support->wcfm_get_vendor_logo_by_vendor( $vendor_id );
     if( !$store_logo ) {
-      $store_logo = $WCFMmp->plugin_url . 'assets/images/wcfmmp.png';
+      $store_logo = esc_url($WCFMmp->plugin_url . 'assets/images/wcfmmp.png');
     } ?>
     <li>
 	
       <a href="<?php echo wcfmmp_get_store_url( $vendor_id ); ?>">
-        <img src="<?php echo $store_logo; ?>">
-        <span class="product-title"><?php echo $store_name; ?></span>
+        <img src="<?php echo esc_url($store_logo); ?>">
+        <span class="product-title"><?php echo wp_kses_post($store_name); ?></span>
       </a>
       <span class="vendor_rating">
         <?php if( apply_filters( 'wcfm_is_pref_vendor_reviews', true ) ) { $WCFMmp->wcfmmp_reviews->show_star_rating( 0, $vendor_id ); } ?>

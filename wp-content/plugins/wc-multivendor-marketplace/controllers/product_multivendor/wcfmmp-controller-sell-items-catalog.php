@@ -21,8 +21,8 @@ class WCFMmp_Sell_Items_Catalog_Controller {
 	public function processing() {
 		global $WCFM, $WCFMmp, $wpdb, $_POST;
 		
-		$length = sanitize_text_field($_POST['length']);
-		$offset = sanitize_text_field($_POST['start']);
+		$length = absint($_POST['length']);
+		$offset = absint($_POST['start']);
 		
 		if( class_exists('WooCommerce_simple_auction') ) {
 			remove_all_filters( 'pre_get_posts' );
@@ -137,7 +137,7 @@ class WCFMmp_Sell_Items_Catalog_Controller {
 		
 		// Exclude current vendor products
 		$exclude = array();
-		$more_offers = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}wcfm_marketplace_product_multivendor` WHERE `vendor_id` = {$WCFMmp->vendor_id}" );
+		$more_offers = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}wcfm_marketplace_product_multivendor` WHERE `vendor_id` = %d", $WCFMmp->vendor_id ) );
 		foreach ($more_offers as $more_offer) {
 			$exclude[] = $more_offer->parent_product_id;
 		}
@@ -204,7 +204,7 @@ class WCFMmp_Sell_Items_Catalog_Controller {
 		// Generate Products JSON
 		$wcfm_products_json = '';
 		$wcfm_products_json = '{
-															"draw": ' . sanitize_text_field($_POST['draw']) . ',
+															"draw": ' . absint($_POST['draw']) . ',
 															"recordsTotal": ' . $pro_count . ',
 															"recordsFiltered": ' . $filtered_pro_count . ',
 															"data": ';

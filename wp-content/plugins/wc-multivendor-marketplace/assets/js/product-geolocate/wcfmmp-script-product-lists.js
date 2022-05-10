@@ -125,6 +125,7 @@ jQuery(document).ready(function($) {
 				has_orderby             : $has_orderby,
 				sidebar                 : $sidebar,
 				theme                   : $theme,
+				wcfm_ajax_nonce         : wcfm_params.wcfm_ajax_nonce,
 				search_data             : '' //jQuery('.wcfmmp-product-geolocate-search-form').serialize(),
 			};
 			
@@ -249,7 +250,7 @@ jQuery(document).ready(function($) {
 			var mapOptions = {
 					zoom: $map_zoom,
 					center: new google.maps.LatLng(wcfmmp_product_list_options.default_lat,wcfmmp_product_list_options.default_lng,13),
-					mapTypeId: google.maps.MapTypeId.ROADMAP,
+					mapTypeId: wcfm_maps.map_type,
 					styles: myStyles
 			}
 	

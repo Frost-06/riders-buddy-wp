@@ -22,46 +22,46 @@ class WCFMmp_Ledger_Controller {
 		
 		$vendor_id = $WCFMmp->vendor_id;
 		
-		$length = sanitize_text_field( $_POST['length'] );
-		$offset = sanitize_text_field( $_POST['start'] );
+		$length = absint( $_POST['length'] );
+		$offset = absint( $_POST['start'] );
 		
-		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_text_field( $_POST['orderby'] ) : 'ID';
+		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_sql_orderby( $_POST['orderby'] ) : 'ID';
 		$the_order   = ( ! empty( $_POST['order'] ) && 'asc' === $_POST['order'] ) ? 'ASC' : 'DESC';
 		
     $status_filter = '';
     if( isset($_POST['status_type']) && ( $_POST['status_type'] != '' ) ) {
-    	$status_filter = $status_filter = ' AND `reference_status` = "' . sanitize_text_field( $_POST['status_type'] ) . '"';
+    		$status_filter = $status_filter = ' AND `reference_status` = "' . sanitize_text_field( $_POST['status_type'] ) . '"';
     }
     
     $type_filter = '';
     if( isset($_POST['type']) && ( $_POST['type'] != '' ) ) {
-    	$type_filter = ' AND `reference` = "' . sanitize_text_field( $_POST['type'] ) . '"';
+    		$type_filter = ' AND `reference` = "' . sanitize_text_field( $_POST['type'] ) . '"';
     }
     
 		$sql = "SELECT COUNT(ID) from {$wpdb->prefix}wcfm_marketplace_vendor_ledger";
 		$sql .= " WHERE 1=1";
-		$sql .= " AND `vendor_id` = " . $vendor_id;
+		$sql .= " AND `vendor_id` = %d";
 		$sql .= $status_filter;
 		$sql .= $type_filter;
 		
-  	$wcfm_ledger_items = $wpdb->get_var($sql);
+  		$wcfm_ledger_items = $wpdb->get_var( $wpdb->prepare($sql, $vendor_id) );
 		if( !$wcfm_ledger_items ) $wcfm_ledger_items = 0;
 		
 		$sql = "SELECT * from {$wpdb->prefix}wcfm_marketplace_vendor_ledger";
 		$sql .= " WHERE 1=1";
-		$sql .= " AND `vendor_id` = " . $vendor_id;
+		$sql .= " AND `vendor_id` = %d";
 		$sql .= $status_filter;
 		$sql .= $type_filter;
 		$sql .= " ORDER BY `{$the_orderby}` {$the_order}";
 		$sql .= " LIMIT {$length}";
 		$sql .= " OFFSET {$offset}";
 		
-		$wcfm_ledger_array = $wpdb->get_results($sql);
+		$wcfm_ledger_array = $wpdb->get_results( $wpdb->prepare($sql, $vendor_id) );
 		
 		// Generate Ledger JSON
 		$wcfm_ledger_json = '';
 		$wcfm_ledger_json = '{
-															"draw": ' . sanitize_text_field( $_POST['draw'] ) . ',
+															"draw": ' . absint( $_POST['draw'] ) . ',
 															"recordsTotal": ' . $wcfm_ledger_items . ',
 															"recordsFiltered": ' . $wcfm_ledger_items . ',
 															"data": ';

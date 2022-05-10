@@ -58,12 +58,14 @@ class WCFMmp_Store_SEO {
 			add_filter( 'wpseo_opengraph_title', array( $this, 'wcfmmp_replace_og_title' ) );
 			add_filter( 'wpseo_opengraph_desc', array( $this, 'wcfmmp_replace_og_desc' ) );
 			add_filter( 'wpseo_opengraph_image', array( $this, 'wcfmmp_replace_og_img' ) );
-			add_action( 'wpseo_opengraph', array( $this, 'wcfmmp_print_og_img' ), 250 );
+			add_action( 'wpseo_frontend_presenters', array( $this, 'wcfmmp_print_og_img' ), 20 );
+			//add_action( 'wpseo_opengraph', array( $this, 'wcfmmp_print_og_img' ), 250 );
 
 			add_filter( 'wpseo_twitter_title', array( $this, 'wcfmmp_replace_twitter_title' ) );
 			add_filter( 'wpseo_twitter_description', array( $this, 'wcfmmp_replace_twitter_desc' ) );
 			add_filter( 'wpseo_twitter_image', array( $this, 'wcfmmp_replace_twitter_img' ) );
-			add_action( 'wpseo_twitter', array( $this, 'wcfmmp_print_twitter_img' ), 250 );
+			add_action( 'wpseo_frontend_presenters', array( $this, 'wcfmmp_print_twitter_img' ), 20 );
+			//add_action( 'wpseo_twitter', array( $this, 'wcfmmp_print_twitter_img' ), 250 );
 		} elseif ( defined('RANK_MATH_FILE' ) ) {
 			add_filter( 'rank_math/frontend/title', array( $this, 'wcfmmp_replace_rank_math_seo_title' ), 16 );
 			add_filter( 'rank_math/frontend/description', array( $this, 'wcfmmp_replace_rank_math_seo_description' ) );
@@ -102,7 +104,7 @@ class WCFMmp_Store_SEO {
 		ob_start();
 		?>
 		<sitemap>
-		<loc><?php echo $base_url ?></loc>
+		<loc><?php echo esc_url($base_url); ?></loc>
 
 		</sitemap>
 		<?php
@@ -132,10 +134,10 @@ class WCFMmp_Store_SEO {
 						$last_modified = $product->post_modified;
 				?>
 						<url>
-							<loc><?php echo wcfmmp_get_store_url( $seller->ID ) ?></loc>
-							<priority><?php echo apply_filters( 'wcfmmp_yoast_store_sitemap_priority', 0.8 )  ?></priority>
-							<changefreq><?php echo apply_filters( 'wcfmmp_yoast_store_sitemap_changefreq', 'weekly' )  ?></changefreq>
-							<lastmod><?php echo $timezone->format( $last_modified ); ?></lastmod>
+							<loc><?php echo esc_url(wcfmmp_get_store_url( $seller->ID )) ?></loc>
+							<priority><?php echo esc_attr(apply_filters( 'wcfmmp_yoast_store_sitemap_priority', 0.8 ))  ?></priority>
+							<changefreq><?php echo esc_attr(apply_filters( 'wcfmmp_yoast_store_sitemap_changefreq', 'weekly' ))  ?></changefreq>
+							<lastmod><?php echo esc_attr($timezone->format( $last_modified )); ?></lastmod>
 						</url>
 				<?php break; }
 				}
@@ -157,10 +159,10 @@ class WCFMmp_Store_SEO {
 		}
 
 		if ( isset( $store_info['store_seo']['wcfmmp-seo-meta-desc'] ) && !empty( $store_info['store_seo']['wcfmmp-seo-meta-desc'] ) ) {
-			echo PHP_EOL . '<meta name="description" content="' . $this->wcfmmp_print_seo_saved_meta( $store_info['store_seo']['wcfmmp-seo-meta-desc'] ) . '"/>';
+			echo PHP_EOL . '<meta name="description" content="' . esc_attr($this->wcfmmp_print_seo_saved_meta( $store_info['store_seo']['wcfmmp-seo-meta-desc'] )) . '"/>';
 		}
 		if ( isset( $store_info['store_seo']['wcfmmp-seo-meta-keywords'] ) && !empty( $store_info['store_seo']['wcfmmp-seo-meta-keywords'] ) ) {
-			echo PHP_EOL . '<meta name="keywords" content="' . $this->wcfmmp_print_seo_saved_meta( $store_info['store_seo']['wcfmmp-seo-meta-keywords'] ) . '"/>';
+			echo PHP_EOL . '<meta name="keywords" content="' . esc_attr($this->wcfmmp_print_seo_saved_meta( $store_info['store_seo']['wcfmmp-seo-meta-keywords'] )) . '"/>';
 		}
 	}
 
@@ -182,31 +184,31 @@ class WCFMmp_Store_SEO {
 		$twitter_img   = isset( $store_info['store_seo']['wcfmmp-seo-twitter-image'] ) ? $store_info['store_seo']['wcfmmp-seo-twitter-image'] : '';
 
 		if ( $og_url ) {
-			echo PHP_EOL . '<meta property="og:url" content="' . $og_url . '">';
+			echo PHP_EOL . '<meta property="og:url" content="' . esc_attr($og_url) . '">';
 		}
 
 		if ( $og_title ) {
-			echo PHP_EOL . '<meta property="og:title" content="' . $this->wcfmmp_print_seo_saved_meta( $og_title ) . '"/>';
+			echo PHP_EOL . '<meta property="og:title" content="' . esc_attr($this->wcfmmp_print_seo_saved_meta( $og_title )) . '"/>';
 		}
 
 		if ( $og_desc ) {
-			echo PHP_EOL . '<meta property="og:description" content="' . $this->wcfmmp_print_seo_saved_meta( $og_desc ) . '"/>';
+			echo PHP_EOL . '<meta property="og:description" content="' . esc_attr($this->wcfmmp_print_seo_saved_meta( $og_desc )) . '"/>';
 		}
 
 		if ( $og_img ) {
-			echo PHP_EOL . '<meta property="og:image" content="' . wp_get_attachment_url( $og_img ) . '"/>';
+			echo PHP_EOL . '<meta property="og:image" content="' . esc_attr(wp_get_attachment_url( $og_img )) . '"/>';
 		}
 
 		if ( $twitter_title ) {
-			echo PHP_EOL . '<meta name="twitter:title" content="' . $this->wcfmmp_print_seo_saved_meta( $twitter_title ) . '"/>';
+			echo PHP_EOL . '<meta name="twitter:title" content="' . esc_attr($this->wcfmmp_print_seo_saved_meta( $twitter_title )) . '"/>';
 		}
 
 		if ( $twitter_desc ) {
-			echo PHP_EOL . '<meta name="twitter:description" content="' . $this->wcfmmp_print_seo_saved_meta( $twitter_desc ) . '"/>';
+			echo PHP_EOL . '<meta name="twitter:description" content="' . esc_attr($this->wcfmmp_print_seo_saved_meta( $twitter_desc )) . '"/>';
 		}
 
 		if ( $twitter_img ) {
-			echo PHP_EOL . '<meta name="twitter:image" content="' . wp_get_attachment_url( $twitter_img ) . '"/>';
+			echo PHP_EOL . '<meta name="twitter:image" content="' . esc_attr(wp_get_attachment_url( $twitter_img )) . '"/>';
 		}
 	}
 
@@ -330,7 +332,7 @@ class WCFMmp_Store_SEO {
 		$og_img = $meta_values['store_seo']['wcfmmp-seo-og-image'];
 
 		if ( $og_img && apply_filters( 'wcfmmp_is_allow_print_og_image', true) ) {
-			echo '<meta property="og:image" content="' . wp_get_attachment_url( $og_img ) . '"/>';
+			echo '<meta property="og:image" content="' . esc_attr(wp_get_attachment_url( $og_img )) . '"/>';
 		}
 	}
 
@@ -374,7 +376,7 @@ class WCFMmp_Store_SEO {
 		}
 
 		if ( $tw_img && apply_filters( 'wcfmmp_is_allow_print_twitter_image', true) ) {
-			echo '<meta name="twitter:image" content="' . wp_get_attachment_url( $tw_img ) . '"/>';
+			echo '<meta name="twitter:image" content="' . esc_attr(wp_get_attachment_url( $tw_img )) . '"/>';
 		}
 	}
 

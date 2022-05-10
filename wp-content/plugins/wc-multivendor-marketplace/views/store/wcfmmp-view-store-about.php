@@ -23,7 +23,7 @@ $wcfm_shop_description = apply_filters( 'wcfmmp_store_about', apply_filters( 'wo
 	
 		<?php if( $wcfm_shop_description ) { ?>
 			<div class="wcfm-store-about">
-				<div class="wcfm_store_description" ><?php echo $wcfm_shop_description; ?></div>
+				<div class="wcfm_store_description" ><?php echo wp_kses_post($wcfm_shop_description); ?></div>
 			</div>
 		<?php } ?>
 		

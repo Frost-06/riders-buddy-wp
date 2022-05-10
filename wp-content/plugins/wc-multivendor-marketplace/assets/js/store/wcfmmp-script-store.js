@@ -54,6 +54,7 @@ jQuery(document).ready(function($) {
 				var map = new google.maps.Map(document.getElementById($store_map), {
 						center: latlng,
 						blur : true,
+						mapTypeId: wcfm_maps.map_type,
 						zoom: parseInt( wcfmmp_store_map_options.default_zoom )
 				});
 				var customIcon = {
@@ -238,7 +239,8 @@ jQuery(document).ready(function($) {
 			var data = {
 				action                   : 'wcfm_ajax_controller',
 				controller               : 'wcfm-reviews-submit',
-				wcfm_store_review_form   : jQuery('#wcfmmp_store_review_form').serialize()
+				wcfm_store_review_form   : jQuery('#wcfmmp_store_review_form').serialize(),
+				wcfm_ajax_nonce          : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {

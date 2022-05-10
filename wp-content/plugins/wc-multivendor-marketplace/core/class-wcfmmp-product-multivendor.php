@@ -216,6 +216,11 @@ class WCFMmp_Product_Multivendor {
   public function ajax_controller() {
   	global $WCFM, $WCFMmp;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
   	$controllers_path = $WCFMmp->plugin_path . 'controllers/product_multivendor/';
   	
   	$controller = '';
@@ -224,6 +229,11 @@ class WCFMmp_Product_Multivendor {
   		
   		switch( $controller ) {
   			case 'wcfm-sell-items-catalog':
+  				if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'shop_staff' ) ) {
+						wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+						wp_die();
+					}
+		
 					include_once( $controllers_path . 'wcfmmp-controller-sell-items-catalog.php' );
 					new WCFMmp_Sell_Items_Catalog_Controller();
 				break;
@@ -239,8 +249,8 @@ class WCFMmp_Product_Multivendor {
   	
   	if( $product_id && apply_filters( 'wcfm_is_allow_product_multivendor_title_edit_disable', true ) ) {
   		if( isset( $product_fields['pro_title'] ) ) {
-  			$sql     = "SELECT * FROM `{$wpdb->prefix}wcfm_marketplace_product_multivendor` WHERE ( ( `product_id` = $product_id ) OR ( `parent_product_id` = $product_id ) )";
-  			$results = $wpdb->get_row( $sql );
+  			$sql     = "SELECT * FROM `{$wpdb->prefix}wcfm_marketplace_product_multivendor` WHERE ( ( `product_id` = %d ) OR ( `parent_product_id` = %d ) )";
+  			$results = $wpdb->get_row( $wpdb->prepare( $sql, $product_id, $product_id ) );
   			if ( $results ) {
   				$product_fields['pro_title']['attributes']['readonly'] = true;
   				$product_fields['pro_title']['desc'] = __( 'Title edit disabeled, it has other sellers!', 'wc-multivendor-marketplace' );
@@ -304,14 +314,14 @@ class WCFMmp_Product_Multivendor {
 			if( isset( $wcfm_options['wc_frontend_manager_base_highlight_color_settings'] ) ) { $hover_color = $wcfm_options['wc_frontend_manager_base_highlight_color_settings']; }
 		}
 			
-		$wcfm_product_multivendor_button_label  = __( 'Add to My Store', 'wc-multivendor-marketplace' );
+		$wcfm_product_multivendor_button_label  = esc_html__( 'Add to My Store', 'wc-multivendor-marketplace' );
 		
 		?>
 		<div class="wcfm_ele_wrapper wcfm_product_multivendor_button_wrapper">
 			<div class="wcfm-clearfix"></div>
-			<a href="#" class="wcfm_product_multivendor" data-product_id="<?php echo $product_id; ?>" style="<?php echo $button_style; ?>"><span class="wcfmfa fa-cube"></span>&nbsp;&nbsp;<span class="product_multivendor_label"><?php _e( $wcfm_product_multivendor_button_label, 'wc-multivendor-marketplace' ); ?></span></a>
+			<a href="#" class="wcfm_product_multivendor" data-product_id="<?php echo esc_attr($product_id); ?>" style="<?php echo esc_attr($button_style); ?>"><span class="wcfmfa fa-cube"></span>&nbsp;&nbsp;<span class="product_multivendor_label"><?php esc_html_e( $wcfm_product_multivendor_button_label, 'wc-multivendor-marketplace' ); ?></span></a>
 			<?php if( $hover_color ) { ?>
-				<style>a.wcfm_product_multivendor:hover{background: <?php echo $hover_color; ?> !important;background-color: <?php echo $hover_color; ?> !important;border-bottom-color: <?php echo $hover_color; ?> !important;color: <?php echo $hover_text_color; ?> !important;}</style>
+				<style>a.wcfm_product_multivendor:hover{background: <?php echo esc_attr($hover_color); ?> !important;background-color: <?php echo esc_attr($hover_color); ?> !important;border-bottom-color: <?php echo esc_attr($hover_color); ?> !important;color: <?php echo esc_attr($hover_text_color); ?> !important;}</style>
 			<?php } ?>
 			<div class="wcfm-clearfix"></div>
 		</div>
@@ -346,13 +356,23 @@ class WCFMmp_Product_Multivendor {
   function wcfmmp_product_multivendor_clone() {
   	global $WCFM, $WCFMmp, $wp, $WCFM_Query, $_POST, $wpdb;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
   	if( !class_exists( 'WC_Admin_Duplicate_Product' ) ) {
 			include( WC_ABSPATH . 'includes/admin/class-wc-admin-duplicate-product.php' );
 		}
 		$WC_Admin_Duplicate_Product = new WC_Admin_Duplicate_Product();
 		
 		if ( empty( $_POST['product_id'] ) ) {
-			echo '{"status": false, "message": "' .  __( 'No product to duplicate has been supplied!', 'woocommerce' ) . '"}';
+			echo '{"status": false, "message": "' .  esc_html__( 'No product to duplicate has been supplied!', 'woocommerce' ) . '"}';
 		}
 
 		$product_id = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : '';
@@ -361,7 +381,7 @@ class WCFMmp_Product_Multivendor {
 
 		if ( false === $product ) {
 			/* translators: %s: product id */
-			echo '{"status": false, "message": "' . sprintf( __( 'Product creation failed, could not find original product: %s', 'woocommerce' ), $product_id ) . '" }';
+			echo '{"status": false, "message": "' . sprintf( esc_html__( 'Product creation failed, could not find original product: %s', 'woocommerce' ), $product_id ) . '" }';
 			die;
 		}
 
@@ -372,7 +392,7 @@ class WCFMmp_Product_Multivendor {
 		do_action( 'after_wcfmmp_product_multivendor_clone', $duplicate->get_id(), $product );
 
 		// Redirect to the edit screen for the new draft page
-		echo '{"status": true, "redirect": "' . get_wcfm_edit_product_url( $duplicate->get_id() ) . '", "id": "' . $duplicate->get_id() . '"}';
+		echo '{"status": true, "redirect": "' . esc_url(get_wcfm_edit_product_url( $duplicate->get_id() )) . '", "id": "' . esc_attr($duplicate->get_id()) . '"}';
 		
 		die;
   }
@@ -383,11 +403,21 @@ class WCFMmp_Product_Multivendor {
   function wcfmmp_product_multivendor_bulk_clone() {
   	global $WCFM, $WCFMmp, $wp, $WCFM_Query, $_POST, $wpdb;
   	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
+  	
+  	if ( !current_user_can( 'manage_woocommerce' ) && !current_user_can( 'wcfm_vendor' ) && !current_user_can( 'shop_staff' ) ) {
+  		wp_send_json_error( esc_html__( 'You don&#8217;t have permission to do this.', 'woocommerce' ) );
+			wp_die();
+		}
+  	
 		if ( empty( $_POST['product_ids'] ) ) {
-			echo '{"status": false, "message": "' .  __( 'No product to duplicate has been supplied!', 'woocommerce' ) . '"}';
+			echo '{"status": false, "message": "' . esc_html__( 'No product to duplicate has been supplied!', 'woocommerce' ) . '"}';
 		}
 
-		$product_ids = isset( $_POST['product_ids'] ) ? wp_unslash($_POST['product_ids']) : '';
+		$product_ids = isset( $_POST['product_ids'] ) ? wc_clean( wp_unslash($_POST['product_ids']) ) : '';
 
 		if( is_array( $product_ids ) && !empty( $product_ids ) ) {
 			foreach( $product_ids as $product_id ) {
@@ -430,7 +460,7 @@ class WCFMmp_Product_Multivendor {
 
 		if ( false === $product ) {
 			/* translators: %s: product id */
-			echo '{"status": false, "message": "' . sprintf( __( 'Product creation failed, could not find original product: %s', 'woocommerce' ), $product_id ) . '" }';
+			echo '{"status": false, "message": "' . sprintf( esc_html__( 'Product creation failed, could not find original product: %s', 'woocommerce' ), $product_id ) . '" }';
 		}
 
 		$duplicate = $WC_Admin_Duplicate_Product->product_duplicate( $product );
@@ -501,6 +531,11 @@ class WCFMmp_Product_Multivendor {
    */
   function wcfmmp_more_offers_sorted_table() {
   	global $WCFM, $WCFMmp, $wpdb;
+  	
+  	if ( ! check_ajax_referer( 'wcfm_ajax_nonce', 'wcfm_ajax_nonce', false ) ) {
+  		wp_send_json_error( esc_html__( 'Invalid nonce! Refresh your page and try again.', 'wc-frontend-manager' ) );
+  		wp_die();
+  	}
   	
   	if ( !empty( $_POST['product_id'] ) ) {
   		$product_id = absint( $_POST['product_id'] );
@@ -606,9 +641,9 @@ class WCFMmp_Product_Multivendor {
   	
   	$sql  = "DELETE FROM `{$wpdb->prefix}wcfm_marketplace_product_multivendor`";
   	$sql .= " WHERE 1=1";
-  	$sql .= " AND `product_id` = {$product_id}";
+  	$sql .= " AND `product_id` = %d";
   	
-  	$wpdb->query($sql);
+  	$wpdb->query( $wpdb->prepare( $sql, $product_id ) );
   }
   
   /**

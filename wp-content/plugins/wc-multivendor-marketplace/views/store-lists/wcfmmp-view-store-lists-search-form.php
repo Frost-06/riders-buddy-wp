@@ -90,7 +90,7 @@ $display_vendor_term = array();
 	<?php do_action( 'wcfmmp_before_store_list_serach_form', $args ); ?>
 	
 	<?php if( $search ) { ?>
-	  <input type="search" id="search" class="search-field wcfmmp-store-search" placeholder="<?php esc_attr_e( 'Search &hellip;', 'wc-multivendor-marketplace' ); ?>" value="<?php echo esc_attr( $search_query ); ?>" name="wcfmmp_store_search" title="<?php esc_attr_e( 'Search store &hellip;', 'wc-multivendor-marketplace' ); ?>" />
+	  <input type="search" id="search" class="search-field wcfmmp-store-search" placeholder="<?php esc_attr_e( 'Search store &hellip;', 'wc-multivendor-marketplace' ); ?>" value="<?php echo esc_attr( $search_query ); ?>" name="wcfmmp_store_search" title="<?php esc_attr_e( 'Search store &hellip;', 'wc-multivendor-marketplace' ); ?>" />
 	<?php } ?>
 	
 	<?php do_action( 'wcfmmp_after_store_list_serach_filter', $args ); ?>
@@ -112,7 +112,7 @@ $display_vendor_term = array();
 							$tax_toggle_class = '';
 							if( $vendor_term && $vendor_term->term_id && $vendor_term->name ) {
 								?>
-								<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>><?php echo $vendor_term->name; ?></option>
+								<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>><?php echo esc_html($vendor_term->name); ?></option>
 								<?php
 							}
 							foreach( $vendor_category as $vendor_category_child_id => $vendor_category_child ) {
@@ -122,12 +122,12 @@ $display_vendor_term = array();
 										if( in_array( $vendor_term->term_id, $display_vendor_term) ) continue;
 										$display_vendor_term[$vendor_term->term_id] = $vendor_term->term_id;
 										?>
-										<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>><?php echo $vendor_term->name; ?></option>
+										<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>><?php echo esc_html($vendor_term->name); ?></option>
 										<?php
 									}
 								} else {
 									?>
-									<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>><?php echo $vendor_term->name; ?></option>
+									<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>><?php echo esc_html($vendor_term->name); ?></option>
 									<?php
 									foreach( $vendor_category_child as $vendor_category_child2_id => $vendor_category_child2 ) {
 										$vendor_term = get_term( absint( $vendor_category_child2_id ), $preferred_taxonomy ); 
@@ -136,12 +136,12 @@ $display_vendor_term = array();
 												if( in_array( $vendor_term->term_id, $display_vendor_term) ) continue;
 												$display_vendor_term[$vendor_term->term_id] = $vendor_term->term_id;
 												?>
-												<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;<?php echo $vendor_term->name; ?></option>
+												<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 												<?php
 											}
 										} else {
 											?>
-											<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;<?php echo $vendor_term->name; ?></option>
+											<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 											<?php
 											foreach( $vendor_category_child2 as $vendor_category_child3_id => $vendor_category_child3 ) {
 												$vendor_term = get_term( absint( $vendor_category_child3_id ), $preferred_taxonomy ); 
@@ -150,12 +150,12 @@ $display_vendor_term = array();
 														if( in_array( $vendor_term->term_id, $display_vendor_term) ) continue;
 														$display_vendor_term[$vendor_term->term_id] = $vendor_term->term_id;
 														?>
-														<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;<?php echo $vendor_term->name; ?></option>
+														<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 														<?php
 													}
 												} else {
 													?>
-													<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;<?php echo $vendor_term->name; ?></option>
+													<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 													<?php
 													foreach( $vendor_category_child3 as $vendor_category_child4_id => $vendor_category_child4 ) {
 														$vendor_term = get_term( absint( $vendor_category_child4_id ), $preferred_taxonomy ); 
@@ -164,12 +164,12 @@ $display_vendor_term = array();
 																if( in_array( $vendor_term->term_id, $display_vendor_term) ) continue;
 																$display_vendor_term[$vendor_term->term_id] = $vendor_term->term_id;
 																?>
-																<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;<?php echo $vendor_term->name; ?></option>
+																<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 																<?php
 															}
 														} else {
 															?>
-															<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;<?php echo $vendor_term->name; ?></option>
+															<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 															<?php
 															foreach( $vendor_category_child4 as $vendor_category_child5_id => $vendor_category_child5 ) {
 																$vendor_term = get_term( absint( $vendor_category_child5_id ), $preferred_taxonomy ); 
@@ -178,12 +178,12 @@ $display_vendor_term = array();
 																		if( in_array( $vendor_term->term_id, $display_vendor_term) ) continue;
 																		$display_vendor_term[$vendor_term->term_id] = $vendor_term->term_id;
 																		?>
-																		<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $vendor_term->name; ?></option>
+																		<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 																		<?php
 																	}
 																} else {
 																	?>
-																	<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $vendor_term->name; ?></option>
+																	<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 																	<?php
 																	foreach( $vendor_category_child5 as $vendor_category_child6_id => $vendor_category_child6 ) {
 																		$vendor_term = get_term( absint( $vendor_category_child6_id ), $preferred_taxonomy ); 
@@ -192,12 +192,12 @@ $display_vendor_term = array();
 																				if( in_array( $vendor_term->term_id, $display_vendor_term) ) continue;
 																				$display_vendor_term[$vendor_term->term_id] = $vendor_term->term_id;
 																				?>
-																				<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $vendor_term->name; ?></option>
+																				<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 																				<?php
 																			}
 																		} else {
 																			?>
-																			<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $vendor_term->name; ?></option>
+																			<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 																			<?php
 																			foreach( $vendor_category_child6 as $vendor_category_child7_id => $vendor_category_child7 ) {
 																				$vendor_term = get_term( absint( $vendor_category_child7_id ), $preferred_taxonomy ); 
@@ -206,12 +206,12 @@ $display_vendor_term = array();
 																						if( in_array( $vendor_term->term_id, $display_vendor_term) ) continue;
 																						$display_vendor_term[$vendor_term->term_id] = $vendor_term->term_id;
 																						?>
-																						<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $vendor_term->name; ?></option>
+																						<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 																						<?php
 																					}
 																				} else {
 																					?>
-																					<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $vendor_term->name; ?></option>
+																					<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo esc_html($vendor_term->name); ?></option>
 																					<?php
 																				}
 																			}
@@ -233,7 +233,7 @@ $display_vendor_term = array();
 								if( in_array( $vendor_term->term_id, $display_vendor_term) ) continue;
 								$display_vendor_term[$vendor_term->term_id] = $vendor_term->term_id;
 								?>
-								<option value="<?php echo $vendor_term->term_id; ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>><?php echo $vendor_term->name; ?></option>
+								<option value="<?php echo esc_attr($vendor_term->term_id); ?>" <?php if( $vendor_term->term_id == $search_category ) echo 'selected'; ?>><?php echo esc_html($vendor_term->name); ?></option>
 								<?php 
 							}
 						}
@@ -248,7 +248,7 @@ $display_vendor_term = array();
   <?php if( $radius ) { ?>
   	<div id="wcfm_radius_filter_container" class="wcfm_radius_filter_container">
 			<input type="text" id="wcfmmp_radius_addr" name="wcfmmp_radius_addr" class="wcfmmp-radius-addr" placeholder="<?php esc_attr_e( 'Insert your address ..', 'wc-multivendor-marketplace' ); ?>" value="" />
-			<i class="wcfmmmp_locate_icon" style="background-image: url(<?php echo $WCFMmp->plugin_url; ?>assets/images/locate.svg)"></i>
+			<i class="wcfmmmp_locate_icon" style="background-image: url(<?php echo esc_url($WCFMmp->plugin_url); ?>assets/images/locate.svg)"></i>
 		</div>
 		<div class="wcfm_radius_slidecontainer">
 			<input class="wcfmmp_radius_range" name="wcfmmp_radius_range" id="wcfmmp_radius_range" type="range" value="<?php echo absint( apply_filters( 'wcfmmp_radius_filter_max_distance', $max_radius_to_search )/apply_filters( 'wcfmmp_radius_filter_start_distance', 10 ) ); ?>" min="0" max="<?php echo apply_filters( 'wcfmmp_radius_filter_max_distance', $max_radius_to_search ); ?>" steps="6" />
@@ -279,8 +279,8 @@ $display_vendor_term = array();
   
   <?php do_action( 'wcfmmp_after_store_list_serach_form', $args ); ?>
 	
-	<input type="hidden" id="pagination_base" name="pagination_base" value="<?php echo $pagination_base ?>" />
-	<input type="hidden" id="wcfm_paged" name="wcfm_paged" value="<?php echo $paged ?>" />
+	<input type="hidden" id="pagination_base" name="pagination_base" value="<?php echo esc_attr($pagination_base) ?>" />
+	<input type="hidden" id="wcfm_paged" name="wcfm_paged" value="<?php echo esc_attr($paged) ?>" />
 	<input type="hidden" id="nonce" name="nonce" value="<?php echo wp_create_nonce( 'wcfmmp-stores-list-search' ); ?>" />
 	<div class="wcfmmp-overlay" style="display: none;"><span class="wcfmmp-ajax-loader"></span></div>
 </form>

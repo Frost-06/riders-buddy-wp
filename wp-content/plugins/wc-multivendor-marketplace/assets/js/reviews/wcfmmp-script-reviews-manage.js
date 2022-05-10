@@ -56,7 +56,8 @@ jQuery(document).ready( function($) {
 				action                         : 'wcfm_ajax_controller',
 				controller                     : 'wcfm-support-manage',
 				support_ticket_reply           : support_ticket_reply,
-				wcfm_support_ticket_reply_form : jQuery('#wcfm_support_ticket_reply_form').serialize()
+				wcfm_support_ticket_reply_form : jQuery('#wcfm_support_ticket_reply_form').serialize(),
+				wcfm_ajax_nonce                : wcfm_params.wcfm_ajax_nonce
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {

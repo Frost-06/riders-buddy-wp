@@ -24,7 +24,7 @@ $close_new_reply = 'no';
 
 if( isset( $wp->query_vars['wcfm-support-manage'] ) && !empty( $wp->query_vars['wcfm-support-manage'] ) ) {
 	$support_id = $wp->query_vars['wcfm-support-manage'];
-	$support_post = $wpdb->get_row( "SELECT * from {$wpdb->prefix}wcfm_support WHERE `ID` = " . $support_id );
+	$support_post = $wpdb->get_row( $wpdb->prepare( "SELECT * from {$wpdb->prefix}wcfm_support WHERE `ID` = %d", $support_id ) );
 	// Fetching Support Data
 	if($support_post && !empty($support_post)) {
 		$support_ticket_content = $support_post->query;
@@ -58,7 +58,7 @@ do_action( 'before_wcfm_support_manage' );
 		
 		<div class="wcfm-container wcfm-top-element-container">
 			<h2><?php echo __( 'Ticket', 'wc-multivendor-marketplace' ) . ' #' . $support_id; ?></h2>
-			<span class="support-priority support-priority-<?php echo $support_post->priority;?>"><?php echo $support_priority_types[$support_post->priority]; ?></span>
+			<span class="support-priority support-priority-<?php echo esc_attr($support_post->priority);?>"><?php echo wp_kses_post($support_priority_types[$support_post->priority]); ?></span>
 			
 			<?php
 			echo '<a id="add_new_support_dashboard" class="add_new_wcfm_ele_dashboard text_tip" href="'.wcfm_support_url().'" data-tip="' . __('Support Tickets', 'wc-multivendor-marketplace') . '"><span class="wcfmfa fa-life-ring"></span><span class="text">' . __( 'Tickets', 'wc-multivendor-marketplace') . '</span></a>';
@@ -77,14 +77,14 @@ do_action( 'before_wcfm_support_manage' );
 			      <span class="support_ticket_content_order_title"><?php _e( 'Order', 'wc-multivendor-marketplace' ); ?></span>:&nbsp;#
 			      <?php
 			      if( apply_filters( 'wcfm_is_allow_order_details', true ) && $WCFM->wcfm_vendor_support->wcfm_is_order_for_vendor( $support_post->order_id ) ) {
-			      	echo '<a target="_blank" href="' . get_wcfm_view_order_url( $support_order_id ) . '">' . $support_order_id . '</a>';
+			      	echo '<a target="_blank" href="' . esc_url(get_wcfm_view_order_url( $support_order_id )) . '">' . esc_attr($support_order_id) . '</a>';
 			      } else {
-			      	echo $support_order_id;
+			      	echo esc_attr($support_order_id);
 			      }
 			      ?>
 			    </div>
-			    <div class="support_ticket_content_category"><span class="support_ticket_content_category_title"><?php _e( 'Category', 'wc-multivendor-marketplace' ); ?></span>:&nbsp;<?php echo $support_post->category; ?></div>
-					<?php echo $support_ticket_content; ?>
+			    <div class="support_ticket_content_category"><span class="support_ticket_content_category_title"><?php _e( 'Category', 'wc-multivendor-marketplace' ); ?></span>:&nbsp;<?php echo wp_kses_post($support_post->category); ?></div>
+					<?php echo wp_kses_post($support_ticket_content); ?>
 				</div>
 				<div class="support_ticket_info">
 					<div class="support_ticket_status">
@@ -106,7 +106,7 @@ do_action( 'before_wcfm_support_manage' );
 		
 		<?php 
 		if( $wcfm_is_allow_view_support_reply_view = apply_filters( 'wcfmcap_is_allow_support_reply_view', true ) ) {
-			$wcfm_support_replies = $wpdb->get_results( "SELECT * from {$wpdb->prefix}wcfm_support_response WHERE `support_id` = " . $support_id );
+			$wcfm_support_replies = $wpdb->get_results( $wpdb->prepare( "SELECT * from {$wpdb->prefix}wcfm_support_response WHERE `support_id` = %d", $support_id ) );
 			
 			echo '<h2>' . __( 'Replies', 'wc-multivendor-marketplace' ) . ' (' . count( $wcfm_support_replies ) . ')</h2><div class="wcfm_clearfix"></div>';
 			
@@ -115,7 +115,7 @@ do_action( 'before_wcfm_support_manage' );
 				?>
 				<!-- collapsible -->
 				<div class="wcfm-container">
-					<div id="support_ticket_reply_<?php echo $wcfm_support_reply->ID; ?>" class="support_ticket_reply wcfm-content">
+					<div id="support_ticket_reply_<?php echo esc_attr($wcfm_support_reply->ID); ?>" class="support_ticket_reply wcfm-content">
 						<div class="support_ticket_reply_author">
 							<?php
 							$author_id = $wcfm_support_reply->reply_by;
@@ -125,22 +125,22 @@ do_action( 'before_wcfm_support_manage' );
 								$wp_user_avatar = $WCFM->plugin_url . 'assets/images/user.png';
 							}
 							?>
-							<img src="<?php echo $wp_user_avatar; ?>" /><br />
+							<img src="<?php echo esc_url($wp_user_avatar); ?>" /><br />
 							<?php
 							$userdata = get_userdata( $author_id );
 							$first_name = $userdata->first_name;
 							$last_name  = $userdata->last_name;
 							$display_name  = $userdata->display_name;
 							if( $first_name ) {
-								echo $first_name . ' ' . $last_name;
+								echo wp_kses_post($first_name . ' ' . $last_name);
 							} else {
-								echo $display_name;
+								echo wp_kses_post($display_name);
 							}
 							?>
 							<br /><?php echo date_i18n( wc_date_format(), strtotime( $wcfm_support_reply->posted ) ); ?>
 						</div>
 						<div class="support_ticket_reply_content">
-							<?php echo $wcfm_support_reply->reply; ?>
+							<?php echo wp_kses_post($wcfm_support_reply->reply); ?>
 						</div>
 					</div>
 				</div>

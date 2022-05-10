@@ -120,8 +120,8 @@ class WCFMmp_Admin {
 		$offer_msg .= sprintf( __( '<p %s>WCFM - Marketplace is installed and active. But there is another multi-vendor plugin found in your site. Now this is not possible to run a site with more than one multi-vendor plugins at a time. %sDisable <b><u>%s</u></b> to make your site stable and run smoothly.</p>', 'wc-multivendor-marketplace' ), 'style="width: 100%;"', '<br/>', wcfmmp_has_marketplace() );
 		?>
 			<div class="notice wcfm_addon_inactive_notice_box wcfmmp_addon_inactive_notice_box" id="wcfm-conflict-notice">
-				<img style="margin-top: 8px;" src="<?php echo $WCFMmp->plugin_url . 'assets/images/'; ?>Conflict-larger-word-400x.png" alt="">
-				<?php echo $offer_msg; ?>
+				<img style="margin-top: 8px;" src="<?php echo esc_url($WCFMmp->plugin_url) . 'assets/images/'; ?>Conflict-larger-word-400x.png" alt="">
+				<?php echo wp_kses_post($offer_msg); ?>
 			</div>
 		<?php
 	}
@@ -145,8 +145,8 @@ class WCFMmp_Admin {
 		$offer_msg .= __( '<p>WCFM Marketplace is inactive. WooCommerce Frontend Manager (WCFM Core) must be active for the WCFM Marketplace to work. Please install & activate WooCommerce Frontend Manager.</p>', 'wc-multivendor-marketplace' );
 		?>
 			<div class="notice wcfm_addon_inactive_notice_box wcfmmp_addon_inactive_notice_box" id="wcfm-groups-sttafs-notice">
-				<img src="<?php echo $WCFMmp->plugin_url . 'assets/images/'; ?>wcfm_marketplace_white_ogo.png" alt="">
-				<?php echo $offer_msg; ?>
+				<img src="<?php echo esc_url($WCFMmp->plugin_url) . 'assets/images/'; ?>wcfm_marketplace_white_ogo.png" alt="">
+				<?php echo wp_kses_post($offer_msg); ?>
 				<a href="<?php echo 'https://downloads.wordpress.org/plugin/wc-frontend-manager.zip'; //admin_url( 'plugin-install.php?tab=search&s=wc+frontend+manager' ); ?>" class="button button-primary promo-btn" target="_blank"><?php _e( 'GET IT NOW', 'wc-multivendor-marketplace' ); ?></a>
 			</div>
 		<?php
@@ -171,8 +171,8 @@ class WCFMmp_Admin {
 		$offer_msg .= __( '<p>WCFM - Membership is essential for WCFM Marketplace to register new vendors. You may additionally setup vendor membership using this as well. Recurring subscription also possible using PayPal and Stripe.</p>', 'wc-multivendor-marketplace' );
 		?>
 			<div class="notice wcfm_addon_inactive_notice_box wcfmmp_addon_inactive_notice_box" id="wcfm-groups-sttafs-notice">
-				<img src="<?php echo $WCFMmp->plugin_url . 'assets/images/'; ?>wcfmgs-icon-128x128.jpg" alt="">
-				<?php echo $offer_msg; ?>
+				<img src="<?php echo esc_url($WCFMmp->plugin_url) . 'assets/images/'; ?>wcfmgs-icon-128x128.jpg" alt="">
+				<?php echo wp_kses_post($offer_msg); ?>
 				<a href="<?php echo admin_url( 'plugin-install.php?tab=search&s=wcfm+membership' ); ?>" class="button button-primary promo-btn" target="_blank"><?php _e( 'GET IT NOW', 'wc-multivendor-marketplace' ); ?></a>
 			</div>
 		<?php
@@ -185,8 +185,8 @@ class WCFMmp_Admin {
     global $menu, $WCFMmp;
     
     if( function_exists( 'get_wcfm_settings_url' ) ) {
-    	add_menu_page( __( 'Marketplace', 'wc-multivendor-marketplace' ), __( 'Marketplace', 'wc-multivendor-marketplace' ), 'manage_options', 'wcfm_settings_form_marketplace_head', null, null, '55' );
-    	$menu[55] = array( __( 'Marketplace', 'wc-multivendor-marketplace' ), 'manage_options', get_wcfm_settings_url() . '#wcfm_settings_form_marketplace_head', '', 'open-if-no-js menu-top', '', $WCFMmp->plugin_url . 'assets/images/wcfmmp_icon.svg' );
+				add_menu_page( __( 'Marketplace', 'wc-multivendor-marketplace' ), __( 'Marketplace', 'wc-multivendor-marketplace' ), 'manage_options', 'wcfm_settings_form_marketplace_head', null, null, '55' );
+				$menu[55] = array( __( 'Marketplace', 'wc-multivendor-marketplace' ), 'manage_options', get_wcfm_settings_url() . '#wcfm_settings_form_marketplace_head', '', 'open-if-no-js menu-top', '', $WCFMmp->plugin_url . 'assets/images/wcfmmp_icon.svg' );
     }
   }  
   
@@ -210,7 +210,7 @@ class WCFMmp_Admin {
 						$vendor_name = '<span class="dashicons dashicons-businessperson"></span>' . $store_name;
 					}
 				}
-				echo $vendor_name;
+				echo wp_kses_post($vendor_name);
 			break;
 		}
   }
@@ -249,7 +249,7 @@ class WCFMmp_Admin {
 				
 				if( !$vendor_name ) { $vendor_name = '&ndash;'; }
 				
-				echo $vendor_name;
+				echo wp_kses_post($vendor_name);
 			break;
 		}
   }
@@ -284,7 +284,7 @@ class WCFMmp_Admin {
 				}
 				if( !$vendor_name ) { $vendor_name = '&ndash;'; }
 				
-				echo $vendor_name;
+				echo wp_kses_post($vendor_name);
 			break;
 		}
   }
@@ -303,7 +303,7 @@ class WCFMmp_Admin {
 						$vendor_name = '<span class="dashicons dashicons-businessperson"></span>' . $store_name;
 					}
 				}
-				echo $vendor_name;
+				echo wp_kses_post($vendor_name);
 			break;
 		}
   }
@@ -322,7 +322,7 @@ class WCFMmp_Admin {
 						$vendor_name = '<span class="dashicons dashicons-businessperson"></span>' . $store_name;
 					}
 				}
-				echo $vendor_name;
+				echo wp_kses_post($vendor_name);
 			break;
 		}
   }
@@ -367,7 +367,7 @@ class WCFMmp_Admin {
 			
 			if( $("#wcfmmp_store").length > 0 ) {
 				$("#wcfmmp_store").select2({
-					placeholder: '<?php echo __( "Choose", "wc-frontend-manager" ) . ' ' . apply_filters( 'wcfm_sold_by_label', '', __( 'Store', 'wc-multivendor-marketplace' ) ) . ' ...'; ?>',
+					placeholder: '<?php echo esc_html__( "Choose", "wc-frontend-manager" ) . ' ' . apply_filters( 'wcfm_sold_by_label', '', esc_html__( 'Store', 'wc-multivendor-marketplace' ) ) . ' ...'; ?>',
 					allowClear:  true,
 				});
 			}
@@ -380,7 +380,7 @@ class WCFMmp_Admin {
   	global $WCFM, $WCFMmp, $post;
   	
   	echo '<div id ="wcfmmp_store_product_data" class="panel woocommerce_options_panel"><div class="options_group"><p class="form-field _wcfmmp_store_field">';
-  	echo '<label for="wcfmmp_store">' . apply_filters( 'wcfm_sold_by_label', '', __( 'Store', 'wc-multivendor-marketplace' ) ) . '</label>';
+  	echo '<label for="wcfmmp_store">' . apply_filters( 'wcfm_sold_by_label', '', esc_html__( 'Store', 'wc-multivendor-marketplace' ) ) . '</label>';
   	$vendor_arr = $WCFM->wcfm_vendor_support->wcfm_get_vendor_list();
   	$vendor_id = wcfm_get_vendor_id_by_post( $post->ID );
   	$WCFM->wcfm_fields->wcfm_generate_form_field( array(
@@ -424,47 +424,47 @@ class WCFMmp_Admin {
 			$tax_percent                   = isset( $product_commission_data['tax_percent'] ) ? $product_commission_data['tax_percent'] : '';
 		}
 		
-		echo '<p class="form-field _wcfmmp_store_field"><label for="vendor_commission_mode">' . __( 'Commission For', 'wc-multivendor-marketplace' ) . '</label>';
+		echo '<p class="form-field _wcfmmp_store_field"><label for="vendor_commission_mode">' . esc_html__( 'Commission For', 'wc-multivendor-marketplace' ) . '</label>';
 		$WCFM->wcfm_fields->wcfm_generate_form_field( array(
 			                                                "wcfm_commission_for" => array( 'type' => 'select', 'options' => array( 'vendor' => __( 'Vendor', 'wc-multivendor-marketplace' ), 'admin' => __( 'Admin', 'wc-multivendor-marketplace' ) ), 'attributes' => array( 'disabled' => true, 'style' => 'border: 0px !important;font-weight:600;color:#17a2b8;background:transparent;' ), 'class' => 'wcfm-select wcfm_ele select short', 'value' => $wcfm_commission_for )
 			                                                ) );
-		echo '<br/><br><span class="desciption">' . __( 'Always applicable as per global rule.', 'wc-multivendor-marketplace' ) . '</span>';
+		echo '<br/><br><span class="desciption">' . esc_html__( 'Always applicable as per global rule.', 'wc-multivendor-marketplace' ) . '</span>';
 		echo '</p>';
 		
-		echo '<p class="form-field _wcfmmp_store_field"><label for="vendor_commission_mode">' . __( 'Commission Mode', 'wc-multivendor-marketplace' ) . '</label>';
+		echo '<p class="form-field _wcfmmp_store_field"><label for="vendor_commission_mode">' . esc_html__( 'Commission Mode', 'wc-multivendor-marketplace' ) . '</label>';
 		$WCFM->wcfm_fields->wcfm_generate_form_field( array(
 					                                              "vendor_commission_mode" => array('name' => 'commission[commission_mode]', 'type' => 'select', 'options' => $wcfm_commission_types, 'class' => 'wcfm-select wcfm_ele select short variable external grouped booking', 'value' => $vendor_commission_mode )
 					                                              ) );
-		echo '<br/><br><span class="desciption">' . __( 'Keep this as Global to apply commission rule as per vendor or marketplace commission setup.', 'wc-multivendor-marketplace' ) . '</span>';
+		echo '<br/><br><span class="desciption">' . esc_html__( 'Keep this as Global to apply commission rule as per vendor or marketplace commission setup.', 'wc-multivendor-marketplace' ) . '</span>';
 		echo '</p>';
 		
-		echo '<p class="form-field _wcfmmp_commission_percent_field commission_mode_field commission_mode_percent commission_mode_percent_fixed"><label for="vendor_commission_percent">' . __( 'Commission Percent(%)', 'wc-multivendor-marketplace' ) . '</label>';
+		echo '<p class="form-field _wcfmmp_commission_percent_field commission_mode_field commission_mode_percent commission_mode_percent_fixed"><label for="vendor_commission_percent">' . esc_html__( 'Commission Percent(%)', 'wc-multivendor-marketplace' ) . '</label>';
 		$WCFM->wcfm_fields->wcfm_generate_form_field( array(
 					                                              "vendor_commission_percent" => array('name' => 'commission[commission_percent]', 'type' => 'number', 'class' => 'wcfm-text wcfm_ele wcfm_non_negative_input commission_mode_field commission_mode_percent commission_mode_percent_fixed', 'value' => $vendor_commission_percent, 'attributes' => array( 'min' => '0', 'step' => '0.1') ),
 					                                              ) );
 		echo '</p>';
 		
-		echo '<p class="form-field _wcfmmp_commission_fixed_field commission_mode_field commission_mode_fixed commission_mode_percent_fixed"><label for="vendor_commission_fixed">' . __( 'Commission Fixed', 'wc-multivendor-marketplace' ) . '(' . get_woocommerce_currency_symbol() . ')' . '</label>';
+		echo '<p class="form-field _wcfmmp_commission_fixed_field commission_mode_field commission_mode_fixed commission_mode_percent_fixed"><label for="vendor_commission_fixed">' . esc_html__( 'Commission Fixed', 'wc-multivendor-marketplace' ) . '(' . get_woocommerce_currency_symbol() . ')' . '</label>';
 		$WCFM->wcfm_fields->wcfm_generate_form_field( array(
 					                                                                        "vendor_commission_fixed" => array('name' => 'commission[commission_fixed]', 'type' => 'number', 'class' => 'wcfm-text wcfm_ele wcfm_non_negative_input simple variable external grouped booking commission_mode_field commission_mode_fixed commission_mode_percent_fixed', 'value' => $vendor_commission_fixed, 'attributes' => array( 'min' => '0', 'step' => '0.1') ),
 																																									) );
 		echo '</p>';
 		
-		echo '<h3 class="form-field commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity" style="color:#17a2b8;margin-left:15px;">' . __('Commission Tax Settings', 'wc-multivendor-marketplace') . '</h3>';
+		echo '<h3 class="form-field commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity" style="color:#17a2b8;margin-left:15px;">' . esc_html__('Commission Tax Settings', 'wc-multivendor-marketplace') . '</h3>';
 		
-		echo '<p class="form-field _wcfmmp_commission_fixed_field commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity"><label for="vendor_commission_fixed">' . __( 'Enable', 'wc-multivendor-marketplace' ) . '</label>';
+		echo '<p class="form-field _wcfmmp_commission_fixed_field commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity"><label for="vendor_commission_fixed">' . esc_html__( 'Enable', 'wc-multivendor-marketplace' ) . '</label>';
 		$WCFM->wcfm_fields->wcfm_generate_form_field( array(
 																												'tax_enable' => array( 'type' => 'checkbox', 'name' => 'commission[tax_enable]', 'class' => 'wcfm-checkbox wcfm_ele commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity', 'label_class' => 'wcfm_title checkbox_title commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity', 'value' => 'yes', 'dfvalue' => $tax_enable ),
 																												) );
 		echo '</p>';
 		
-		echo '<p class="form-field _wcfmmp_commission_fixed_field commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity"><label for="vendor_commission_fixed">' . __( 'Tax Label', 'wc-multivendor-marketplace' ) . '</label>';
+		echo '<p class="form-field _wcfmmp_commission_fixed_field commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity"><label for="vendor_commission_fixed">' . esc_html__( 'Tax Label', 'wc-multivendor-marketplace' ) . '</label>';
 		$WCFM->wcfm_fields->wcfm_generate_form_field( array(
 																												'tax_name' => array( 'placeholder' => __( 'Tax', 'wc-multivendor-marketplace' ), 'type' => 'text', 'name' => 'commission[tax_name]', 'class' => 'wcfm-text wcfm_ele commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity', 'label_class' => 'wcfm_title commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity', 'value' => $tax_name ),
 																												) );
 		echo '</p>';
 		
-		echo '<p class="form-field _wcfmmp_commission_fixed_field commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity"><label for="vendor_commission_fixed">' . __( 'Tax Percent (%)', 'wc-multivendor-marketplace' ) . '</label>';
+		echo '<p class="form-field _wcfmmp_commission_fixed_field commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity"><label for="vendor_commission_fixed">' . esc_html__( 'Tax Percent (%)', 'wc-multivendor-marketplace' ) . '</label>';
 		$WCFM->wcfm_fields->wcfm_generate_form_field( array(
 																												'tax_percent' => array( 'type' => 'number', 'name' => 'commission[tax_percent]', 'class' => 'wcfm-text wcfm_ele wcfm_non_negative_input commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity', 'label_class' => 'wcfm_title commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity', 'value' => $tax_percent ),
 																												) );
@@ -519,7 +519,7 @@ class WCFMmp_Admin {
 		
 		// Update Product Commission
 		if( isset( $_POST['commission'] ) && !empty( $_POST['commission'] ) ) {
-			update_post_meta( $product_id, '_wcfmmp_commission', wp_unslash($_POST['commission']) );
+			update_post_meta( $product_id, '_wcfmmp_commission', wc_clean( wp_unslash( $_POST['commission'] ) ) );
 		}
   }
   
@@ -593,13 +593,13 @@ class WCFMmp_Admin {
 		if( empty($variation_commission_data) ) $variation_commission_data = array();
 			
 		if( isset( $_POST['vendor_commission_mode'][$variation_id] ) ) {
-			$variation_commission_data['commission_mode'] = wp_unslash($_POST['vendor_commission_mode'][$variation_id]);
+			$variation_commission_data['commission_mode'] = wc_clean( wp_unslash($_POST['vendor_commission_mode'][$variation_id]) );
 		}
 		if( isset( $_POST['vendor_commission_percent'][$variation_id] ) ) {
-			$variation_commission_data['commission_percent'] = wp_unslash($_POST['vendor_commission_percent'][$variation_id]);
+			$variation_commission_data['commission_percent'] = wc_clean( wp_unslash($_POST['vendor_commission_percent'][$variation_id]) );
 		}
 		if( isset( $_POST['vendor_commission_fixed'][$variation_id] ) ) {
-			$variation_commission_data['commission_fixed'] = wp_unslash($_POST['vendor_commission_fixed'][$variation_id]);
+			$variation_commission_data['commission_fixed'] = wc_clean( wp_unslash($_POST['vendor_commission_fixed'][$variation_id]) );
 		}
 		
 		update_post_meta( $variation_id, '_wcfmmp_commission', $variation_commission_data );
@@ -630,47 +630,47 @@ class WCFMmp_Admin {
 		
 		echo '<h3 class="form-field" style="color:#17a2b8;">' . __('Commission Settings', 'wc-multivendor-marketplace') . '</h3>';
 		
-		echo '<div class="form-field _wcfmmp_store_field"><label for="vendor_commission_mode">' . __( 'Commission For', 'wc-multivendor-marketplace' ) . '</label>';
+		echo '<div class="form-field _wcfmmp_store_field"><label for="vendor_commission_mode">' . esc_html__( 'Commission For', 'wc-multivendor-marketplace' ) . '</label>';
 		$WCFM->wcfm_fields->wcfm_generate_form_field( array(
 			                                                "wcfm_commission_for" => array( 'type' => 'select', 'options' => array( 'vendor' => __( 'Vendor', 'wc-multivendor-marketplace' ), 'admin' => __( 'Admin', 'wc-multivendor-marketplace' ) ), 'attributes' => array( 'disabled' => true, 'style' => 'border: 0px !important;font-weight:600;color:#00897b;background:transparent;' ), 'class' => 'wcfm-select wcfm_ele select short', 'value' => $wcfm_commission_for )
 			                                                ) );
 		echo '<br/><br><span class="desciption">' . __( 'Always applicable as per global rule.', 'wc-multivendor-marketplace' ) . '</span>';
 		echo '</div>';
 		
-		echo '<div class="form-field _wcfmmp_store_field"><label for="vendor_commission_mode">' . __( 'Commission Mode', 'wc-multivendor-marketplace' ) . '</label>';
+		echo '<div class="form-field _wcfmmp_store_field"><label for="vendor_commission_mode">' . esc_html__( 'Commission Mode', 'wc-multivendor-marketplace' ) . '</label>';
 		$WCFM->wcfm_fields->wcfm_generate_form_field( array(
 					                                              "vendor_commission_mode" => array('name' => 'commission[commission_mode]', 'type' => 'select', 'options' => $wcfm_commission_types, 'class' => 'wcfm-select wcfm_ele select short variable external grouped booking', 'value' => $vendor_commission_mode )
 					                                              ) );
 		echo '<br/><br><span class="desciption">' . __( 'Keep this as Global to apply commission rule as per vendor or marketplace commission setup.', 'wc-multivendor-marketplace' ) . '</span>';
 		echo '</div>';
 		
-		echo '<div class="form-field _wcfmmp_commission_percent_field commission_mode_field commission_mode_percent commission_mode_percent_fixed"><label for="vendor_commission_percent">' . __( 'Commission Percent(%)', 'wc-multivendor-marketplace' ) . '</label>';
+		echo '<div class="form-field _wcfmmp_commission_percent_field commission_mode_field commission_mode_percent commission_mode_percent_fixed"><label for="vendor_commission_percent">' . esc_html__( 'Commission Percent(%)', 'wc-multivendor-marketplace' ) . '</label>';
 		$WCFM->wcfm_fields->wcfm_generate_form_field( array(
 					                                              "vendor_commission_percent" => array('name' => 'commission[commission_percent]', 'type' => 'number', 'class' => 'wcfm-text wcfm_ele wcfm_non_negative_input commission_mode_field commission_mode_percent commission_mode_percent_fixed', 'value' => $vendor_commission_percent, 'attributes' => array( 'min' => '0', 'step' => '0.1') ),
 					                                              ) );
 		echo '</div>';
 		
-		echo '<div class="form-field _wcfmmp_commission_fixed_field commission_mode_field commission_mode_fixed commission_mode_percent_fixed"><label for="vendor_commission_fixed">' . __( 'Commission Fixed', 'wc-multivendor-marketplace' ) . '(' . get_woocommerce_currency_symbol() . ')' . '</label>';
+		echo '<div class="form-field _wcfmmp_commission_fixed_field commission_mode_field commission_mode_fixed commission_mode_percent_fixed"><label for="vendor_commission_fixed">' . esc_html__( 'Commission Fixed', 'wc-multivendor-marketplace' ) . '(' . get_woocommerce_currency_symbol() . ')' . '</label>';
 		$WCFM->wcfm_fields->wcfm_generate_form_field( array(
 																												"vendor_commission_fixed" => array('name' => 'commission[commission_fixed]', 'type' => 'number', 'class' => 'wcfm-text wcfm_ele wcfm_non_negative_input simple variable external grouped booking commission_mode_field commission_mode_fixed commission_mode_percent_fixed', 'value' => $vendor_commission_fixed, 'attributes' => array( 'min' => '0', 'step' => '0.1') ),
 																												) );
 		echo '</div>';
 		
-		echo '<h3 class="form-field commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity" style="color:#17a2b8;">' . __('Commission Tax Settings', 'wc-multivendor-marketplace') . '</h3>';
+		echo '<h3 class="form-field commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity" style="color:#17a2b8;">' . esc_html__('Commission Tax Settings', 'wc-multivendor-marketplace') . '</h3>';
 		
-		echo '<p class="form-field _wcfmmp_commission_fixed_field commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity"><label for="vendor_commission_fixed">' . __( 'Enable', 'wc-multivendor-marketplace' ) . '</label>';
+		echo '<p class="form-field _wcfmmp_commission_fixed_field commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity"><label for="vendor_commission_fixed">' . esc_html__( 'Enable', 'wc-multivendor-marketplace' ) . '</label>';
 		$WCFM->wcfm_fields->wcfm_generate_form_field( array(
 																												'tax_enable' => array( 'type' => 'checkbox', 'name' => 'commission[tax_enable]', 'class' => 'wcfm-checkbox wcfm_ele commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity', 'label_class' => 'wcfm_title checkbox_title commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity', 'value' => 'yes', 'dfvalue' => $tax_enable ),
 																												) );
 		echo '</p>';
 		
-		echo '<p class="form-field _wcfmmp_commission_fixed_field commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity"><label for="vendor_commission_fixed">' . __( 'Tax Label', 'wc-multivendor-marketplace' ) . '</label>';
+		echo '<p class="form-field _wcfmmp_commission_fixed_field commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity"><label for="vendor_commission_fixed">' . esc_html__( 'Tax Label', 'wc-multivendor-marketplace' ) . '</label>';
 		$WCFM->wcfm_fields->wcfm_generate_form_field( array(
 																												'tax_name' => array( 'placeholder' => __( 'Tax', 'wc-multivendor-marketplace' ), 'type' => 'text', 'name' => 'commission[tax_name]', 'class' => 'wcfm-text wcfm_ele commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity', 'label_class' => 'wcfm_title commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity', 'value' => $tax_name ),
 																												) );
 		echo '</p>';
 		
-		echo '<p class="form-field _wcfmmp_commission_fixed_field commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity"><label for="vendor_commission_fixed">' . __( 'Tax Percent (%)', 'wc-multivendor-marketplace' ) . '</label>';
+		echo '<p class="form-field _wcfmmp_commission_fixed_field commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity"><label for="vendor_commission_fixed">' . esc_html__( 'Tax Percent (%)', 'wc-multivendor-marketplace' ) . '</label>';
 		$WCFM->wcfm_fields->wcfm_generate_form_field( array(
 																												'tax_percent' => array( 'type' => 'number', 'name' => 'commission[tax_percent]', 'class' => 'wcfm-text wcfm_ele wcfm_non_negative_input commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity', 'label_class' => 'wcfm_title commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity', 'value' => $tax_percent ),
 																												) );
@@ -704,7 +704,7 @@ class WCFMmp_Admin {
 		$tax_name                      = isset( $category_commission_data['tax_name'] ) ? $category_commission_data['tax_name'] : '';
 		$tax_percent                   = isset( $category_commission_data['tax_percent'] ) ? $category_commission_data['tax_percent'] : '';
 		
-		echo '<tr><th colspan="2"><h3 class="form-field" style="color:#17a2b8;">' . __('Commission Settings', 'wc-multivendor-marketplace') . '</h3></th></tr>';
+		echo '<tr><th colspan="2"><h3 class="form-field" style="color:#17a2b8;">' . esc_html__('Commission Settings', 'wc-multivendor-marketplace') . '</h3></th></tr>';
 		
 		$WCFM->wcfm_fields->wcfm_generate_form_field( array(
 			                                                "wcfm_commission_for" => array( 'label' => __( 'Commission For', 'wc-multivendor-marketplace' ), 'type' => 'select', 'in_table' => true, 'options' => array( 'vendor' => __( 'Vendor', 'wc-multivendor-marketplace' ), 'admin' => __( 'Admin', 'wc-multivendor-marketplace' ) ), 'attributes' => array( 'disabled' => true, 'style' => 'border: 0px !important;font-weight:600;color:#00897b;background:transparent;' ), 'class' => 'wcfm-select wcfm_ele select short', 'wrapper_class' => "form-field _wcfmmp_store_field", 'value' => $wcfm_commission_for, 'desc' => __( 'Always applicable as per global rule.', 'wc-multivendor-marketplace' ) )
@@ -722,7 +722,7 @@ class WCFMmp_Admin {
 																												"vendor_commission_fixed" => array( 'label' => __( 'Commission Fixed', 'wc-multivendor-marketplace' ) . '(' . get_woocommerce_currency_symbol() . ')', 'name' => 'commission[commission_fixed]', 'type' => 'number', 'in_table' => true, 'class' => 'wcfm-text wcfm_ele simple variable external grouped booking commission_mode_field commission_mode_fixed commission_mode_percent_fixed', 'value' => $vendor_commission_fixed, 'attributes' => array( 'min' => '0', 'step' => '0.1'), 'wrapper_class' => "form-field _wcfmmp_commission_fixed_field commission_mode_field commission_mode_fixed commission_mode_percent_fixed" ),
 																												) );
 		
-		echo '<tr><th colspan="2"><h3 class="form-field commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity" style="color:#17a2b8;">' . __('Commission Tax Settings', 'wc-multivendor-marketplace') . '</h3></th></tr>';
+		echo '<tr><th colspan="2"><h3 class="form-field commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity" style="color:#17a2b8;">' . esc_html__('Commission Tax Settings', 'wc-multivendor-marketplace') . '</h3></th></tr>';
 		
 		$WCFM->wcfm_fields->wcfm_generate_form_field( array(
 																												'tax_enable' => array( 'label' => __( 'Enable', 'wc-multivendor-marketplace' ), 'type' => 'checkbox', 'name' => 'commission[tax_enable]', 'in_table' => true, 'class' => 'wcfm-checkbox wcfm_ele commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity', 'label_class' => 'wcfm_title checkbox_title commission_mode_field commission_mode_percent commission_mode_fixed commission_mode_percent_fixed commission_mode_by_sales commission_mode_by_products commission_mode_by_quantity', 'value' => 'yes', 'dfvalue' => $tax_enable ),
@@ -747,9 +747,9 @@ class WCFMmp_Admin {
 	public function wcfmmp_save_product_cat_commission_fields( $term_id, $tt_id = '', $taxonomy = '' ) {
 		if( isset( $_POST['commission'] ) && 'product_cat' === $taxonomy ) {
 			if( function_exists( 'update_term_meta' ) ) {
-				update_term_meta( $term_id, '_wcfmmp_commission', wp_unslash($_POST['commission']) );
+				update_term_meta( $term_id, '_wcfmmp_commission', wc_clean( wp_unslash($_POST['commission']) ) );
 			} else {
-				update_metadata( 'woocommerce_term', $term_id, '_wcfmmp_commission', wp_unslash($_POST['commission']) );
+				update_metadata( 'woocommerce_term', $term_id, '_wcfmmp_commission', wc_clean( wp_unslash($_POST['commission']) ) );
 			}
 		}
 	}

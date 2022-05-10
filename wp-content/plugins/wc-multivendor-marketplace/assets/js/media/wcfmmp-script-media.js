@@ -32,7 +32,8 @@ jQuery(document).ready(function($) {
 			"data"   : function( d ) {
 				d.action          = 'wcfm_ajax_controller',
 				d.controller      = 'wcfm-media',
-				d.media_vendor    = $media_vendor
+				d.media_vendor    = $media_vendor,
+				d.wcfm_ajax_nonce   = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -66,6 +67,7 @@ jQuery(document).ready(function($) {
 		var data = {
 			action : 'wcfmmp_media_delete',
 			mediaid : item.data('mediaid'),
+			wcfm_ajax_nonce : wcfm_params.wcfm_ajax_nonce
 		}	
 		jQuery.ajax({
 			type:		'POST',
@@ -118,7 +120,8 @@ jQuery(document).ready(function($) {
 		if(rconfirm) { 
 			var data = {
 				action            : 'wcfmmp_bulk_media_delete',
-				selected_media : $selected_media
+				selected_media    : $selected_media,
+				wcfm_ajax_nonce   : wcfm_params.wcfm_ajax_nonce
 			}	
 			
 			$.ajax({

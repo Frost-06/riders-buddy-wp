@@ -44,7 +44,8 @@ jQuery(document).ready( function($) {
 				d.filter_date_to    = $filter_date_to,  
 				d.order_product     = $order_product, 
 				d.commission_status = $commission_status,
-				d.vendor_id         = $('#wcfmmp_vendor_manager_id').val()
+				d.vendor_id         = $('#wcfmmp_vendor_manager_id').val(),
+				d.wcfm_ajax_nonce   = wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -116,7 +117,8 @@ jQuery(document).ready( function($) {
 		});
 		var data = {
 			action : 'wcfm_order_mark_complete',
-			orderid : item.data('orderid')
+			orderid : item.data('orderid'),
+			wcfm_ajax_nonce          : wcfm_params.wcfm_ajax_nonce
 		}	
 		$.ajax({
 			type:		'POST',

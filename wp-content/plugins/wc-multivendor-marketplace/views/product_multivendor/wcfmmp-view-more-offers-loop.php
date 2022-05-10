@@ -13,8 +13,8 @@ if( $multi_parent ) {
   return;
 }
 
-$sql = "SELECT GROUP_CONCAT(product_id) as products, parent_product_id FROM `{$wpdb->prefix}wcfm_marketplace_product_multivendor` WHERE `parent_product_id` = $parent_product_id";
-$more_offers = $wpdb->get_results( $sql );
+$sql = "SELECT GROUP_CONCAT(product_id) as products, parent_product_id FROM `{$wpdb->prefix}wcfm_marketplace_product_multivendor` WHERE `parent_product_id` = %d";
+$more_offers = $wpdb->get_results( $wpdb->prepare( $sql, $parent_product_id ) );
 
 $product_ids = '';
 if( !empty( $more_offers ) ) {
@@ -48,7 +48,6 @@ if( $product_ids && $sorting ) {
 	}
 }
 
-//echo $sql;
 $more_offers = $wpdb->get_results( $sql );
 
 $more_offers = apply_filters( 'wcfmmp_more_offers_products', $more_offers, $parent_product_id );

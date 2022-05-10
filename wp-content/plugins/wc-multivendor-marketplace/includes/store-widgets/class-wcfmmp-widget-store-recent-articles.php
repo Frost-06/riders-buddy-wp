@@ -81,7 +81,7 @@ class WCFMmp_Store_Recent_Articles extends WP_Widget {
 		echo $before_widget;
 
 		if ( ! empty( $title ) ) {
-			echo $args['before_title'] . $title . $args['after_title'];
+			echo $args['before_title'] . wp_kses_post($title) . $args['after_title'];
 		}
 		
 		do_action( 'wcfmmp_store_before_sidebar_recent_articles', $store_id );
@@ -94,9 +94,9 @@ class WCFMmp_Store_Recent_Articles extends WP_Widget {
 				$title      = ( ! empty( $post_title ) ) ? $post_title : __( '(no title)' );
 				?>
 				<li>
-					<a href="<?php the_permalink( $recent_post->ID ); ?>"><?php echo $title ; ?></a>
+					<a href="<?php the_permalink( $recent_post->ID ); ?>"><?php echo wp_kses_post($title) ; ?></a>
 					<br/>
-					<span class="post-date"><?php echo get_the_date( '', $recent_post->ID ); ?></span>
+					<span class="post-date"><?php echo wp_kses_post(get_the_date( '', $recent_post->ID )); ?></span>
 				</li>
 			<?php endforeach; ?>
 		</ul>
@@ -142,12 +142,12 @@ class WCFMmp_Store_Recent_Articles extends WP_Widget {
 		$number    = $instance['number'];
 		?>
 		<p>
-			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'wc-multivendor-marketplace' ); ?></label>
-			<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
+			<label for="<?php echo esc_attr($this->get_field_id( 'title' )); ?>"><?php _e( 'Title:', 'wc-multivendor-marketplace' ); ?></label>
+			<input class="widefat" id="<?php echo esc_attr($this->get_field_id( 'title' )); ?>" name="<?php echo esc_attr($this->get_field_name( 'title' )); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
 		</p>
 		<p>
-			<label for="<?php echo $this->get_field_id( 'number' ); ?>"><?php _e( 'Number of articles to show:', 'wc-multivendor-marketplace' ); ?></label>
-			<input class="widefat" id="<?php echo $this->get_field_id( 'number' ); ?>" name="<?php echo $this->get_field_name( 'number' ); ?>" type="number" min="1" step="1" value="<?php echo esc_attr( $number ); ?>" />
+			<label for="<?php echo esc_attr($this->get_field_id( 'number' )); ?>"><?php _e( 'Number of articles to show:', 'wc-multivendor-marketplace' ); ?></label>
+			<input class="widefat" id="<?php echo esc_attr($this->get_field_id( 'number' )); ?>" name="<?php echo esc_attr($this->get_field_name( 'number' )); ?>" type="number" min="1" step="1" value="<?php echo esc_attr( $number ); ?>" />
 		</p>
 		<?php
 	}

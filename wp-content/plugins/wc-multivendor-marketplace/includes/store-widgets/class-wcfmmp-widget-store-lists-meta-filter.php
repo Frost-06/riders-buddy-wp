@@ -59,7 +59,7 @@ class WCFMmp_Store_Lists_Meta_Filter extends WP_Widget {
 		echo $before_widget;
 
 		if ( ! empty( $title ) ) {
-			echo $args['before_title'] . $title . $args['after_title'];
+			echo $args['before_title'] . wp_kses_post($title) . $args['after_title'];
 		}
 		
 		do_action( 'wcfmmp_store_lists_before_sidebar_meta_filter' );
@@ -169,8 +169,8 @@ class WCFMmp_Store_Lists_Meta_Filter extends WP_Widget {
 		?>
 		
 		<p>
-			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'wc-multivendor-marketplace' ); ?></label>
-			<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
+			<label for="<?php echo esc_attr($this->get_field_id( 'title' )); ?>"><?php _e( 'Title:', 'wc-multivendor-marketplace' ); ?></label>
+			<input class="widefat" id="<?php echo esc_attr($this->get_field_id( 'title' )); ?>" name="<?php echo esc_attr($this->get_field_name( 'title' )); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
 		</p>
 		
 		<?php
@@ -188,7 +188,7 @@ class WCFMmp_Store_Lists_Meta_Filter extends WP_Widget {
 				?>
 				<p>
 					<input class="checkbox" id="<?php echo esc_attr( $this->get_field_id( $field_id ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $field_name ) ); ?>" type="checkbox" value="1" <?php checked( $field_value, 1 ); ?> />
-					<label for="<?php echo esc_attr( $this->get_field_id( $field_id ) ); ?>"><?php echo $wcfmvm_registration_custom_field['label']; ?></label>
+					<label for="<?php echo esc_attr( $this->get_field_id( $field_id ) ); ?>"><?php echo esc_html($wcfmvm_registration_custom_field['label']); ?></label>
 				</p>
 				<?php
 			}

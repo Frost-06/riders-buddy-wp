@@ -18,12 +18,12 @@ if( !$order_id ) return;
 
 $item_id = 0;
 if( isset( $_POST['item_id'] ) ) {
-	$item_id       = sanitize_text_field( $_POST['item_id'] );
+	$item_id       = absint( $_POST['item_id'] );
 }
 
 $commission_id = 0;
 if( isset( $_POST['commission_id'] ) ) {
-	$commission_id = sanitize_text_field( $_POST['commission_id'] );
+	$commission_id = absint( $_POST['commission_id'] );
 }
 
 $customer_refund = 'no';
@@ -51,10 +51,10 @@ foreach ( $line_items as $item_id => $item ) {
 	
 	$sql  = "SELECT ID, withdraw_status, vendor_id, refund_status, is_partially_refunded, is_refunded FROM {$wpdb->prefix}wcfm_marketplace_orders AS commission";
 	$sql .= " WHERE 1=1";
-	$sql .= " AND `item_id` = " . $order_item_id;
+	$sql .= " AND `item_id` = %d";
 	//$sql .= " AND (`is_refunded` = 1 OR `is_partially_refunded` = 1)";
 	//$sql .= " AND `refund_status` in ('completed', 'requested')";
-	$commissions = $wpdb->get_results( $sql );
+	$commissions = $wpdb->get_results( $wpdb->prepare( $sql, $order_item_id ) );
 	if( !empty( $commissions ) ) {
 		foreach( $commissions as $commission ) {
 			if( ( $commission->is_refunded != 1 ) && ( $commission->refund_status != 'requested' ) && ( ( $commission->is_partially_refunded != 1 ) || ( ( $commission->is_partially_refunded == 1 ) && ( $commission->refund_status == 'completed' ) ) ) ) {
@@ -109,10 +109,10 @@ $request_mode = apply_filters( 'wcfm_refund_request_default_mode', 'partial' );
 				<tbody id="order_line_items">
 					<?php if( !empty( $product_items ) ) { ?>
 						<?php foreach( $product_items as $item_id => $product_item ) { $order_item = new WC_Order_Item_Product( $item_id ); ?>
-							<tr class="order_line_item_<?php echo $item_id; ?>">
+							<tr class="order_line_item_<?php echo esc_attr($item_id); ?>">
 								<td class="item sortable" data-sort="string-ins">
 								  <?php 
-								  echo $product_item['name']; 
+								  echo wp_kses_post($product_item['name']); 
 								  do_action( 'woocommerce_order_item_meta_start', $item_id, $order_item, $order, false );
 									wc_display_item_meta( $order_item );
 									do_action( 'woocommerce_order_item_meta_end', $item_id, $order_item, $order, false );
@@ -122,19 +122,19 @@ $request_mode = apply_filters( 'wcfm_refund_request_default_mode', 'partial' );
 								<td class="item_cost sortable no_mob" data-sort="float" style="text-align:center;"><?php echo wc_price( $product_item['cost'], array( 'currency' => $currency ) ); ?></td>
 								
 								<td class="item_quantity wcfm_item_qty_heading sortable" data-sort="int" style="text-align:center;">
-								  <?php echo $product_item['qty']; ?><br />
-								  <select class="wcfm_popup_input wcfm_refund_input_qty wcfm_refund_input_ele" data-item="<?php echo $item_id; ?>" name="wcfm_refund_input[<?php echo $item_id; ?>][qty]">
+								  <?php echo esc_attr($product_item['qty']); ?><br />
+								  <select class="wcfm_popup_input wcfm_refund_input_qty wcfm_refund_input_ele" data-item="<?php echo esc_attr($item_id); ?>" name="wcfm_refund_input[<?php echo esc_attr($item_id); ?>][qty]">
 								    <option value="">0</option>
 								    <?php for( $h = 1; $h <= $product_item['qty']; $h++ ) { ?>
-								    	<option value="<?php echo $h; ?>"><?php echo $h; ?></option>
+								    	<option value="<?php echo esc_attr($h); ?>"><?php echo esc_attr($h); ?></option>
 								    <?php } ?>
 								  </select>
-								  <input type="hidden" value="<?php echo $item_id; ?>" name="wcfm_refund_input[<?php echo $item_id; ?>][item]">
+								  <input type="hidden" value="<?php echo esc_attr($item_id); ?>" name="wcfm_refund_input[<?php echo esc_attr($item_id); ?>][item]">
 								</td>
 								
 								<td class="line_cost sortable" data-sort="float" style="text-align:center;">
 								  <?php echo wc_price( $product_item['total'], array( 'currency' => $currency ) ); ?><br />
-								  <input type="number" class="wcfm_popup_input wcfm_refund_input_total wcfm_refund_input_ele" data-item_cost="<?php echo round( $product_item['total']/$product_item['qty'], 2 ); ?>" name="wcfm_refund_input[<?php echo $item_id; ?>][total]" min="0" step="1" max="<?php echo $product_item['total']; ?>" data-max_total="<?php echo $product_item['total']; ?>"  />
+								  <input type="number" class="wcfm_popup_input wcfm_refund_input_total wcfm_refund_input_ele" data-item_cost="<?php echo round( $product_item['total']/$product_item['qty'], 2 ); ?>" name="wcfm_refund_input[<?php echo esc_attr($item_id); ?>][total]" min="0" step="1" max="<?php echo esc_attr($product_item['total']); ?>" data-max_total="<?php echo esc_attr($product_item['total']); ?>"  />
 								</td>
 								
 								<?php
@@ -144,8 +144,10 @@ $request_mode = apply_filters( 'wcfm_refund_request_default_mode', 'partial' );
 											foreach ( $order_taxes as $tax_item ) {
 												$tax_item_id       = $tax_item['rate_id'];
 												$tax_item_total    = isset( $tax_data['total'][ $tax_item_id ] ) ? $tax_data['total'][ $tax_item_id ] : 0;
+												if( !is_numeric( $tax_item_total ) ) $tax_item_total = 0;
 												$tax_item_subtotal = isset( $tax_data['subtotal'][ $tax_item_id ] ) ? $tax_data['subtotal'][ $tax_item_id ] : 0;
 												$refunded = $order->get_tax_refunded_for_item( $item_id, $tax_item_id );
+												if( !is_numeric( $refunded ) ) $refunded = 0;
 												$tax_cost = ( $tax_item_total - $refunded );
 												?>
 												<td class="line_tax no_ipad no_mob" style="text-align:center;">
@@ -154,7 +156,7 @@ $request_mode = apply_filters( 'wcfm_refund_request_default_mode', 'partial' );
 															if ( '' != $tax_item_total ) {
 																echo wc_price( wc_round_tax_total( $tax_cost ), array( 'currency' => $currency ) );
 																?><br />
-																<input type="number" class="wcfm_popup_input wcfm_refund_input_tax wcfm_refund_input_ele" data-item_tax="<?php echo round( $tax_cost/$product_item['qty'], 2 ); ?>" name="wcfm_refund_tax_input[<?php echo $item_id; ?>][<?php echo $tax_item_id; ?>]" min="0" step="1" max="<?php echo $tax_cost; ?>" data-max_tax="<?php echo $tax_cost; ?>"  />
+																<input type="number" class="wcfm_popup_input wcfm_refund_input_tax wcfm_refund_input_ele" data-item_tax="<?php echo round( $tax_cost/$product_item['qty'], 2 ); ?>" name="wcfm_refund_tax_input[<?php echo esc_attr($item_id); ?>][<?php echo esc_attr($tax_item_id); ?>]" min="0" step="1" max="<?php echo esc_attr($tax_cost); ?>" data-max_tax="<?php echo esc_attr($tax_cost); ?>"  />
 																<?php
 															} else {
 																echo '&ndash;';
@@ -244,7 +246,7 @@ $request_mode = apply_filters( 'wcfm_refund_request_default_mode', 'partial' );
 			
 			<p class="form-submit">
 				<input name="submit" type="submit" id="wcfm_refund_requests_submit_button" class="submit wcfm_popup_button" value="<?php _e( 'Submit', 'wc-multivendor-marketplace' ); ?>"> 
-				<input type="hidden" name="wcfm_refund_order_id" value="<?php echo $order_id; ?>" id="wcfm_refund_order_id">
+				<input type="hidden" name="wcfm_refund_order_id" value="<?php echo esc_attr($order_id); ?>" id="wcfm_refund_order_id">
 			</p>	
 		<?php } else { ?>
 			<div><?php _e( 'This order\'s item(s) are already requested for refund!', 'wc-multivendor-marketplace' ); ?></div>

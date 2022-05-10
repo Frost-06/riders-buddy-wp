@@ -175,7 +175,7 @@ if (apply_filters('wcfm_is_allow_archive_product', true)) {
 
 			// Type filtering
 			if ($wcfm_is_products_type_filter = apply_filters('wcfm_is_products_type_filter', true)) {
-				$product_types = apply_filters('wcfm_product_types', array('simple' => __('Simple Product', 'wc-frontend-manager'), 'variable' => __('Variable Product', 'wc-frontend-manager'), 'grouped' => __('Grouped Product', 'wc-frontend-manager'), 'external' => __('External/Affiliate Product', 'wc-frontend-manager')));
+				$product_types = apply_filters('wcfm_product_types', array('simple' => __('Simple Product', 'wc-frontend-manager'), 'variable' => __('Variable Product', 'wc-frontend-manager'), 'grouped' => __('Grouped Product', 'wc-frontend-manager'), 'external' => __('Bookable Services', 'wc-frontend-manager')));
 				$output  = '<select name="product_type" id="dropdown_product_type" style="width: 160px;">';
 				$output .= '<option value="">' . __('All product types', 'wc-frontend-manager') . '</option>';
 

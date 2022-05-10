@@ -22,10 +22,10 @@ class WCFMmp_Reviews_Controller {
 		
 		$vendor_id = $WCFMmp->vendor_id;
 		
-		$length = sanitize_text_field( $_POST['length'] );
-		$offset = sanitize_text_field( $_POST['start'] );
+		$length = absint( $_POST['length'] );
+		$offset = absint( $_POST['start'] );
 		
-		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_text_field( $_POST['orderby'] ) : 'ID';
+		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_sql_orderby( $_POST['orderby'] ) : 'ID';
 		$the_order   = ( ! empty( $_POST['order'] ) && 'asc' === $_POST['order'] ) ? 'ASC' : 'DESC';
 		
     $status_filter = '';
@@ -42,7 +42,7 @@ class WCFMmp_Reviews_Controller {
     if( wcfm_is_vendor() && $vendor_id ) {
 			$reviews_vendor_filter = " AND `vendor_id` = " . $vendor_id;
 		}  elseif ( ! empty( $_POST['reviews_vendor'] ) ) {
-			$reviews_vendor = sanitize_text_field( $_POST['reviews_vendor'] );
+			$reviews_vendor = absint( $_POST['reviews_vendor'] );
 			$reviews_vendor_filter = " AND `vendor_id` = {$reviews_vendor}";
 		}
     
@@ -71,7 +71,7 @@ class WCFMmp_Reviews_Controller {
 		// Generate Reviews JSON
 		$wcfm_reviews_json = '';
 		$wcfm_reviews_json = '{
-															"draw": ' . sanitize_text_field( $_POST['draw'] ) . ',
+															"draw": ' . absint( $_POST['draw'] ) . ',
 															"recordsTotal": ' . $wcfm_review_items . ',
 															"recordsFiltered": ' . $wcfm_review_items . ',
 															"data": ';
@@ -94,7 +94,7 @@ class WCFMmp_Reviews_Controller {
 				}
 				
 				// Image
-				$wcfm_reviews_json_arr[$index][] = '<div class="wcfmmp-author-img"><img width="40" src="' . $wp_user_avatar. '" /></div>';
+				$wcfm_reviews_json_arr[$index][] = '<div class="wcfmmp-author-img"><img width="40" src="' . esc_url($wp_user_avatar) . '" /></div>';
 				
         // Author
         $author = '<div class="wcfmmp-author-meta">' . $wcfm_review_single->author_name;

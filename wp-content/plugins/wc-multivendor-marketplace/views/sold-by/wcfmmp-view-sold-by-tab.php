@@ -40,7 +40,7 @@ if( $vendor_id ) {
 		
 		echo '<div class="wcfmmp_sold_by_container">';
 		do_action('before_wcfmmp_sold_by_gravatar_product_page', $vendor_id );
-		echo '<div class="wcfmmp_store_tab_info wcfmmp_store_info_gravatar"><img style="max-height:150px;" src="' . $store_user->get_avatar() . '" /></div>';
+		echo '<div class="wcfmmp_store_tab_info wcfmmp_store_info_gravatar"><img style="max-height:150px;" src="' . esc_url($store_user->get_avatar()) . '" /></div>';
 		do_action('before_wcfmmp_sold_by_label_product_page', $vendor_id );
 		echo '<div class="wcfmmp_sold_by_wrapper">' . $store_name . '</div>';
 		if( apply_filters( 'wcfm_is_pref_vendor_reviews', true ) ) { $WCFMmp->wcfmmp_reviews->show_star_rating( 0, $vendor_id ); }
@@ -80,7 +80,7 @@ if( $vendor_id ) {
 			?>
 			<?php if( $wcfm_shop_description ) { ?>
 				<div class="wcfm-store-about" style="font-style:italic;">
-					<div class="wcfm_store_description" ><?php echo $wcfm_shop_description; ?></div>
+					<div class="wcfm_store_description" ><?php echo wp_kses_post($wcfm_shop_description); ?></div>
 				</div>
 			<?php 
 			}
@@ -119,7 +119,7 @@ if( $vendor_id ) {
 				$default_lat         = isset( $default_geolocation['lat'] ) ? esc_attr( $default_geolocation['lat'] ) : apply_filters( 'wcfmmp_map_default_lat', 30.0599153 );
 				$default_lng         = isset( $default_geolocation['lng'] ) ? esc_attr( $default_geolocation['lng'] ) : apply_filters( 'wcfmmp_map_default_lng', 31.2620199 );
 				$default_zoom        =  apply_filters( 'wcfmmp_map_default_zoom_level', 17 );
-				$store_icon          = apply_filters( 'wcfmmp_map_store_icon', $WCFMmp->plugin_url . 'assets/images/wcfmmp_map_icon.png', 0, '' );
+				$store_icon          = apply_filters( 'wcfmmp_map_store_icon', esc_url($WCFMmp->plugin_url . 'assets/images/wcfmmp_map_icon.png'), 0, '' );
 				
 				wp_localize_script( 'wcfmmp_store_js', 'wcfmmp_store_map_options', array( 'default_lat' => $default_lat, 'default_lng' => $default_lng, 'default_zoom' => absint( $default_zoom ), 'store_icon' => $store_icon, 'icon_width' => apply_filters( 'wcfmmp_map_icon_width', 40 ), 'icon_height' => apply_filters( 'wcfmmp_map_icon_height', 57 ), 'is_poi' => apply_filters( 'wcfmmp_is_allow_map_poi', true ), 'is_allow_scroll_zoom' => apply_filters( 'wcfmmp_is_allow_map_scroll_zoom', true ), 'is_rtl' => is_rtl() ) );
 			}

@@ -33,7 +33,7 @@ if( $banner_type == 'video' ) {
 } else {
 	$banner          = $store_user->get_list_banner();
 	if( !$banner ) {
-		$banner = !empty( $WCFMmp->wcfmmp_marketplace_options['store_list_default_banner'] ) ? wcfm_get_attachment_url($WCFMmp->wcfmmp_marketplace_options['store_list_default_banner']) : $WCFMmp->plugin_url . 'assets/images/default_banner.jpg';
+		$banner = !empty( $WCFMmp->wcfmmp_marketplace_options['store_list_default_banner'] ) ? wcfm_get_attachment_url($WCFMmp->wcfmmp_marketplace_options['store_list_default_banner']) : esc_url($WCFMmp->plugin_url . 'assets/images/default_banner.jpg');
 		$banner = apply_filters( 'wcfmmp_list_store_default_bannar', $banner );
 	}
 }
@@ -44,30 +44,30 @@ $store_address   = $store_user->get_address_string();
 $store_description = $store_user->get_shop_description();
 ?>
 
-<li class="wcfmmp-single-store item woocommerce coloum-<?php echo $per_row; ?>">
+<li class="wcfmmp-single-store item woocommerce coloum-<?php echo esc_attr($per_row); ?>">
 	<div class="store-wrapper">
 		<div class="store-content">
-		  <?php if( apply_filters( 'wcfmmp_is_allow_full_store_card_linked', false ) && apply_filters( 'wcfmmp_is_allow_sold_by_linked', true ) ) { ?><a href="<?php echo $store_url; ?>"><?php } ?>
+		  <?php if( apply_filters( 'wcfmmp_is_allow_full_store_card_linked', false ) && apply_filters( 'wcfmmp_is_allow_sold_by_linked', true ) ) { ?><a href="<?php echo esc_url($store_url); ?>"><?php } ?>
 				<?php if( $banner_type == 'video' ) { ?>
 					<div class="store-info"><?php echo preg_replace("/\s*[a-zA-Z\/\/:\.]*youtu(be.com\/watch\?v=|.be\/)([a-zA-Z0-9\-_]+)([a-zA-Z0-9\/\*\-\_\?\&\;\%\=\.]*)/i", "<iframe width=\"100%\" height=\"315\" frameborder=\"0\" allow=\"autoplay; encrypted-media\" src=\"//www.youtube.com/embed/$2?iv_load_policy=3&enablejsapi=1&disablekb=1&autoplay=0&controls=0&showinfo=0&rel=0&loop=1&wmode=transparent&widgetid=1\" allowfullscreen></iframe>", $banner_video); ?></div>
 				<?php } else { ?>
-					<div class="store-info" style="background-image: url( '<?php echo $banner; ?>');"></div>
+					<div class="store-info" style="background-image: url( '<?php echo esc_url($banner); ?>');"></div>
 				<?php } ?>
 			<?php if( apply_filters( 'wcfmmp_is_allow_full_store_card_linked', false ) && apply_filters( 'wcfmmp_is_allow_sold_by_linked', true ) ) { ?></a><?php } ?>
 		</div>
 		<div class="store-footer">
 		
 			<div class="store-avatar lft">
-				<img src="<?php echo $gravatar; ?>" alt="Logo"/>
+				<img src="<?php echo esc_url($gravatar); ?>" alt="Logo"/>
 			</div>
 			
 			<div class="store-data-container rgt">
 				<div class="store-data">
 					<h2>
 					  <?php if( apply_filters( 'wcfmmp_is_allow_sold_by_linked', true ) ) { ?>
-					  	<a href="<?php echo $store_url; ?>"><?php echo $store_name; ?></a>
+					  	<a href="<?php echo esc_url($store_url); ?>"><?php echo wp_kses_post($store_name); ?></a>
 					  <?php } else { ?>
-					  	<a href="#" onclick="return false;"><?php echo $store_name; ?></a>
+					  	<a href="#" onclick="return false;"><?php echo wp_kses_post($store_name); ?></a>
 					  <?php } ?>
 					  <?php do_action( 'after_wcfmmp_store_list_rating', $store_id, $store_info ); ?>
 				  </h2>
@@ -79,7 +79,7 @@ $store_description = $store_user->get_shop_description();
 					</div>
 					
 					<?php if ( $store_address && ( $store_info['store_hide_address'] == 'no' ) && wcfm_vendor_has_capability( $store_id, 'vendor_address' ) ): ?>
-						<p class="store-address"><?php echo $store_address; ?></p>
+						<p class="store-address"><?php echo wp_kses_post($store_address); ?></p>
 					<?php endif ?>
 					
 					<?php if ( !empty( $store_user->get_email() ) && ( $store_info['store_hide_email'] == 'no' ) && wcfm_vendor_has_capability( $store_id, 'vendor_email' ) ) { ?>
@@ -99,7 +99,7 @@ $store_description = $store_user->get_shop_description();
 					if( $distance ) {
 						?>
 						<p class="store-phone">
-							<i class="wcfmfa fa-map-marker-alt" aria-hidden="true"></i> <?php echo $distance . ' ' . $radius_unit . ' ' . __( 'away', 'wc-multivendor-marketplace' ); ?>
+							<i class="wcfmfa fa-map-marker-alt" aria-hidden="true"></i> <?php echo wp_kses_post($distance . ' ' . $radius_unit . ' ' . __( 'away', 'wc-multivendor-marketplace' )); ?>
 						</p>
 					<?php } 
 					} ?>
@@ -107,14 +107,14 @@ $store_description = $store_user->get_shop_description();
 					$total_products = wcfm_get_user_posts_count( $store_id, 'product', apply_filters( 'wcfm_limit_check_status', 'publish' ) );	
 					?>
 					<p class="store-phone">
-						<i class="wcfmfa fa-cube" aria-hidden="true"></i> <?php echo $total_products . ' ' . __( 'products', 'wc-frontend-manager' ); ?>
+						<i class="wcfmfa fa-cube" aria-hidden="true"></i> <?php echo wp_kses_post( $total_products . ' ' . __( 'products', 'wc-frontend-manager' ) ); ?>
 					</p>
 					<?php } ?>
 					<?php if ( $store_description && apply_filters( 'wcfm_is_allow_store_list_about', false ) ) { ?>
 						<p class="store-phone">
 							<?php 
 							$pos = strpos( $store_description, ' ', 100 );
-							echo substr( $store_description, 0, $pos ) . '...'; 
+							echo wp_kses_post( substr( $store_description, 0, $pos ) . '...' ); 
 							?>
 						</p>
 					<?php } ?>
@@ -126,7 +126,7 @@ $store_description = $store_user->get_shop_description();
 			<div class="spacer"></div>
 			
 			<?php if( apply_filters( 'wcfmmp_is_allow_sold_by_linked', true ) && apply_filters( 'wcfmmp_is_allow_visit_store_button', true ) ) { ?>
-			  <a href="<?php echo $store_url; ?>" class="wcfmmp-visit-store"><?php _e( 'Visit <span>Store</span>', 'wc-multivendor-marketplace' ); ?></a>
+			  <a href="<?php echo esc_url($store_url); ?>" class="wcfmmp-visit-store"><?php _e( 'Visit <span>Store</span>', 'wc-multivendor-marketplace' ); ?></a>
 			<?php } ?>
 			
 			<?php do_action( 'wcfmmp_store_list_footer', $store_id, $store_info ); ?>

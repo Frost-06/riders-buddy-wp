@@ -54,7 +54,7 @@ class WCFMmp_Store_Lists_Radius_Filter extends WP_Widget {
 		echo $before_widget;
 
 		if ( ! empty( $title ) ) {
-			echo $args['before_title'] . $title . $args['after_title'];
+			echo $args['before_title'] . wp_kses_post($title) . $args['after_title'];
 		}
 		
 		do_action( 'wcfmmp_store_lists_before_sidebar_radius_filter' );
@@ -63,7 +63,7 @@ class WCFMmp_Store_Lists_Radius_Filter extends WP_Widget {
 		
 		<div id="wcfm_radius_filter_container" class="wcfm_radius_filter_container">
 			<input type="text" id="wcfmmp_radius_addr" name="wcfmmp_radius_addr" class="wcfmmp-radius-addr" autocomplete="off"  placeholder="<?php esc_attr_e( 'Insert your address ..', 'wc-multivendor-marketplace' ); ?>" value="" />
-			<i class="wcfmmmp_locate_icon" style="background-image: url(<?php echo $WCFMmp->plugin_url; ?>assets/images/locate.svg)"></i>
+			<i class="wcfmmmp_locate_icon" style="background-image: url(<?php echo esc_url($WCFMmp->plugin_url); ?>assets/images/locate.svg)"></i>
 		</div>
 		<div class="wcfm_radius_slidecontainer">
 			<input class="wcfmmp_radius_range" name="wcfmmp_radius_range" id="wcfmmp_radius_range" type="range" value="<?php echo (absint(apply_filters( 'wcfmmp_radius_filter_max_distance', $max_radius_to_search ))/apply_filters( 'wcfmmp_radius_filter_start_distance', 10)); ?>" min="0" max="<?php echo apply_filters( 'wcfmmp_radius_filter_max_distance', $max_radius_to_search ); ?>" steps="6" />
@@ -111,8 +111,8 @@ class WCFMmp_Store_Lists_Radius_Filter extends WP_Widget {
 		$title     = $instance['title'];
 		?>
 		<p>
-			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'wc-multivendor-marketplace' ); ?></label>
-			<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
+			<label for="<?php echo esc_attr($this->get_field_id( 'title' )); ?>"><?php _e( 'Title:', 'wc-multivendor-marketplace' ); ?></label>
+			<input class="widefat" id="<?php echo esc_attr($this->get_field_id( 'title' )); ?>" name="<?php echo esc_attr($this->get_field_name( 'title' )); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
 		</p>
 		<?php
 	}

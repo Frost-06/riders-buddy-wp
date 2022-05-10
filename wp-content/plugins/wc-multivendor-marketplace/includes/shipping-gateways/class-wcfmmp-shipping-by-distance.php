@@ -110,7 +110,8 @@ class WCFMmp_Shipping_By_Distance extends WC_Shipping_Method {
      if ( $products ) {
 				$amount = $this->calculate_per_seller( $products, $distance, $default_cost, $wcfmmp_shipping_by_distance_rates, $wcfmmp_free_shipping_amount );
 	
-			 $tax_rate = ( $this->tax_status == 'none' ) ? false : '';
+			 $tax_rate  = ( $this->tax_status == 'none' ) ? false : '';
+			 $tax_rate  = apply_filters( 'wcfmmp_is_apply_tax_on_shipping_rates', $tax_rate );
 			 
 			 if( !$amount ) {
 				 $this->title = __('Free Shipping', 'wc-multivendor-marketplace');

@@ -152,7 +152,7 @@ class WCFMmp_Gateway_Stripe_Split extends WC_Payment_Gateway {
 	public function get_icon() {
 		global $WCFM, $WCFMmp;
 
-		$imgaes_url = $WCFMmp->plugin_url . 'assets/images/';
+		$imgaes_url = esc_url( $WCFMmp->plugin_url . 'assets/images/' );
 
 		return apply_filters( 'wcfmmp_stripe_split_pay_icons', '<br /><img src="' . $imgaes_url . 'gateway/visa.svg" class="stripe-visa-icon stripe-icon" alt="Visa" />' .
 						'<img src="' . $imgaes_url . 'gateway/amex.svg" class="stripe-amex-icon stripe-icon" alt="American Express" />' .
@@ -262,8 +262,8 @@ class WCFMmp_Gateway_Stripe_Split extends WC_Payment_Gateway {
 				<p class="form-row form-row-wide">
 
 					<?php foreach ( $credit_cards as $i => $credit_card ) : if ( empty($credit_card['last4']) ) continue; ?>
-							<input type="radio" id="wcfm_stripe_card_<?php echo $i; ?>" name="wcfmmp_stripe_customer_id" style="width:auto;" value="<?php echo $i; ?>" data-last4="<?php echo $credit_card['last4']; ?>" data-exp_month="<?php echo $credit_card['exp_month']; ?>" data-exp_year="<?php echo $credit_card['exp_year']; ?>" />
-							<label style="display:inline;" for="stripe_customer_<?php echo $i; ?>"><?php _e( 'Card ending with', 'wc-multivendor-marketplace' ); ?> <?php echo $credit_card['last4']; ?> (<?php echo $credit_card['exp_month'] . '/' . $credit_card['exp_year'] ?>)</label><br />
+							<input type="radio" id="wcfm_stripe_card_<?php echo esc_attr($i); ?>" name="wcfmmp_stripe_customer_id" style="width:auto;" value="<?php echo esc_attr($i); ?>" data-last4="<?php echo esc_attr($credit_card['last4']); ?>" data-exp_month="<?php echo esc_attr($credit_card['exp_month']); ?>" data-exp_year="<?php echo esc_attr($credit_card['exp_year']); ?>" />
+							<label style="display:inline;" for="stripe_customer_<?php echo esc_attr($i); ?>"><?php _e( 'Card ending with', 'wc-multivendor-marketplace' ); ?> <?php echo esc_attr($credit_card['last4']); ?> (<?php echo esc_attr($credit_card['exp_month']) . '/' . esc_attr($credit_card['exp_year']) ?>)</label><br />
 					<?php endforeach; ?>
 
 					<input type="radio" id="new" name="wcfmmp_stripe_customer_id" style="width:auto;" <?php checked( 1, 1 ) ?> value="new" /> <label style="display:inline;" for="new"><?php _e( 'Use a new credit card', 'wc-multivendor-marketplace' ); ?></label>
@@ -456,7 +456,7 @@ class WCFMmp_Gateway_Stripe_Split extends WC_Payment_Gateway {
 						$store_name = $WCFM->wcfm_vendor_support->wcfm_get_vendor_store_name_by_vendor( absint($vendor_id) );
 						
 						// Fetching Total Commission from Vendor Order Newly 
-						$re_total_commission = $wpdb->get_var("SELECT SUM(total_commission) as total_commission FROM `{$wpdb->prefix}wcfm_marketplace_orders` WHERE order_id =" . $order_id . " AND vendor_id = " . $vendor_id);
+						$re_total_commission = $wpdb->get_var($wpdb->prepare("SELECT SUM(total_commission) as total_commission FROM `{$wpdb->prefix}wcfm_marketplace_orders` WHERE order_id = %d AND vendor_id = %d", $order_id, $vendor_id));
 						
 						// Directly Charge the Customer and collect the application_fee
 						try {
@@ -488,7 +488,7 @@ class WCFMmp_Gateway_Stripe_Split extends WC_Payment_Gateway {
 									$order->payment_complete();
 																																							
 									// Create vendor withdrawal Instance
-									$commission_id_list = $wpdb->get_col("SELECT ID FROM `{$wpdb->prefix}wcfm_marketplace_orders` WHERE order_id =" . $order_id . " AND vendor_id = " . $vendor_id);
+									$commission_id_list = $wpdb->get_col($wpdb->prepare("SELECT ID FROM `{$wpdb->prefix}wcfm_marketplace_orders` WHERE order_id = %d AND vendor_id = %d", $order_id, $vendor_id));
 									
 									$withdrawal_id = $WCFMmp->wcfmmp_withdraw->wcfmmp_withdrawal_processed( $vendor_id, $order_id, implode( ',', $commission_id_list ), 'stripe_split', $distribution_info['gross_sales'], $re_total_commission, 0, 'pending', 'by_split_pay', 0 );
 									
@@ -534,7 +534,7 @@ class WCFMmp_Gateway_Stripe_Split extends WC_Payment_Gateway {
 				
 				// Remaining Amount Pay to Admin
 				$remaining_sales_amount = $total_gross_sales - $vendor_gross_sales;
-				if( $remaining_sales_amount ) {
+				if( $remaining_sales_amount && ( absint($remaining_sales_amount) >= 1 ) ) {
 					try {
 						$charge_data = array(
 																"amount"         => $this->get_stripe_amount( $remaining_sales_amount ),
@@ -573,7 +573,7 @@ class WCFMmp_Gateway_Stripe_Split extends WC_Payment_Gateway {
 						$store_name = $WCFM->wcfm_vendor_support->wcfm_get_vendor_store_name_by_vendor( absint($vendor_id) );
 						
 						// Fetching Total Commission from Vendor Order Newly 
-						$re_total_commission = $wpdb->get_var("SELECT SUM(total_commission) as total_commission FROM `{$wpdb->prefix}wcfm_marketplace_orders` WHERE order_id =" . $order_id . " AND vendor_id = " . $vendor_id);
+						$re_total_commission = $wpdb->get_var($wpdb->prepare("SELECT SUM(total_commission) as total_commission FROM `{$wpdb->prefix}wcfm_marketplace_orders` WHERE order_id = %d AND vendor_id = %d", $order_id, $vendor_id));
 						
 						// Directly Charge the Customer and collect the application_fee
 						try {
@@ -605,7 +605,7 @@ class WCFMmp_Gateway_Stripe_Split extends WC_Payment_Gateway {
 									$order->payment_complete();
 																																							
 									// Create vendor withdrawal Instance
-									$commission_id_list = $wpdb->get_col("SELECT ID FROM `{$wpdb->prefix}wcfm_marketplace_orders` WHERE order_id =" . $order_id . " AND vendor_id = " . $vendor_id);
+									$commission_id_list = $wpdb->get_col($wpdb->prepare("SELECT ID FROM `{$wpdb->prefix}wcfm_marketplace_orders` WHERE order_id = %d AND vendor_id = %d", $order_id, $vendor_id));
 									
 									$withdrawal_id = $WCFMmp->wcfmmp_withdraw->wcfmmp_withdrawal_processed( $vendor_id, $order_id, implode( ',', $commission_id_list ), 'stripe_split', $distribution_info['gross_sales'], $re_total_commission, 0, 'pending', 'by_split_pay', 0 );
 									
@@ -651,7 +651,7 @@ class WCFMmp_Gateway_Stripe_Split extends WC_Payment_Gateway {
 				
 				// Remaining Amount Pay to Admin
 				$remaining_sales_amount = $total_gross_sales - $vendor_gross_sales;
-				if( $remaining_sales_amount ) {
+				if( $remaining_sales_amount && ( absint($remaining_sales_amount) >= 1 ) ) {
 					try {
 						$charge_data = array(
 																"amount"         =>  $this->get_stripe_amount( $remaining_sales_amount ),
@@ -743,10 +743,10 @@ class WCFMmp_Gateway_Stripe_Split extends WC_Payment_Gateway {
 							if ($this->debug)
 								wcfm_stripe_log("Before creating transfer with Stripe. Stripe Transfer Data: " . serialize($transfer_data));
 							
-							$commission_id_list = $wpdb->get_col("SELECT ID FROM `{$wpdb->prefix}wcfm_marketplace_orders` WHERE order_id =" . $order_id . " AND vendor_id = " . $vendor_id);
+							$commission_id_list = $wpdb->get_col($wpdb->prepare("SELECT ID FROM `{$wpdb->prefix}wcfm_marketplace_orders` WHERE order_id = %d AND vendor_id = %d", $order_id, $vendor_id));
 							
 							// Fetching Total Commission from Vendor Order Newly 
-							$re_total_commission = $wpdb->get_var("SELECT SUM(total_commission) as total_commission FROM `{$wpdb->prefix}wcfm_marketplace_orders` WHERE order_id =" . $order_id . " AND vendor_id = " . $vendor_id);
+							$re_total_commission = $wpdb->get_var($wpdb->prepare("SELECT SUM(total_commission) as total_commission FROM `{$wpdb->prefix}wcfm_marketplace_orders` WHERE order_id = %d AND vendor_id = %d", $order_id, $vendor_id));
 							
 							// Creating Withdrawal Instance
 							$withdrawal_id = $WCFMmp->wcfmmp_withdraw->wcfmmp_withdrawal_processed( $vendor_id, $order_id, implode( ',', $commission_id_list ), 'stripe_split', $distribution_info['gross_sales'], $re_total_commission, 0, 'pending', 'by_split_pay', 0 );
@@ -885,10 +885,10 @@ class WCFMmp_Gateway_Stripe_Split extends WC_Payment_Gateway {
 							if ($this->debug)
 								wcfm_stripe_log("Before creating transfer with Stripe. Stripe Transfer Data: " . serialize($transfer_data));
 							
-							$commission_id_list = $wpdb->get_col("SELECT ID FROM `{$wpdb->prefix}wcfm_marketplace_orders` WHERE order_id =" . $order_id . " AND vendor_id = " . $vendor_id);
+							$commission_id_list = $wpdb->get_col($wpdb->prepare("SELECT ID FROM `{$wpdb->prefix}wcfm_marketplace_orders` WHERE order_id = %d AND vendor_id = %d", $order_id, $vendor_id));
 							
 							// Fetching Total Commission from Vendor Order Newly 
-							$re_total_commission = $wpdb->get_var("SELECT SUM(total_commission) as total_commission FROM `{$wpdb->prefix}wcfm_marketplace_orders` WHERE order_id =" . $order_id . " AND vendor_id = " . $vendor_id);
+							$re_total_commission = $wpdb->get_var($wpdb->prepare("SELECT SUM(total_commission) as total_commission FROM `{$wpdb->prefix}wcfm_marketplace_orders` WHERE order_id = %d AND vendor_id = %d", $order_id, $vendor_id));
 							
 							// Creating Withdrawal Instance
 							$withdrawal_id = $WCFMmp->wcfmmp_withdraw->wcfmmp_withdrawal_processed( $vendor_id, $order_id, implode( ',', $commission_id_list ), 'stripe_split', $distribution_info['gross_sales'], $re_total_commission, 0, 'pending', 'by_split_pay', 0 );
@@ -1168,8 +1168,8 @@ class WCFMmp_Gateway_Stripe_Split extends WC_Payment_Gateway {
     
     $sql = "SELECT ID, item_id, commission_id, vendor_id, order_id, is_partially_refunded, refunded_amount, refund_reason FROM {$wpdb->prefix}wcfm_marketplace_refund_request";
 		$sql .= " WHERE 1=1";
-		$sql .= " AND ID = {$refund_id}";
-		$refund_infos = $wpdb->get_results( $sql );
+		$sql .= " AND ID = %d";
+		$refund_infos = $wpdb->get_results( $wpdb->prepare($sql, $refund_id) );
 		if( !empty( $refund_infos ) ) {
 			foreach( $refund_infos as $refund_info ) {
 				$stripe_refund_id      = '';

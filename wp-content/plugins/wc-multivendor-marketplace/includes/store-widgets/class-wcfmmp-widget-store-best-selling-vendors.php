@@ -41,11 +41,11 @@ class WCFMmp_Store_Best_Selling_Vendors extends WP_Widget {
       echo $before_widget;
       
       if ( ! empty( $title ) ) {
-        echo $args['before_title'] . $title . $args['after_title'];
+        echo $args['before_title'] . wp_kses_post($title) . $args['after_title'];
       }
       do_action( 'wcfmmp_store_before_sidebar_best_selling_vendors', $vendors  );
       $template_args = array(
-				'widget_id'   => $args['widget_id'],
+				'widget_id'   => isset( $args['widget_id'] ) ? $args['widget_id'] : 'wcfmmp-store-best-selling-vendors-'.rand(10,100),
 				'show_rating' => true,
         'vendors' => $vendors
 			);
@@ -91,12 +91,12 @@ class WCFMmp_Store_Best_Selling_Vendors extends WP_Widget {
 		$number    = $instance['number'];
 		?>
 		<p>
-			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'wc-multivendor-marketplace' ); ?></label>
-			<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
+			<label for="<?php echo esc_attr($this->get_field_id( 'title' )); ?>"><?php _e( 'Title:', 'wc-multivendor-marketplace' ); ?></label>
+			<input class="widefat" id="<?php echo esc_attr($this->get_field_id( 'title' )); ?>" name="<?php echo esc_attr($this->get_field_name( 'title' )); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
 		</p>
 		<p>
-			<label for="<?php echo $this->get_field_id( 'number' ); ?>"><?php _e( 'Number of vendors to show:', 'wc-multivendor-marketplace' ); ?></label>
-			<input class="widefat" id="<?php echo $this->get_field_id( 'number' ); ?>" name="<?php echo $this->get_field_name( 'number' ); ?>" type="number" min="1" step="1" max="10" value="<?php echo esc_attr( $number ); ?>" />
+			<label for="<?php echo esc_attr($this->get_field_id( 'number' )); ?>"><?php _e( 'Number of vendors to show:', 'wc-multivendor-marketplace' ); ?></label>
+			<input class="widefat" id="<?php echo esc_attr($this->get_field_id( 'number' )); ?>" name="<?php echo esc_attr($this->get_field_name( 'number' )); ?>" type="number" min="1" step="1" max="10" value="<?php echo esc_attr( $number ); ?>" />
 		</p>
 		
 		<?php

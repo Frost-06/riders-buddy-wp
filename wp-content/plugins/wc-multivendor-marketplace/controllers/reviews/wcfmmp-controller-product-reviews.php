@@ -22,10 +22,10 @@ class WCFMmp_Product_Reviews_Controller {
 		
 		$vendor_id = $WCFMmp->vendor_id;
 		
-		$length = sanitize_text_field( $_POST['length'] );
-		$offset = sanitize_text_field( $_POST['start'] );
+		$length = absint( $_POST['length'] );
+		$offset = absint( $_POST['start'] );
 		
-		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_text_field( $_POST['orderby'] ) : 'comment_ID';
+		$the_orderby = ! empty( $_POST['orderby'] ) ? sanitize_sql_orderby( $_POST['orderby'] ) : 'comment_ID';
 		$the_order   = ( ! empty( $_POST['order'] ) && 'asc' === $_POST['order'] ) ? 'ASC' : 'DESC';
 		
 		$status_filter = 'all';
@@ -51,7 +51,7 @@ class WCFMmp_Product_Reviews_Controller {
     if( wcfm_is_vendor() && $vendor_id ) {
 			$args['post_author'] = $vendor_id;
 		}  elseif ( ! empty( $_POST['reviews_vendor'] ) ) {
-			$reviews_vendor = sanitize_text_field( $_POST['reviews_vendor'] );
+			$reviews_vendor = absint( $_POST['reviews_vendor'] );
 			$args['post_author'] = $reviews_vendor;
 		}
 		
@@ -74,7 +74,7 @@ class WCFMmp_Product_Reviews_Controller {
 		// Generate Reviews JSON
 		$wcfm_reviews_json = '';
 		$wcfm_reviews_json = '{
-															"draw": ' . sanitize_text_field( $_POST['draw'] ) . ',
+															"draw": ' . absint( $_POST['draw'] ) . ',
 															"recordsTotal": ' . count( $wcfm_review_items ) . ',
 															"recordsFiltered": ' . count( $wcfm_review_items ) . ',
 															"data": ';

@@ -48,10 +48,10 @@ if( $vendor_id ) {
 			if( !$store_logo ) {
 				$store_logo = apply_filters( 'wcfmmp_store_default_logo', $WCFM->plugin_url . 'assets/images/wcfmmp-blue.png' );
 			}
-			echo '<img class="wcfmmp_sold_by_logo" src="' . $store_logo . '" />&nbsp;';
+			echo '<img class="wcfmmp_sold_by_logo" src="' . esc_url($store_logo) . '" />&nbsp;';
 		}
 		
-		echo $store_name;
+		echo wp_kses_post($store_name);
 		
 		if( apply_filters( 'wcfmmp_is_allow_sold_by_badges', true ) ) {
 			if( apply_filters( 'wcfm_is_allow_badges_with_store_name', false ) ) {

@@ -38,46 +38,52 @@
           <?php
           
             $WCFM->wcfm_fields->wcfm_generate_form_field ( 
-              array(
-                "method_title_fs" => array(
-                  'label' => __('Method Title', 'wc-multivendor-marketplace'), 
-                  'name' => 'method_title',
-                  'type' => 'text', 
-                  'class' => 'wcfm-text wcfm_ele', 
-                  'label_class' => 'wcfm_title wcfm_ele', 
-                  'placeholder' => __('Enter method title', 'wc-multivendor-marketplace'),
-                  'value' => ''  
-                )
-              )
+            	apply_filters( 'wcfmmp_shipping_zone_title_fields',
+								array(
+									"method_title_fs" => array(
+										'label' => __('Method Title', 'wc-multivendor-marketplace'), 
+										'name' => 'method_title',
+										'type' => 'text', 
+										'class' => 'wcfm-text wcfm_ele', 
+										'label_class' => 'wcfm_title wcfm_ele', 
+										'placeholder' => __('Enter method title', 'wc-multivendor-marketplace'),
+										'value' => ''  
+									)
+								)
+							)
             );
           ?>
           <?php
             $WCFM->wcfm_fields->wcfm_generate_form_field ( 
-              array(
-                "minimum_order_amount_fs" => array(
-                  'label' => __('Minimum order amount for free shipping', 'wc-multivendor-marketplace'), 
-                  'name' => 'minimum_order_amount',
-                  'type' => 'number', 
-                  'class' => 'wcfm-text wcfm_ele wcfm_non_negative_input', 
-                  'label_class' => 'wcfm_title wcfm_ele', 
-                  'placeholder' => __('0.00', 'wc-multivendor-marketplace'),
-                  'value' => ''  
-                )
-              )
+            	apply_filters( 'wcfmmp_shipping_zone_cost_fields',
+								array(
+									"minimum_order_amount_fs" => array(
+										'label' => __('Minimum order amount for free shipping', 'wc-multivendor-marketplace'), 
+										'name' => 'minimum_order_amount',
+										'type' => 'number', 
+										'class' => 'wcfm-text wcfm_ele wcfm_non_negative_input', 
+										'label_class' => 'wcfm_title wcfm_ele', 
+										'placeholder' => __('0.00', 'wc-multivendor-marketplace'),
+										'value' => ''  
+									)
+								)
+							)
             );
           ?>
           <?php
             $WCFM->wcfm_fields->wcfm_generate_form_field ( 
-              array(
-                "method_description_fs" => array(
-                  'label' => __('Description', 'wc-multivendor-marketplace'), 
-                  'name' => 'method_description',
-                  'type' => 'textarea', 
-                  'class' => 'wcfm-textarea wcfm_ele', 
-                  'label_class' => 'wcfm_title wcfm_ele', 
-                  'value' => ''  
-                )
-              )
+            	apply_filters( 'wcfmmp_shipping_zone_description_fields',
+								array(
+									"method_description_fs" => array(
+										'label' => __('Description', 'wc-multivendor-marketplace'), 
+										'name' => 'method_description',
+										'type' => 'textarea', 
+										'class' => 'wcfm-textarea wcfm_ele', 
+										'label_class' => 'wcfm_title wcfm_ele', 
+										'value' => ''  
+									)
+								)
+							)
             );
           ?>
         </div>
@@ -86,37 +92,41 @@
           <?php
           
             $WCFM->wcfm_fields->wcfm_generate_form_field ( 
-              array(
-                "method_title_lp" => array(
-                  'label' => __('Method Title', 'wc-multivendor-marketplace'), 
-                  'name' => 'method_title',
-                  'type' => 'text', 
-                  'class' => 'wcfm-text wcfm_ele', 
-                  'label_class' => 'wcfm_title wcfm_ele', 
-                  'placeholder' => __('Enter method title', 'wc-multivendor-marketplace'),
-                  'value' => ''  
-                )
-              )
+            	apply_filters( 'wcfmmp_shipping_zone_title_fields',
+								array(
+									"method_title_lp" => array(
+										'label' => __('Method Title', 'wc-multivendor-marketplace'), 
+										'name' => 'method_title',
+										'type' => 'text', 
+										'class' => 'wcfm-text wcfm_ele', 
+										'label_class' => 'wcfm_title wcfm_ele', 
+										'placeholder' => __('Enter method title', 'wc-multivendor-marketplace'),
+										'value' => ''  
+									)
+								)
+							)
             );
           ?>
           <?php
             $WCFM->wcfm_fields->wcfm_generate_form_field ( 
-              array(
-                "method_cost_lp" => array(
-                  'label' => __('Cost', 'wc-multivendor-marketplace'), 
-                  'name' => 'method_cost',
-                  'type' => 'number', 
-                  'class' => 'wcfm-text wcfm_non_negative_input wcfm_ele', 
-                  'label_class' => 'wcfm_title wcfm_ele', 
-                  'placeholder' => __('0.00', 'wc-multivendor-marketplace'),
-                  'value' => ''  
-                )
-              )
+            	apply_filters( 'wcfmmp_shipping_zone_cost_fields',
+								array(
+									"method_cost_lp" => array(
+										'label' => __('Cost', 'wc-multivendor-marketplace'), 
+										'name' => 'method_cost',
+										'type' => 'number', 
+										'class' => 'wcfm-text wcfm_non_negative_input wcfm_ele', 
+										'label_class' => 'wcfm_title wcfm_ele', 
+										'placeholder' => __('0.00', 'wc-multivendor-marketplace'),
+										'value' => ''  
+									)
+								)
+							)
             );
           ?>
           
           <?php
-          if(apply_filters('show_shipping_zone_tax', true) ) {
+          if(apply_filters('show_shipping_zone_tax', true) && apply_filters('wcfmmp_is_allow_show_shipping_zone_tax', true) ) {
             $WCFM->wcfm_fields->wcfm_generate_form_field ( 
             	apply_filters( 'wcfmmp_shipping_zone_tax_fields',
 								array(
@@ -139,16 +149,18 @@
           
           <?php
             $WCFM->wcfm_fields->wcfm_generate_form_field ( 
-              array(
-                "method_description_lp" => array(
-                  'label' => __('Description', 'wc-multivendor-marketplace'), 
-                  'name' => 'method_description',
-                  'type' => 'textarea', 
-                  'class' => 'wcfm-textarea wcfm_ele', 
-                  'label_class' => 'wcfm_title wcfm_ele', 
-                  'value' => ''  
-                )
-              )
+            	apply_filters( 'wcfmmp_shipping_zone_description_fields',
+								array(
+									"method_description_lp" => array(
+										'label' => __('Description', 'wc-multivendor-marketplace'), 
+										'name' => 'method_description',
+										'type' => 'textarea', 
+										'class' => 'wcfm-textarea wcfm_ele', 
+										'label_class' => 'wcfm_title wcfm_ele', 
+										'value' => ''  
+									)
+								)
+							)
             );
           ?>
         </div>
@@ -157,17 +169,19 @@
           <?php
           
             $WCFM->wcfm_fields->wcfm_generate_form_field ( 
-              array(
-                "method_title_fr" => array(
-                  'label' => __('Method Title', 'wc-multivendor-marketplace'), 
-                  'name' => 'method_title',
-                  'type' => 'text', 
-                  'class' => 'wcfm-text wcfm_ele', 
-                  'label_class' => 'wcfm_title wcfm_ele', 
-                  'placeholder' => __('Enter method title', 'wc-multivendor-marketplace'),
-                  'value' => ''  
-                )
-              )
+            	apply_filters( 'wcfmmp_shipping_zone_title_fields',
+								array(
+									"method_title_fr" => array(
+										'label' => __('Method Title', 'wc-multivendor-marketplace'), 
+										'name' => 'method_title',
+										'type' => 'text', 
+										'class' => 'wcfm-text wcfm_ele', 
+										'label_class' => 'wcfm_title wcfm_ele', 
+										'placeholder' => __('Enter method title', 'wc-multivendor-marketplace'),
+										'value' => ''  
+									)
+								)
+							)
             );
           ?>
           <?php
@@ -192,7 +206,7 @@
 					</div>
           
           <?php
-          if(apply_filters('show_shipping_zone_tax', true) ) {
+          if(apply_filters('show_shipping_zone_tax', true) && apply_filters('wcfmmp_is_allow_show_shipping_zone_tax', true) ) {
             $WCFM->wcfm_fields->wcfm_generate_form_field (
             	apply_filters( 'wcfmmp_shipping_zone_tax_fields',
 								array(
@@ -215,16 +229,18 @@
           
           <?php
             $WCFM->wcfm_fields->wcfm_generate_form_field ( 
-              array(
-                "method_description_fr" => array(
-                  'label' => __('Description', 'wc-multivendor-marketplace'), 
-                  'name' => 'method_description',
-                  'type' => 'textarea', 
-                  'class' => 'wcfm-textarea wcfm_ele', 
-                  'label_class' => 'wcfm_title wcfm_ele', 
-                  'value' => ''  
-                )
-              )
+            	apply_filters( 'wcfmmp_shipping_zone_description_fields',
+								array(
+									"method_description_fr" => array(
+										'label' => __('Description', 'wc-multivendor-marketplace'), 
+										'name' => 'method_description',
+										'type' => 'textarea', 
+										'class' => 'wcfm-textarea wcfm_ele', 
+										'label_class' => 'wcfm_title wcfm_ele', 
+										'value' => ''  
+									)
+								)
+							)
             );
           ?>
           <?php if( apply_filters( 'wcfmmp_is_allow_store_shipping_by_shipping_classes', true ) ) { ?>
@@ -244,18 +260,20 @@
 									}
                   
                   $WCFM->wcfm_fields->wcfm_generate_form_field ( 
-                    array(
-                      $shipping_class->slug => array(
-                        'label' => __('Cost of Shipping Class: "', 'wc-multivendor-marketplace') . $shipping_class->name . '"' , 
-                        'name' => 'shipping_class_cost[]',
-                        'type' => 'text', 
-                        'class' => 'wcfm-text wcfm_ele sc_vals', 
-                        'label_class' => 'wcfm_title wcfm_ele', 
-                        'placeholder' => __('N/A', 'wc-multivendor-marketplace'),
-                        'value' => '',
-                        'custom_attributes' => array('shipping_class_id' => $shipping_class->term_id),
-                      )
-                    )
+                  	apply_filters( 'wcfmmp_shipping_zone_description_fields',
+											array(
+												$shipping_class->slug => array(
+													'label' => __('Cost of Shipping Class: "', 'wc-multivendor-marketplace') . $shipping_class->name . '"' , 
+													'name' => 'shipping_class_cost[]',
+													'type' => 'text', 
+													'class' => 'wcfm-text wcfm_ele sc_vals', 
+													'label_class' => 'wcfm_title wcfm_ele', 
+													'placeholder' => __('N/A', 'wc-multivendor-marketplace'),
+													'value' => '',
+													'custom_attributes' => array('shipping_class_id' => $shipping_class->term_id),
+												)
+											), $shipping_class->term_id, $shipping_class->name, $shipping_class
+										)
                   ); ?>
                   <div class="description">
                     <?php _e( 'Enter a cost (excl. tax) or sum, e.g. <code>10.00 * [qty]</code>.', 'wc-multivendor-marketplace' ) . '<br/><br/>' . _e( 'Use <code>[qty]</code> for the number of items, <br/><code>[cost]</code> for the total cost of items, and <code>[fee percent="10" min_fee="20" max_fee=""]</code> for percentage based fees.', 'wc-multivendor-marketplace' ); ?>

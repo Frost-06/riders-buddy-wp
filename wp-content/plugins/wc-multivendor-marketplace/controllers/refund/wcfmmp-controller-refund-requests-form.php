@@ -51,7 +51,7 @@ class WCFMmp_Refund_Requests_Form_Controller {
 	  if(isset($wcfm_refund_tab_form_data['wcfm_refund_reason']) && !empty($wcfm_refund_tab_form_data['wcfm_refund_reason'])) {
 	  	
 	  	$refund_reason          = strip_tags( wcfm_stripe_newline( $wcfm_refund_tab_form_data['wcfm_refund_reason'] ) );
-	  	$refund_reason          = esc_sql( wp_unslash( $refund_reason ) );
+	  	$refund_reason          = wp_filter_post_kses( wp_unslash( $refund_reason ) );
 	  	$order_id               = absint( $wcfm_refund_tab_form_data['wcfm_refund_order_id'] );
 	  	$refund_request         = wc_clean( $wcfm_refund_tab_form_data['wcfm_refund_request'] );
 	  	$wcfm_refund_inputs     = wc_clean( $wcfm_refund_tab_form_data['wcfm_refund_input'] );
@@ -152,9 +152,9 @@ class WCFMmp_Refund_Requests_Form_Controller {
 	  		
 				$sql = 'SELECT ID FROM ' . $wpdb->prefix . 'wcfm_marketplace_orders AS commission';
 				$sql .= ' WHERE 1=1';
-				$sql .= " AND `order_id` = " . $order_id;
-				$sql .= " AND `item_id`  = " . $refund_item_id;
-				$commission_id = $wpdb->get_var( $sql );
+				$sql .= " AND `order_id` = %d";
+				$sql .= " AND `item_id`  = %d";
+				$commission_id = $wpdb->get_var( $wpdb->prepare( $sql, $order_id, $refund_item_id ) );
 				
 				$refund_request_id = $WCFMmp->wcfmmp_refund->wcfmmp_refund_processed( $vendor_id, $order_id, $commission_id, $refund_item_id, $refund_reason, $refunded_amount, $refunded_qty, $refunded_tax, $refund_request );
 				
@@ -166,6 +166,7 @@ class WCFMmp_Refund_Requests_Form_Controller {
 					}
 					
 					$refund_auto_approve = isset( $WCFMmp->wcfmmp_refund_options['refund_auto_approve'] ) ? $WCFMmp->wcfmmp_refund_options['refund_auto_approve'] : 'no';
+					$wcfm_messages = '';
 					if( ( $refund_auto_approve == 'yes' ) && $vendor_id && wcfm_is_vendor() ) {
 						
 						// Update refund status
@@ -173,15 +174,23 @@ class WCFMmp_Refund_Requests_Form_Controller {
 						
 						if( $refund_update_status ) {
 							// Admin Notification
-							$wcfm_messages = sprintf( __( 'Refund <b>%s</b> has been processed for Order <b>%s</b> item <b>%s</b> by <b>%s</b>', 'wc-multivendor-marketplace' ), '<a target="_blank" class="wcfm_dashboard_item_title" href="' . add_query_arg( 'request_id', $refund_request_id, wcfm_refund_requests_url() ) . '">#' . $refund_request_id . '</a>', '<a target="_blank" class="wcfm_dashboard_item_title" href="' . get_wcfm_view_order_url( $order_id ) . '">#' . $order->get_order_number() . '</a>', get_the_title( $product_id ), $WCFM->wcfm_vendor_support->wcfm_get_vendor_store_by_vendor( $vendor_id ) );
-							$WCFM->wcfm_notification->wcfm_send_direct_message( -2, 0, 1, 0, $wcfm_messages, 'refund-request' );
+							if( $refund_request == 'full' ) {
+								if( !$refund_request_processed )
+									$wcfm_messages = sprintf( __( 'Refund <b>%s</b> has been processed for Order <b>%s</b> by <b>%s</b>', 'wc-multivendor-marketplace' ), '<a target="_blank" class="wcfm_dashboard_item_title" href="' . add_query_arg( 'request_id', $refund_request_id, wcfm_refund_requests_url() ) . '">#' . $refund_request_id . '</a>', '<a target="_blank" class="wcfm_dashboard_item_title" href="' . get_wcfm_view_order_url( $order_id ) . '">#' . $order->get_order_number() . '</a>', wcfm_get_vendor_store( $vendor_id ) );
+							} else {
+								$wcfm_messages = sprintf( __( 'Refund <b>%s</b> has been processed for Order <b>%s</b> item <b>%s</b> by <b>%s</b>', 'wc-multivendor-marketplace' ), '<a target="_blank" class="wcfm_dashboard_item_title" href="' . add_query_arg( 'request_id', $refund_request_id, wcfm_refund_requests_url() ) . '">#' . $refund_request_id . '</a>', '<a target="_blank" class="wcfm_dashboard_item_title" href="' . get_wcfm_view_order_url( $order_id ) . '">#' . $order->get_order_number() . '</a>', get_the_title( $product_id ), wcfm_get_vendor_store( $vendor_id ) );
+							}
 							
-							// Order Note
-							$is_customer_note = apply_filters( 'wcfm_is_allow_refund_update_note_for_customer', '1' );
-							add_filter( 'woocommerce_new_order_note_data', array( $WCFM->wcfm_marketplace, 'wcfm_update_comment_vendor' ), 10, 2 );
-							$comment_id = $order->add_order_note( strip_tags($wcfm_messages), $is_customer_note );
-							add_comment_meta( $comment_id, '_vendor_id', $vendor_id );
-							remove_filter( 'woocommerce_new_order_note_data', array( $WCFM->wcfm_marketplace, 'wcfm_update_comment_vendor' ), 10, 2 );
+							if( $wcfm_messages ) {
+								$WCFM->wcfm_notification->wcfm_send_direct_message( -2, 0, 1, 0, $wcfm_messages, 'refund-request' );
+								
+								// Order Note
+								$is_customer_note = apply_filters( 'wcfm_is_allow_refund_update_note_for_customer', '1' );
+								add_filter( 'woocommerce_new_order_note_data', array( $WCFM->wcfm_marketplace, 'wcfm_update_comment_vendor' ), 10, 2 );
+								$comment_id = $order->add_order_note( strip_tags($wcfm_messages), $is_customer_note );
+								add_comment_meta( $comment_id, '_vendor_id', $vendor_id );
+								remove_filter( 'woocommerce_new_order_note_data', array( $WCFM->wcfm_marketplace, 'wcfm_update_comment_vendor' ), 10, 2 );
+							}
 							
 							do_action( 'wcfmmp_refund_request_approved', $refund_request_id );
 							
@@ -191,20 +200,28 @@ class WCFMmp_Refund_Requests_Form_Controller {
 						}
 					} else {
 						// Admin Notification
-						$wcfm_messages = apply_filters( 'wcfmmp_refund_request_message',  sprintf( __( 'Refund Request <b>%s</b> received for Order <b>%s</b> item <b>%s</b>', 'wc-multivendor-marketplace' ), '<a target="_blank" class="wcfm_dashboard_item_title" href="' . add_query_arg( 'request_id', $refund_request_id, wcfm_refund_requests_url() ) . '">#' . $refund_request_id . '</a>', '<a target="_blank" class="wcfm_dashboard_item_title" href="' . get_wcfm_view_order_url( $order_id ) . '">#' . $order->get_order_number() . '</a>', get_the_title( $product_id ) ), $refund_request_id, $order_id, $product_id );
-						$WCFM->wcfm_notification->wcfm_send_direct_message( -2, 0, 1, 0, $wcfm_messages, 'refund-request' );
-						
-						// Send Vendor Notification
-						if( $vendor_id && !wcfm_is_vendor() ) {
-							$is_allow_refund = wcfm_vendor_has_capability( $vendor_id, 'refund-request' );
-							if( $is_allow_refund && apply_filters( 'wcfm_is_allow_refund_vendor_notification', true ) ) {
-								$WCFM->wcfm_notification->wcfm_send_direct_message( -1, $vendor_id, 1, 0, $wcfm_messages, 'refund-request' );
-							}
+						if( $refund_request == 'full' ) {
+							if( !$refund_request_processed )
+								$wcfm_messages = apply_filters( 'wcfmmp_refund_request_message',  sprintf( __( 'Refund Request <b>%s</b> received for Order <b>%s</b>', 'wc-multivendor-marketplace' ), '<a target="_blank" class="wcfm_dashboard_item_title" href="' . add_query_arg( 'request_id', $refund_request_id, wcfm_refund_requests_url() ) . '">#' . $refund_request_id . '</a>', '<a target="_blank" class="wcfm_dashboard_item_title" href="' . get_wcfm_view_order_url( $order_id ) . '">#' . $order->get_order_number() . '</a>' ), $refund_request_id, $order_id, $product_id );
+						} else {
+							$wcfm_messages = apply_filters( 'wcfmmp_refund_request_message',  sprintf( __( 'Refund Request <b>%s</b> received for Order <b>%s</b> item <b>%s</b>', 'wc-multivendor-marketplace' ), '<a target="_blank" class="wcfm_dashboard_item_title" href="' . add_query_arg( 'request_id', $refund_request_id, wcfm_refund_requests_url() ) . '">#' . $refund_request_id . '</a>', '<a target="_blank" class="wcfm_dashboard_item_title" href="' . get_wcfm_view_order_url( $order_id ) . '">#' . $order->get_order_number() . '</a>', get_the_title( $product_id ) ), $refund_request_id, $order_id, $product_id );
 						}
 						
-						// Order Note
-						$is_customer_note = apply_filters( 'wcfm_is_allow_refund_request_note_for_customer', '1' );
-						$comment_id = $order->add_order_note( strip_tags($wcfm_messages), $is_customer_note );
+						if( $wcfm_messages ) {
+							$WCFM->wcfm_notification->wcfm_send_direct_message( -2, 0, 1, 0, $wcfm_messages, 'refund-request' );
+							
+							// Send Vendor Notification
+							if( $vendor_id && !wcfm_is_vendor() ) {
+								$is_allow_refund = wcfm_vendor_has_capability( $vendor_id, 'refund-request' );
+								if( $is_allow_refund && apply_filters( 'wcfm_is_allow_refund_vendor_notification', true ) ) {
+									$WCFM->wcfm_notification->wcfm_send_direct_message( -1, $vendor_id, 1, 0, $wcfm_messages, 'refund-request' );
+								}
+							}
+							
+							// Order Note
+							$is_customer_note = apply_filters( 'wcfm_is_allow_refund_request_note_for_customer', '1' );
+							$comment_id = $order->add_order_note( strip_tags($wcfm_messages), $is_customer_note );
+						}
 						
 						//echo '{"status": true, "message": "' . $wcfm_refund_messages['refund_requests_saved'] . ' #' . $refund_request_id . '"}';
 					}

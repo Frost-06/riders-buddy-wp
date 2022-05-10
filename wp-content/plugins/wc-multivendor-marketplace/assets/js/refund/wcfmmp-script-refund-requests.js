@@ -39,7 +39,8 @@ jQuery(document).ready(function($) {
 				d.refund_vendor  = $refunds_vendor,
 				d.status_type    = $status_type,
 				d.transaction_id = GetURLParameter( 'request_id' ),
-				d.order          = 'asc'
+				d.order          = 'asc',
+				d.wcfm_ajax_nonce= wcfm_params.wcfm_ajax_nonce
 			},
 			"complete" : function () {
 				initiateTip();
@@ -68,6 +69,7 @@ jQuery(document).ready(function($) {
 			action                      : 'wcfm_ajax_controller',
 			controller                  : 'wcfm-refund-requests-approve',
 			wcfm_refund_manage_form     : $('#wcfm_refund_requests_manage_form').serialize(),
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce,
 			status                      : 'submit'
 		}	
 		$.post(wcfm_params.ajax_url, data, function(response) {
@@ -106,6 +108,7 @@ jQuery(document).ready(function($) {
 			action                      : 'wcfm_ajax_controller',
 			controller                  : 'wcfm-refund-requests-cancel',
 			wcfm_refund_manage_form     : $('#wcfm_refund_requests_manage_form').serialize(),
+			wcfm_ajax_nonce             : wcfm_params.wcfm_ajax_nonce,
 			status                      : 'submit'
 		}	
 		$.post(wcfm_params.ajax_url, data, function(response) {

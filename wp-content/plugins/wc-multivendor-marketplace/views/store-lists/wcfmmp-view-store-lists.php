@@ -45,7 +45,7 @@ $search_state   = isset( $_GET['wcfmmp_store_state'] ) ? sanitize_text_field( $_
 $search_city    = isset( $_GET['wcfmmp_store_city'] ) ? sanitize_text_field( $_GET['wcfmmp_store_city'] ) : $search_city;
 $search_zip     = isset( $_GET['wcfmmp_store_zip'] ) ? sanitize_text_field( $_GET['wcfmmp_store_zip'] ) : $search_zip;
 
-$orderby          = isset( $_GET['orderby'] ) ? sanitize_text_field( $_GET['orderby'] ) : $orderby;
+$orderby          = isset( $_GET['orderby'] ) ? sanitize_sql_orderby( $_GET['orderby'] ) : $orderby;
 
 $search_data     = array();
 if( $store_category ) {
@@ -65,8 +65,9 @@ if( $search_zip ) {
 }
 if( isset( $_POST['search_data'] ) ) {
 	parse_str($_POST['search_data'], $search_data);
+	$search_data = wc_clean( wp_unslash( $search_data ) );
 } elseif( isset( $_GET['orderby'] ) ) {
-	$search_data = wp_unslash($_GET);
+	$search_data = wc_clean( wp_unslash($_GET) );
 }
 $search_data['excludes'] = $excludes;
 
@@ -141,7 +142,7 @@ if( $theme == 'classic' ) {
 
 <?php do_action( 'wcfmmp_store_lists_before' ); ?>
 
-<div id="wcfmmp-stores-lists" class="wcfmmp-stores-listing <?php echo $wcfm_store_lists_wrapper_class; ?>">
+<div id="wcfmmp-stores-lists" class="wcfmmp-stores-listing <?php echo esc_attr($wcfm_store_lists_wrapper_class); ?>">
 
 	<?php do_action( 'wcfmmp_store_lists_start' ); ?>
 
@@ -182,13 +183,13 @@ if( $theme == 'classic' ) {
 
 <?php  if( !$map || ( ($wcfm_map_lib == 'google') && !$api_key ) ) { ?>
 	<script>
-		$per_row     = '<?php echo $per_row; ?>';
-		$per_page    = '<?php echo $limit; ?>';
+		$per_row     = '<?php echo esc_attr($per_row); ?>';
+		$per_page    = '<?php echo esc_attr($limit); ?>';
 		$includes    = '<?php echo implode(",", $includes ); ?>';
-		$excludes    = '<?php echo $excludes; ?>';
-		$has_product = '<?php echo $has_product; ?>';
-		$sidebar     = '<?php echo $sidebar; ?>';
-		$has_orderby = '<?php echo $has_orderby; ?>';
-		$theme       = '<?php echo $theme; ?>';
+		$excludes    = '<?php echo esc_attr($excludes); ?>';
+		$has_product = '<?php echo esc_attr($has_product); ?>';
+		$sidebar     = '<?php echo esc_attr($sidebar); ?>';
+		$has_orderby = '<?php echo esc_attr($has_orderby); ?>';
+		$theme       = '<?php echo esc_attr($theme); ?>';
 	</script>
 <?php } ?>

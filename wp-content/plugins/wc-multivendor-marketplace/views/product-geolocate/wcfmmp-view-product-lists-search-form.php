@@ -36,17 +36,17 @@ $radius_lng = isset( $_GET['radius_lng'] ) ? wc_clean( $_GET['radius_lng'] ) : '
   <?php do_action( 'wcfmmp_before_product_list_geo_locate_filter' ); ?>
   
 	<div id="wcfm_radius_filter_container" class="wcfm_radius_filter_container">
-		<input type="text" id="wcfmmp_radius_addr" name="radius_addr" class="wcfmmp-radius-addr" placeholder="<?php esc_attr_e( 'Insert your address ..', 'wc-multivendor-marketplace' ); ?>" value="<?php echo $radius_addr; ?>" />
-		<i class="wcfmmmp_locate_icon" style="background-image: url(<?php echo $WCFMmp->plugin_url; ?>assets/images/locate.svg)"></i>
+		<input type="text" id="wcfmmp_radius_addr" name="radius_addr" class="wcfmmp-radius-addr" placeholder="<?php esc_attr_e( 'Insert your address ..', 'wc-multivendor-marketplace' ); ?>" value="<?php echo esc_html($radius_addr); ?>" />
+		<i class="wcfmmmp_locate_icon" style="background-image: url(<?php echo esc_url($WCFMmp->plugin_url); ?>assets/images/locate.svg)"></i>
 	</div>
 	<div class="wcfm_radius_slidecontainer">
-		<input class="wcfmmp_radius_range" name="radius_range" id="wcfmmp_radius_range" type="range" value="<?php echo $radius_range; ?>" min="0" max="<?php echo apply_filters( 'wcfmmp_radius_filter_max_distance', $max_radius_to_search ); ?>" steps="6" />
+		<input class="wcfmmp_radius_range" name="radius_range" id="wcfmmp_radius_range" type="range" value="<?php echo esc_attr($radius_range); ?>" min="0" max="<?php echo apply_filters( 'wcfmmp_radius_filter_max_distance', $max_radius_to_search ); ?>" steps="6" />
 		<span class="wcfmmp_radius_range_start">0</span>
-		<span class="wcfmmp_radius_range_cur"><?php echo $radius_range; ?> <?php echo ucfirst( $radius_unit ); ?></span>
+		<span class="wcfmmp_radius_range_cur"><?php echo esc_attr($radius_range); ?> <?php echo ucfirst( $radius_unit ); ?></span>
 		<span class="wcfmmp_radius_range_end"><?php echo apply_filters( 'wcfmmp_radius_filter_max_distance', $max_radius_to_search ); ?></span>
 	</div>
-	<input type="hidden" id="wcfmmp_radius_lat" name="radius_lat" value="<?php echo $radius_lat; ?>">
-	<input type="hidden" id="wcfmmp_radius_lng" name="radius_lng" value="<?php echo $radius_lng; ?>">
+	<input type="hidden" id="wcfmmp_radius_lat" name="radius_lat" value="<?php echo esc_attr($radius_lat); ?>">
+	<input type="hidden" id="wcfmmp_radius_lng" name="radius_lng" value="<?php echo esc_attr($radius_lng); ?>">
 	
 	<button type="submit" class="button"><?php echo esc_html__( 'Filter', 'woocommerce' ); ?></button>
 	

@@ -951,11 +951,11 @@ class WCFMmp_Store {
 		$sql = 'SELECT *  FROM ' . $wpdb->prefix . 'wcfm_marketplace_reviews';
 		$sql .= ' WHERE 1=1';
 		$sql .= ' AND `approved` = 1';
-		$sql .= " AND `vendor_id` = " . $this->get_id();
+		$sql .= " AND `vendor_id` = %d";
 		$sql .= " ORDER BY `ID` DESC";
-		$sql .= " LIMIT {$length}";
-		$sql .= " OFFSET {$offset}";
-		$reviews = $wpdb->get_results( $sql );
+		$sql .= " LIMIT %d";
+		$sql .= " OFFSET %d";
+		$reviews = $wpdb->get_results( $wpdb->prepare( $sql, absint($this->get_id()), $length, $offset ) );
 		return $reviews;
 	}
 	
@@ -969,7 +969,7 @@ class WCFMmp_Store {
 		
 		if( !$review_id ) return array();
 		
-		$review_meta = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}wcfm_marketplace_review_rating_meta WHERE `type` = '{$meta}' AND `review_id`= " . $review_id . " ORDER BY ID ASC" );
+		$review_meta = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wcfm_marketplace_review_rating_meta WHERE `type` = %s AND `review_id`= %d ORDER BY ID ASC", $meta, $review_id ) );
 		
 		$wcfm_store_review_categories = array();
 		if( !empty( $review_meta ) ) {

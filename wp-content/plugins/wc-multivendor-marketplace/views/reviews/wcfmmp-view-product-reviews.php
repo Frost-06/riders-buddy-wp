@@ -44,7 +44,7 @@ if( wcfm_is_vendor() ) {
 	  <div class="wcfm-container wcfm-top-element-container">
 			<ul class="wcfm_reviews_menus">
 			  <li class="wcfm_reviews_menu_item">
-			    <a class="<?php echo ( !$reviews_status ) ? 'active' : ''; ?>" href="<?php echo wcfm_product_reviews_url(); ?>"><?php _e( 'All', 'wc-multivendor-marketplace' ); ?></a>
+			    <a class="<?php echo ( !$reviews_status ) ? 'active' : ''; ?>" href="<?php echo esc_url(wcfm_product_reviews_url()); ?>"><?php _e( 'All', 'wc-multivendor-marketplace' ); ?></a>
 			  </li>
 				<?php
 				foreach( $wcfmu_reviews_menus as $wcfmu_reviews_menu_key => $wcfmu_reviews_menu) {
@@ -53,7 +53,7 @@ if( wcfm_is_vendor() ) {
 						<?php
 						echo " | ";
 						?>
-						<a class="<?php echo ( $wcfmu_reviews_menu_key == $reviews_status ) ? 'active' : ''; ?>" href="<?php echo wcfm_product_reviews_url( $wcfmu_reviews_menu_key ); ?>"><?php echo $wcfmu_reviews_menu; ?></a>
+						<a class="<?php echo ( $wcfmu_reviews_menu_key == $reviews_status ) ? 'active' : ''; ?>" href="<?php echo esc_url(wcfm_product_reviews_url( $wcfmu_reviews_menu_key )); ?>"><?php echo wp_kses_post($wcfmu_reviews_menu); ?></a>
 					</li>
 					<?php
 				}
@@ -61,7 +61,7 @@ if( wcfm_is_vendor() ) {
 			</ul>
 			
 			<?php
-			echo '<a id="add_new_product_dashboard" class="add_new_wcfm_ele_dashboard text_tip" href="'.wcfm_reviews_url().'" data-tip="' . __('Store Reviews', 'wc-multivendor-marketplace') . '"><span class="wcfmfa fa-user"></span><span class="text">' . __( 'Store Reviews', 'wc-multivendor-marketplace' ) . '</span></a>';
+			echo '<a id="add_new_product_dashboard" class="add_new_wcfm_ele_dashboard text_tip" href="'.esc_url(wcfm_reviews_url()).'" data-tip="' . __('Store Reviews', 'wc-multivendor-marketplace') . '"><span class="wcfmfa fa-user"></span><span class="text">' . __( 'Store Reviews', 'wc-multivendor-marketplace' ) . '</span></a>';
 			?>
 			<div class="wcfm-clearfix"></div>
 		</div>

@@ -23,7 +23,7 @@ if( !apply_filters( 'wcfmmp_is_allow_product_list_map', true ) ) return;
 
 <script>
   $map_zoom    = <?php echo absint($map_zoom); ?>;
-  $auto_zoom   = '<?php echo $auto_zoom; ?>';
+  $auto_zoom   = '<?php echo esc_attr($auto_zoom); ?>';
   $per_row     = '';
 	$per_page    = '-1';
 	$includes    = '<?php echo implode(",", $includes ); ?>';
